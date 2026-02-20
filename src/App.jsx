@@ -6,6 +6,7 @@ import { useAuth } from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import LandingPage from './pages/LandingPage';
 import MainLayout from './components/layout/MainLayout';
 import DashboardPage from './components/dashboard/DashboardPage';
 import './App.css';
@@ -23,6 +24,7 @@ function AppRouter() {
 
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route
         path="/login"
         element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
@@ -44,7 +46,7 @@ function AppRouter() {
       />
       <Route
         path="*"
-        element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />}
+        element={<Navigate to={isAuthenticated ? '/dashboard' : '/'} replace />}
       />
     </Routes>
   );
