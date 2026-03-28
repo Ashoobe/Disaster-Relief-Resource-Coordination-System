@@ -189,7 +189,7 @@ const SettingsPage = () => {
                   <div className="danger-title">Clear All Completed Requests</div>
                   <div className="danger-desc">Permanently remove all requests with &ldquo;completed&rdquo; status. This cannot be undone.</div>
                 </div>
-                <button type="button" className="btn btn-danger" onClick={() => alert('This action is disabled in the demo.')}>
+                <button type="button" className="btn btn-danger" onClick={() => alert('This action is not yet implemented.')}>
                   Clear Data
                 </button>
               </div>
@@ -198,7 +198,7 @@ const SettingsPage = () => {
                   <div className="danger-title">Reset System to Defaults</div>
                   <div className="danger-desc">Reset all settings to factory defaults. Users and requests are not affected.</div>
                 </div>
-                <button type="button" className="btn btn-danger" onClick={() => alert('This action is disabled in the demo.')}>
+                <button type="button" className="btn btn-danger" onClick={() => alert('This action is not yet implemented.')}>
                   Reset
                 </button>
               </div>

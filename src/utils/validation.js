@@ -129,9 +129,9 @@ export const validateRequired = (value, fieldName, minLength = 1) => {
 export const validateLoginForm = (data) => {
   const errors = {};
 
-  const emailValidation = validateEmail(data.email);
-  if (!emailValidation.isValid) {
-    errors.email = emailValidation.error;
+  // NEW: backend accepts username (not email) for login
+  if (!data.username || data.username.trim().length < 3) {
+    errors.username = 'Username must be at least 3 characters';
   }
 
   // For login, just check if password is provided (not strength validation)

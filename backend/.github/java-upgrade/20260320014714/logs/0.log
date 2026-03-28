@@ -1,0 +1,304 @@
+2026-03-20T01:47:14.792Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-03-20T01:47:14.792Z [INFO] [Tool.invoke]({name: appmod-report-event, input: {
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "event": "precheckCompleted",
+  "phase": "precheck",
+  "status": "succeeded"
+}}).
+2026-03-20T01:47:14.793Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:47:14.798Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'precheckCompleted' reported!\nSession ID: 20260320014714,\nSession Dir: c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend\\.github\\java-upgrade\\20260320014714"
+}}).
+2026-03-20T01:47:14.798Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-03-20T01:47:19.487Z [INFO] ---------------------prepare appmod-list-jdks----------------------
+2026-03-20T01:47:19.488Z [INFO] [Tool.prepareInvocation]({name: appmod-list-jdks, input: {
+  "sessionId": "20260320014714"
+}}).
+2026-03-20T01:47:19.489Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:47:19.489Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "List jdks"
+}}).
+2026-03-20T01:47:19.489Z [INFO] ----------------------prepared appmod-list-jdks----------------------
+2026-03-20T01:47:19.492Z [INFO] ----------------------invoke appmod-list-jdks----------------------
+2026-03-20T01:47:19.492Z [INFO] [Tool.invoke]({name: appmod-list-jdks, input: {
+  "sessionId": "20260320014714"
+}}).
+2026-03-20T01:47:19.492Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:47:19.684Z [INFO] [Tool.invoke]({result: {
+  "message": "We found following jdks in your system:\n\n1. Java 17.0.18\n   📁 Path: C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.18.8-hotspot\\bin\n   🏷️ Source: PATH\n\n2. Java 19\n   📁 Path: C:\\Users\\ashoo\\.jdks\\openjdk-19\\bin\n   🏷️ Source: others\n\n3. Java 19.0.1\n   📁 Path: C:\\Users\\ashoo\\.jdks\\openjdk-19.0.1\\bin\n   🏷️ Source: others\n\n4. Java 21.0.8\n   📁 Path: C:\\Users\\ashoo\\.jdk\\jdk-21.0.8\\bin\n   🏷️ Source: PATH,JAVA_HOME,install\n\nTotal: 4 JDK installation(s) found"
+}}).
+2026-03-20T01:47:19.684Z [INFO] ----------------------invoked appmod-list-jdks----------------------
+2026-03-20T01:47:22.892Z [INFO] ---------------------prepare appmod-list-mavens----------------------
+2026-03-20T01:47:22.892Z [INFO] [Tool.prepareInvocation]({name: appmod-list-mavens, input: {
+  "sessionId": "20260320014714"
+}}).
+2026-03-20T01:47:22.893Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:47:22.893Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "List mavens"
+}}).
+2026-03-20T01:47:22.893Z [INFO] ----------------------prepared appmod-list-mavens----------------------
+2026-03-20T01:47:22.908Z [INFO] ----------------------invoke appmod-list-mavens----------------------
+2026-03-20T01:47:22.908Z [INFO] [Tool.invoke]({name: appmod-list-mavens, input: {
+  "sessionId": "20260320014714"
+}}).
+2026-03-20T01:47:22.909Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:47:22.917Z [INFO] [Tool.invoke]({result: {
+  "message": "No Maven installations found."
+}}).
+2026-03-20T01:47:22.917Z [INFO] ----------------------invoked appmod-list-mavens----------------------
+2026-03-20T01:49:33.899Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-03-20T01:49:33.900Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "planInitialized",
+  "phase": "plan",
+  "sessionId": "20260320014714",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "status": "succeeded"
+}}).
+2026-03-20T01:49:33.900Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:49:33.901Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-03-20T01:49:33.901Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-03-20T01:49:33.904Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-03-20T01:49:33.904Z [INFO] [Tool.invoke]({name: appmod-report-event, input: {
+  "event": "planInitialized",
+  "phase": "plan",
+  "sessionId": "20260320014714",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "status": "succeeded"
+}}).
+2026-03-20T01:49:33.905Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:49:33.906Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'planInitialized' reported!\nSession ID: 20260320014714,\nSession Dir: c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend\\.github\\java-upgrade\\20260320014714"
+}}).
+2026-03-20T01:49:33.906Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-03-20T01:51:07.218Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-03-20T01:51:07.218Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "environmentAnalyzed",
+  "phase": "plan",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:51:07.219Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:51:07.220Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-03-20T01:51:07.221Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-03-20T01:51:07.223Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-03-20T01:51:07.224Z [INFO] [Tool.invoke]({name: appmod-report-event, input: {
+  "event": "environmentAnalyzed",
+  "phase": "plan",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:51:07.224Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:51:07.225Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'environmentAnalyzed' reported!\nSession ID: 20260320014714,\nSession Dir: c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend\\.github\\java-upgrade\\20260320014714"
+}}).
+2026-03-20T01:51:07.226Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-03-20T01:51:10.398Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-03-20T01:51:10.399Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "dependenciesAnalyzed",
+  "phase": "plan",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:51:10.399Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:51:10.400Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-03-20T01:51:10.400Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-03-20T01:51:10.403Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-03-20T01:51:10.404Z [INFO] [Tool.invoke]({name: appmod-report-event, input: {
+  "event": "dependenciesAnalyzed",
+  "phase": "plan",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:51:10.404Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:51:10.406Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'dependenciesAnalyzed' reported!\nSession ID: 20260320014714,\nSession Dir: c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend\\.github\\java-upgrade\\20260320014714"
+}}).
+2026-03-20T01:51:10.406Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-03-20T01:51:14.756Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-03-20T01:51:14.756Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "upgradePathDesigned",
+  "phase": "plan",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:51:14.757Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:51:14.758Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-03-20T01:51:14.758Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-03-20T01:51:14.760Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-03-20T01:51:14.760Z [INFO] [Tool.invoke]({name: appmod-report-event, input: {
+  "event": "upgradePathDesigned",
+  "phase": "plan",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:51:14.761Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:51:14.763Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'upgradePathDesigned' reported!\nSession ID: 20260320014714,\nSession Dir: c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend\\.github\\java-upgrade\\20260320014714"
+}}).
+2026-03-20T01:51:14.763Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-03-20T01:51:18.053Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-03-20T01:51:18.053Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "planReviewed",
+  "phase": "plan",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:51:18.053Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:51:18.054Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-03-20T01:51:18.054Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-03-20T01:51:18.056Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-03-20T01:51:18.057Z [INFO] [Tool.invoke]({name: appmod-report-event, input: {
+  "event": "planReviewed",
+  "phase": "plan",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:51:18.057Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:51:18.058Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'planReviewed' reported!\nSession ID: 20260320014714,\nSession Dir: c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend\\.github\\java-upgrade\\20260320014714"
+}}).
+2026-03-20T01:51:18.058Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-03-20T01:51:21.272Z [INFO] ---------------------prepare appmod-confirm-upgrade-plan----------------------
+2026-03-20T01:51:21.272Z [INFO] [Tool.prepareInvocation]({name: appmod-confirm-upgrade-plan, input: {
+  "sessionId": "20260320014714"
+}}).
+2026-03-20T01:51:21.273Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:51:21.273Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Review [upgrade plan](file:///c:/Users/ashoo/OneDrive/Documents/School/Master_CPSC-69100/Recovery App/backend/.github/java-upgrade/20260320014714/plan.md)",
+  "confirmationMessages": {
+    "title": "Plan generated",
+    "message": "Please review the generated plan and make any necessary adjustments before proceeding. You can modify the generated [`plan.md`](file:///c:/Users/ashoo/OneDrive/Documents/School/Master_CPSC-69100/Recovery App/backend/.github/java-upgrade/20260320014714/plan.md) directly."
+  }
+}}).
+2026-03-20T01:51:21.274Z [INFO] ----------------------prepared appmod-confirm-upgrade-plan----------------------
+2026-03-20T01:51:33.242Z [INFO] ----------------------invoke appmod-confirm-upgrade-plan----------------------
+2026-03-20T01:51:33.242Z [INFO] [Tool.invoke]({name: appmod-confirm-upgrade-plan, input: {
+  "sessionId": "20260320014714"
+}}).
+2026-03-20T01:51:33.243Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:51:33.243Z [INFO] Upgrade plan confirmed successfully.
+2026-03-20T01:51:33.249Z [INFO] [Tool.invoke]({result: {
+  "message": "Generated plan is reviewed and confirmed by the user! the upgrade process will start now and be tracked in markdown file: c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend\\.github\\java-upgrade\\20260320014714\\progress.md."
+}}).
+2026-03-20T01:51:33.249Z [INFO] ----------------------invoked appmod-confirm-upgrade-plan----------------------
+2026-03-20T01:51:38.490Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-03-20T01:51:38.490Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "planConfirmed",
+  "phase": "plan",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:51:38.491Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:51:38.491Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-03-20T01:51:38.492Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-03-20T01:51:38.494Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-03-20T01:51:38.495Z [INFO] [Tool.invoke]({name: appmod-report-event, input: {
+  "event": "planConfirmed",
+  "phase": "plan",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:51:38.496Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:51:38.497Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'planConfirmed' reported!\nSession ID: 20260320014714,\nSession Dir: c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend\\.github\\java-upgrade\\20260320014714"
+}}).
+2026-03-20T01:51:38.498Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-03-20T01:52:04.924Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-03-20T01:52:04.925Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "planExecutionStarted",
+  "phase": "execute",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:52:04.925Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:52:04.926Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-03-20T01:52:04.926Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-03-20T01:52:04.929Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-03-20T01:52:04.930Z [INFO] [Tool.invoke]({name: appmod-report-event, input: {
+  "event": "planExecutionStarted",
+  "phase": "execute",
+  "projectPath": "c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend",
+  "sessionId": "20260320014714",
+  "status": "succeeded"
+}}).
+2026-03-20T01:52:04.930Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:52:05.024Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'planExecutionStarted' reported!\nSession ID: 20260320014714,\nSession Dir: c:\\Users\\ashoo\\OneDrive\\Documents\\School\\Master_CPSC-69100\\Recovery App\\backend\\.github\\java-upgrade\\20260320014714"
+}}).
+2026-03-20T01:52:05.024Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-03-20T01:52:22.198Z [INFO] ---------------------prepare appmod-install-maven----------------------
+2026-03-20T01:52:22.199Z [INFO] [Tool.prepareInvocation]({name: appmod-install-maven, input: {
+  "sessionId": "20260320014714",
+  "version": "latest"
+}}).
+2026-03-20T01:52:22.200Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:52:23.036Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Download and install Maven",
+  "confirmationMessages": {
+    "title": "Download and install Maven",
+    "message": "\nThis tool will download and install Maven latest from Apache with below settings.\n- **Version**: latest\n- **Vendor**: Apache\n- **Url**: https://dlcdn.apache.org/maven/maven-3/3.9.14/binaries/apache-maven-3.9.14-bin.zip\n- **Destination**: `C:\\Users\\ashoo\\.maven`\n- **Checksum**: SHA512: 4122c5e7a8794260539dd8fcd78480549511babff2f85e2b1258c8d4cf33c50af90f65d323f43c88d4959f35a8f37ced3eca802983caa6eb7cc81b16af936ab0\n- **Signature**: https://dlcdn.apache.org/maven/maven-3/3.9.14/binaries/apache-maven-3.9.14-bin.zip.asc\n- **Public Key**: https://downloads.apache.org/maven/KEYS\n"
+  }
+}}).
+2026-03-20T01:52:23.037Z [INFO] ----------------------prepared appmod-install-maven----------------------
+2026-03-20T01:52:25.574Z [INFO] ----------------------invoke appmod-install-maven----------------------
+2026-03-20T01:52:25.575Z [INFO] [Tool.invoke]({name: appmod-install-maven, input: {
+  "sessionId": "20260320014714",
+  "version": "latest"
+}}).
+2026-03-20T01:52:25.575Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:52:35.881Z [INFO] [Tool.invoke]({result: {
+  "result": {
+    "name": "mvn",
+    "path": "C:\\Users\\ashoo\\.maven\\maven-3.9.14\\bin",
+    "version": "3.9.14"
+  },
+  "message": "Maven latest is installed at C:\\Users\\ashoo\\.maven\\maven-3.9.14\\bin",
+  "telemetry": {
+    "tool": "Maven",
+    "version": "latest"
+  }
+}}).
+2026-03-20T01:52:35.882Z [INFO] ----------------------invoked appmod-install-maven----------------------
+2026-03-20T01:52:39.572Z [INFO] ---------------------prepare appmod-list-mavens----------------------
+2026-03-20T01:52:39.572Z [INFO] [Tool.prepareInvocation]({name: appmod-list-mavens, input: {
+  "sessionId": "20260320014714"
+}}).
+2026-03-20T01:52:39.573Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-03-20T01:52:39.573Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "List mavens"
+}}).
+2026-03-20T01:52:39.574Z [INFO] ----------------------prepared appmod-list-mavens----------------------
+2026-03-20T01:52:39.576Z [INFO] ----------------------invoke appmod-list-mavens----------------------
+2026-03-20T01:52:39.577Z [INFO] [Tool.invoke]({name: appmod-list-mavens, input: {
+  "sessionId": "20260320014714"
+}}).
+2026-03-20T01:52:39.577Z [INFO] [Tool.invoke] do invoke.
+2026-03-20T01:52:39.609Z [INFO] [Tool.invoke]({result: {
+  "message": "We found following maven installations in your system:\n\n1. 📁 Path: C:\\Users\\ashoo\\.maven\\maven-3.9.14\\bin\n   🏷️ Source: install\n\nTotal: 1 Maven installation(s) found"
+}}).
+2026-03-20T01:52:39.610Z [INFO] ----------------------invoked appmod-list-mavens----------------------

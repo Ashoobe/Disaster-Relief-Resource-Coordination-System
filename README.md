@@ -1,6 +1,6 @@
-# DRRCS Frontend - Authentication UI
+# DRRCS Full Stack App
 
-Disaster Relief Resource Coordination System - React Frontend Application
+Disaster Relief Resource Coordination System with a React frontend, Spring Boot backend, and MongoDB persistence.
 
 ## Contributors
 
@@ -12,7 +12,11 @@ Disaster Relief Resource Coordination System - React Frontend Application
 
 ## Project Overview
 
-This is a React-based frontend for the Disaster Relief Resource Coordination System (DRRCS). Frontend ocuses on building the authentication UI with form validation and mocked API integration.
+This repository now contains the full application stack for DRRCS, including authentication, emergency request submission, dashboard workflows, MongoDB-backed data storage, and request tracking.
+
+## Deployment
+
+Deployment instructions are in [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Features (Implementation)
 

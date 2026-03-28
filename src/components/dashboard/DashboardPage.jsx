@@ -101,23 +101,25 @@ export const DashboardPage = () => {
     }
   };
 
-  // Mock chart data when requests are available
-  const requestTrendData = requests.length ? [
-    { time: '00:00', requests: 2 },
-    { time: '04:00', requests: 1 },
-    { time: '08:00', requests: 5 },
-    { time: '12:00', requests: 3 },
-    { time: '16:00', requests: 2 },
-    { time: '20:00', requests: 4 },
-  ] : [];
+  const requestTrendData = requests.length
+    ? Object.entries(requests.reduce((acc, request) => {
+        const key = new Date(request.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {})).map(([time, count]) => ({ time, requests: count }))
+    : [];
 
-  const categoryData = requests.length ? (
-    // group by category
-    Object.entries(requests.reduce((acc, r) => {
-      acc[r.category] = (acc[r.category] || 0) + 1;
-      return acc;
-    }, {})).map(([name, value], i) => ({ name, value, color: ['#ef4444','#f59e0b','#3b82f6','#10b981','#8b5cf6','#6b7280'][i % 6] }))
-  ) : [];
+  const categoryData = requests.length
+    ? Object.entries(requests.reduce((acc, request) => {
+        const key = request.category || 'other';
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {})).map(([name, value], index) => ({
+        name: name.replace(/-/g, ' '),
+        value,
+        color: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#6b7280'][index % 6],
+      }))
+    : [];
 
   if (isLoading) {
     return (
@@ -306,7 +308,7 @@ export const DashboardPage = () => {
                   <span className="separator">•</span>
                   <span className="category">{request.category}</span>
                 </div>
-                <p className="request-description">{request.description?.slice(0, 100)}...</p>
+                <p className="request-description">{request.title || request.description?.slice(0, 100) || 'No description available.'}</p>
                 <p className="request-location">{request.location?.address}</p>
                 <div className="request-item-footer">
                   <span className="request-contact">{request.contactName}</span>

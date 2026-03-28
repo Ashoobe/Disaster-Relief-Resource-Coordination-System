@@ -1,33 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../common/Card';
 import Badge from '../common/Badge';
+import { useAuth } from '../../hooks/useAuth';
 import './VolunteersPage.css';
 
-const mockVolunteers = [
-  { id: 'v-001', fullName: 'James Rivera', email: 'james@drrcs.org', skills: ['First Aid', 'Search & Rescue'], status: 'active', assignedTasks: 3, completedTasks: 12, location: 'Houston, TX' },
-  { id: 'v-002', fullName: 'Maria Gonzalez', email: 'maria@drrcs.org', skills: ['Medical', 'Logistics'], status: 'active', assignedTasks: 1, completedTasks: 8, location: 'Miami, FL' },
-  { id: 'v-003', fullName: 'Tom Baker', email: 'tom@drrcs.org', skills: ['Evacuation', 'Driving'], status: 'available', assignedTasks: 0, completedTasks: 5, location: 'Dallas, TX' },
-  { id: 'v-004', fullName: 'Priya Patel', email: 'priya@drrcs.org', skills: ['Medical', 'Communication'], status: 'active', assignedTasks: 2, completedTasks: 19, location: 'Los Angeles, CA' },
-  { id: 'v-005', fullName: 'Derek Stone', email: 'derek@drrcs.org', skills: ['Construction', 'Logistics'], status: 'off-duty', assignedTasks: 0, completedTasks: 7, location: 'New Orleans, LA' },
-  { id: 'v-006', fullName: 'Angela White', email: 'angela@drrcs.org', skills: ['Counseling', 'First Aid'], status: 'available', assignedTasks: 0, completedTasks: 3, location: 'Atlanta, GA' },
-];
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
-const statusVariant = { active: 'success', available: 'info', 'off-duty': 'default' };
+const statusVariant = { active: 'success', inactive: 'default' };
 
 const VolunteersPage = () => {
+  const { token } = useAuth();
+  const [volunteers, setVolunteers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  const filtered = mockVolunteers.filter(v => {
+  useEffect(() => {
+    const fetchVolunteers = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`${API_BASE_URL}/v1/users/allusers?size=200`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error(`Failed to load volunteers (${res.status})`);
+        const json = await res.json();
+        const allUsers = (json?.data?.content ?? json?.data ?? []);
+        // Keep only volunteer-role users
+        const vols = allUsers.filter(u => {
+          const roles = Array.isArray(u.role) ? u.role : [u.role];
+          return roles.some(r => String(r).replace('ROLE_', '').toUpperCase() === 'VOLUNTEER');
+        }).map(u => ({
+          id: u.id,
+          fullName: u.fullName,
+          email: u.email,
+          status: u.enabled ? 'active' : 'inactive',
+        }));
+        setVolunteers(vols);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (token) fetchVolunteers();
+  }, [token]);
+
+  const filtered = volunteers.filter(v => {
     const q = search.toLowerCase();
-    const matchesSearch = !q || v.fullName.toLowerCase().includes(q) || v.email.toLowerCase().includes(q) || v.skills.some(s => s.toLowerCase().includes(q));
+    const matchesSearch = !q || v.fullName.toLowerCase().includes(q) || v.email.toLowerCase().includes(q);
     const matchesStatus = statusFilter === 'all' || v.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const totalActive = mockVolunteers.filter(v => v.status === 'active').length;
-  const totalAvailable = mockVolunteers.filter(v => v.status === 'available').length;
-  const totalTasks = mockVolunteers.reduce((sum, v) => sum + v.completedTasks, 0);
+  const totalActive = volunteers.filter(v => v.status === 'active').length;
 
   return (
     <div className="volunteers-page">
@@ -46,7 +73,7 @@ const VolunteersPage = () => {
         <Card elevation="elevated">
           <Card.Body>
             <div className="vol-stat">
-              <div className="vol-stat-value">{mockVolunteers.length}</div>
+              <div className="vol-stat-value">{volunteers.length}</div>
               <div className="vol-stat-label">Total Volunteers</div>
             </div>
           </Card.Body>
@@ -55,23 +82,15 @@ const VolunteersPage = () => {
           <Card.Body>
             <div className="vol-stat">
               <div className="vol-stat-value success">{totalActive}</div>
-              <div className="vol-stat-label">Active Now</div>
+              <div className="vol-stat-label">Active</div>
             </div>
           </Card.Body>
         </Card>
         <Card elevation="elevated">
           <Card.Body>
             <div className="vol-stat">
-              <div className="vol-stat-value info">{totalAvailable}</div>
-              <div className="vol-stat-label">Available</div>
-            </div>
-          </Card.Body>
-        </Card>
-        <Card elevation="elevated">
-          <Card.Body>
-            <div className="vol-stat">
-              <div className="vol-stat-value">{totalTasks}</div>
-              <div className="vol-stat-label">Tasks Completed</div>
+              <div className="vol-stat-value">{volunteers.length - totalActive}</div>
+              <div className="vol-stat-label">Inactive</div>
             </div>
           </Card.Body>
         </Card>
@@ -86,7 +105,7 @@ const VolunteersPage = () => {
               <input
                 type="text"
                 className="filter-input"
-                placeholder="Name, email, or skill..."
+                placeholder="Name or email..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
               />
@@ -96,8 +115,7 @@ const VolunteersPage = () => {
               <select className="filter-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
                 <option value="all">All</option>
                 <option value="active">Active</option>
-                <option value="available">Available</option>
-                <option value="off-duty">Off-duty</option>
+                <option value="inactive">Inactive</option>
               </select>
             </div>
             <div className="filter-actions">
@@ -110,11 +128,15 @@ const VolunteersPage = () => {
       {/* Table */}
       <Card elevation="elevated">
         <Card.Body>
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="vol-empty"><p>Loading volunteers…</p></div>
+          ) : error ? (
+            <div className="vol-empty"><p className="text-danger">{error}</p></div>
+          ) : filtered.length === 0 ? (
             <div className="vol-empty">
               <div className="empty-icon">🙋</div>
               <h3>No volunteers found</h3>
-              <p>Try adjusting your filters.</p>
+              <p>{volunteers.length === 0 ? 'No users with the Volunteer role exist yet.' : 'Try adjusting your filters.'}</p>
             </div>
           ) : (
             <div className="vol-table-wrapper">
@@ -122,11 +144,7 @@ const VolunteersPage = () => {
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>Skills</th>
                     <th>Status</th>
-                    <th>Location</th>
-                    <th>Active Tasks</th>
-                    <th>Completed</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -143,20 +161,10 @@ const VolunteersPage = () => {
                         </div>
                       </td>
                       <td>
-                        <div className="vol-skills">
-                          {vol.skills.map(skill => (
-                            <span key={skill} className="skill-tag">{skill}</span>
-                          ))}
-                        </div>
-                      </td>
-                      <td>
                         <Badge variant={statusVariant[vol.status] || 'default'}>
                           {vol.status}
                         </Badge>
                       </td>
-                      <td className="text-muted">{vol.location}</td>
-                      <td className="text-center">{vol.assignedTasks}</td>
-                      <td className="text-center">{vol.completedTasks}</td>
                       <td>
                         <div className="vol-actions">
                           <button className="btn-icon-action" title="View profile" onClick={() => alert(`Profile for ${vol.fullName}`)}>👁️</button>
@@ -170,7 +178,7 @@ const VolunteersPage = () => {
             </div>
           )}
           <div className="vol-footer">
-            <p className="vol-count">Showing {filtered.length} of {mockVolunteers.length} volunteers</p>
+            <p className="vol-count">Showing {filtered.length} of {volunteers.length} volunteers</p>
           </div>
         </Card.Body>
       </Card>

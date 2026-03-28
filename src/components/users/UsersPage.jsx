@@ -33,11 +33,13 @@ const UsersPage = () => {
     confirmPassword: '',
   });
   const [actionLoading, setActionLoading] = useState(false);
+  const [roleModalUser, setRoleModalUser] = useState(null);
+  const [pendingRole, setPendingRole] = useState('');
 
-  // Load users on mount and when filters change
+  // Load users on mount, when filters change, or when token becomes available
   useEffect(() => {
-    loadUsers();
-  }, [filters]);
+    if (token) loadUsers();
+  }, [filters, token]);
 
   const loadUsers = async () => {
     setLoading(true);
@@ -110,28 +112,25 @@ const UsersPage = () => {
     }
   };
 
-  const handleChangeRole = async (userId, currentRole) => {
-    const newRole = prompt(
-      'Enter new role (admin, volunteer, organization_staff):',
-      currentRole
-    );
+  const handleChangeRole = (userId, currentRole) => {
+    const target = users.find(u => u.id === userId);
+    if (!target) return;
+    setRoleModalUser(target);
+    setPendingRole(currentRole);
+  };
 
-    if (!newRole || newRole === currentRole) {
+  const handleConfirmRoleChange = async () => {
+    if (!roleModalUser) return;
+    if (!pendingRole || pendingRole === roleModalUser.role) {
+      setRoleModalUser(null);
       return;
     }
-
-    const validRoles = ['admin', 'volunteer', 'organization_staff'];
-    if (!validRoles.includes(newRole)) {
-      alert('Invalid role. Please use: admin, volunteer, or organization_staff');
-      return;
-    }
-
     setActionLoading(true);
     setError(null);
-
     try {
-      const response = await changeUserRole(userId, newRole, token);
+      const response = await changeUserRole(roleModalUser.id, pendingRole, token);
       if (response.success) {
+        setRoleModalUser(null);
         await loadUsers();
       } else {
         setError(response.message);
@@ -186,6 +185,7 @@ const UsersPage = () => {
   const getRoleBadgeVariant = (role) => {
     const variants = {
       admin: 'danger',
+      coordinator: 'warning',
       volunteer: 'success',
       organization_staff: 'info',
     };
@@ -199,6 +199,7 @@ const UsersPage = () => {
   const getRoleDisplayName = (role) => {
     const names = {
       admin: 'Admin',
+      coordinator: 'Coordinator',
       volunteer: 'Volunteer',
       organization_staff: 'Organization Staff',
     };
@@ -400,6 +401,61 @@ const UsersPage = () => {
       </Card>
 
       {/* Add User Modal */}
+      {/* Change Role Modal */}
+      {roleModalUser && (
+        <div className="modal-overlay" onClick={() => setRoleModalUser(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Change Role</h2>
+              <button
+                className="modal-close"
+                onClick={() => setRoleModalUser(null)}
+                aria-label="Close modal"
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <p style={{ marginBottom: '1rem' }}>
+                Changing role for <strong>{roleModalUser.fullName}</strong>
+              </p>
+              <div className="form-group">
+                <label htmlFor="new-role">New Role</label>
+                <select
+                  id="new-role"
+                  className="form-select"
+                  value={pendingRole}
+                  onChange={(e) => setPendingRole(e.target.value)}
+                >
+                  <option value="volunteer">Volunteer</option>
+                  <option value="coordinator">Coordinator</option>
+                  <option value="organization_staff">Organization Staff</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setRoleModalUser(null)}
+                disabled={actionLoading}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleConfirmRoleChange}
+                disabled={actionLoading || pendingRole === roleModalUser.role}
+              >
+                {actionLoading ? 'Saving...' : 'Save Role'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showAddModal && (
         <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>

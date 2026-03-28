@@ -38,6 +38,28 @@ export function AnalyticsPage() {
     }
   };
 
+  const requestsByDay = requests.reduce<Record<string, { total: number; completed: number }>>((acc, request) => {
+    const key = new Date(request.timestamp).toLocaleDateString('en-US', { weekday: 'short' });
+    if (!acc[key]) {
+      acc[key] = { total: 0, completed: 0 };
+    }
+    acc[key].total += 1;
+    if (request.status === 'completed') {
+      acc[key].completed += 1;
+    }
+    return acc;
+  }, {});
+
+  const responseTimesInHours = requests
+    .map((request) => {
+      if (!request.updatedAt) return null;
+      const submittedAt = new Date(request.timestamp).getTime();
+      const updatedAt = new Date(request.updatedAt).getTime();
+      const diff = (updatedAt - submittedAt) / (1000 * 60 * 60);
+      return Number.isFinite(diff) && diff >= 0 ? diff : null;
+    })
+    .filter((value): value is number => value != null);
+
   // Calculate analytics data
   const statusData = [
     { name: 'Pending', value: requests.filter(r => r.status === 'pending').length, color: '#eab308' },
@@ -74,22 +96,22 @@ export function AnalyticsPage() {
   ];
 
   const responseTimeData = [
-    { timeRange: '0-1h', count: 3 },
-    { timeRange: '1-3h', count: 4 },
-    { timeRange: '3-6h', count: 2 },
-    { timeRange: '6-12h', count: 1 },
-    { timeRange: '12-24h', count: 0 },
+    { timeRange: '0-1h', count: responseTimesInHours.filter((value) => value < 1).length },
+    { timeRange: '1-3h', count: responseTimesInHours.filter((value) => value >= 1 && value < 3).length },
+    { timeRange: '3-6h', count: responseTimesInHours.filter((value) => value >= 3 && value < 6).length },
+    { timeRange: '6-12h', count: responseTimesInHours.filter((value) => value >= 6 && value < 12).length },
+    { timeRange: '12-24h', count: responseTimesInHours.filter((value) => value >= 12).length },
   ];
 
-  const completionRateData = [
-    { day: 'Mon', completed: 8, total: 10 },
-    { day: 'Tue', completed: 12, total: 15 },
-    { day: 'Wed', completed: 10, total: 12 },
-    { day: 'Thu', completed: 15, total: 18 },
-    { day: 'Fri', completed: 9, total: 11 },
-    { day: 'Sat', completed: 6, total: 8 },
-    { day: 'Sun', completed: 7, total: 10 },
-  ];
+  const completionRateData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => ({
+    day,
+    completed: requestsByDay[day]?.completed ?? 0,
+    total: requestsByDay[day]?.total ?? 0,
+  }));
+
+  const averageResponseTime = responseTimesInHours.length
+    ? `${(responseTimesInHours.reduce((sum, value) => sum + value, 0) / responseTimesInHours.length).toFixed(1)}h`
+    : 'N/A';
 
   const completionRate = requests.length > 0
     ? Math.round((requests.filter(r => r.status === 'completed').length / requests.length) * 100)
@@ -142,7 +164,7 @@ export function AnalyticsPage() {
             <span className="analytics-metric-label">Avg Response Time</span>
             <Clock size={18} color="#f97316" />
           </div>
-          <div className="analytics-metric-value">2.4h</div>
+          <div className="analytics-metric-value">{averageResponseTime}</div>
           <div className="analytics-metric-sub">From submission to assignment</div>
         </div>
 
@@ -341,4 +363,3 @@ export function AnalyticsPage() {
 }
 
 export default AnalyticsPage;
-

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { validateLoginForm, validateEmail } from '../../utils/validation';
+import { validateLoginForm } from '../../utils/validation';
+// NOTE: validateEmail removed — login now uses username, not email
 import { useAuth } from '../../hooks/useAuth';
 import './AuthForms.css';
 
@@ -7,8 +8,9 @@ import './AuthForms.css';
 const LoginForm = ({ onSuccess, onNavigateToRegister, onNavigateToForgotPassword }) => {
   const { login, loading } = useAuth();
 
+  // NEW: changed email→username to match backend LoginRequest
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: '',
     rememberMe: false,
   });
@@ -57,7 +59,8 @@ const LoginForm = ({ onSuccess, onNavigateToRegister, onNavigateToForgotPassword
     setErrors({});
 
     // Attempt login
-    const result = await login(formData.email, formData.password, formData.rememberMe);
+    // NEW: pass username — backend LoginRequest expects { username, password }
+    const result = await login(formData.username, formData.password, formData.rememberMe);
 
     if (!result.success) {
       setSubmittedError(result.message);
@@ -65,33 +68,6 @@ const LoginForm = ({ onSuccess, onNavigateToRegister, onNavigateToForgotPassword
       // Success - callback to parent component
       onSuccess?.();
     }
-  };
-
-  /**
-   * Demo credentials helper
-   */
-  const handleUseDemoCredentials = (role = 'admin') => {
-    const demoCredentials = {
-      admin: {
-        email: 'admin@drrcs.test',
-        password: 'Admin@123456',
-      },
-      volunteer: {
-        email: 'volunteer@drrcs.test',
-        password: 'Volunteer@123',
-      },
-      organization: {
-        email: 'org@drrcs.test',
-        password: 'Organization@123',
-      },
-    };
-
-    const creds = demoCredentials[role];
-    setFormData({
-      ...formData,
-      email: creds.email,
-      password: creds.password,
-    });
   };
 
   return (
@@ -105,34 +81,25 @@ const LoginForm = ({ onSuccess, onNavigateToRegister, onNavigateToForgotPassword
         </div>
       )}
 
-      {/* Email Field */}
+      {/* Username Field */}
+      {/* NEW: changed from Email to Username — backend LoginRequest expects { username, password } */}
       <div className="form-group">
-        <label htmlFor="email">Email Address</label>
+        <label htmlFor="username">Username</label>
         <input
-          id="email"
-          type="email"
-          name="email"
-          value={formData.email}
+          id="username"
+          type="text"
+          name="username"
+          value={formData.username}
           onChange={handleInputChange}
-          onBlur={() => {
-            // Validate email on blur
-            const validation = validateEmail(formData.email);
-            if (!validation.isValid && formData.email) {
-              setErrors((prev) => ({
-                ...prev,
-                email: validation.error,
-              }));
-            }
-          }}
-          placeholder="Enter your email"
-          className={errors.email ? 'input-error' : ''}
+          placeholder="Enter your username"
+          className={errors.username ? 'input-error' : ''}
           disabled={loading}
-          aria-invalid={!!errors.email}
-          aria-describedby={errors.email ? 'email-error' : undefined}
+          aria-invalid={!!errors.username}
+          aria-describedby={errors.username ? 'username-error' : undefined}
         />
-        {errors.email && (
-          <span className="error-message" id="email-error">
-            {errors.email}
+        {errors.username && (
+          <span className="error-message" id="username-error">
+            {errors.username}
           </span>
         )}
       </div>
@@ -188,37 +155,6 @@ const LoginForm = ({ onSuccess, onNavigateToRegister, onNavigateToForgotPassword
       <button type="submit" className="button button-primary button-block" disabled={loading}>
         {loading ? 'Logging in...' : 'Login'}
       </button>
-
-      {/* Demo Credentials Helper */}
-      <div className="demo-credentials">
-        <p className="demo-label">Demo Accounts (for testing):</p>
-        <div className="demo-buttons">
-          <button
-            type="button"
-            className="button button-small button-secondary"
-            onClick={() => handleUseDemoCredentials('admin')}
-            disabled={loading}
-          >
-            Admin
-          </button>
-          <button
-            type="button"
-            className="button button-small button-secondary"
-            onClick={() => handleUseDemoCredentials('volunteer')}
-            disabled={loading}
-          >
-            Volunteer
-          </button>
-          <button
-            type="button"
-            className="button button-small button-secondary"
-            onClick={() => handleUseDemoCredentials('organization')}
-            disabled={loading}
-          >
-            Organization
-          </button>
-        </div>
-      </div>
 
       {/* Sign Up Link */}
       <div className="auth-footer">

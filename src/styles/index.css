@@ -79,6 +79,7 @@
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-tertiary: var(--text-tertiary);
+  color-scheme: light;
 }
 
 /* Dark Mode */
@@ -154,11 +155,99 @@
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-tertiary: var(--text-tertiary);
+  color-scheme: dark;
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
+}
+
+/* Shared theme-consistency layer across dashboard and public pages */
+body,
+.main-layout,
+.main-content,
+.home-page,
+.live-activity-page,
+.request-submission-page,
+.request-tracking-page,
+.dashboard-page,
+.users-page,
+.analytics-page,
+.profile-page,
+.notifications-page {
+  color: var(--text-primary);
+}
+
+:where(input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']), select, textarea) {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+  caret-color: var(--text-primary);
+}
+
+:where(input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']), textarea)::placeholder {
+  color: var(--text-tertiary);
+  opacity: 1;
+}
+
+:where(input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']), select, textarea):focus {
+  border-color: var(--input-focus-border);
+}
+
+select,
+option {
+  color: var(--text-primary);
+  background-color: var(--input-bg);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--text-primary);
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset;
+  box-shadow: 0 0 0 1000px var(--input-bg) inset;
+}
+
+:where(.card, .modal-content, .tracking-input-row, .user-menu-dropdown, .public-mobile-menu, .request-inline-nav-link) {
+  color: var(--text-primary);
+}
+
+:where(.card-header, .card-body, .card-footer, .modal-header, .modal-body, .modal-footer, .users-table th, .users-table td) {
+  color: var(--text-primary);
+}
+
+:where(.users-table thead, .users-table tbody tr, .tracking-input-row, .tracking-request-card, .tracking-results-card) {
+  border-color: var(--border-color);
+}
+
+:where(.users-table tbody tr, .tracking-input-row, .tracking-card, .tracking-status-card, .tracking-detail-card) {
+  background-color: var(--bg-primary);
+}
+
+:where(.text-muted, .muted, .form-help, .card-subtitle, .request-meta, .request-location, .request-contact) {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme='dark'] :where(.card, .modal-content, .users-table tbody tr, .tracking-input-row, .public-mobile-menu, .user-menu-dropdown),
+.dark-mode :where(.card, .modal-content, .users-table tbody tr, .tracking-input-row, .public-mobile-menu, .user-menu-dropdown) {
+  background-color: var(--bg-primary);
+  border-color: var(--border-color);
+}
+
+[data-theme='dark'] :where(.main-content, .home-page, .live-activity-page, .request-submission-page, .request-tracking-page),
+.dark-mode :where(.main-content, .home-page, .live-activity-page, .request-submission-page, .request-tracking-page) {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 /* Scrollbar Styling */

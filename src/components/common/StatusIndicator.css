@@ -28,7 +28,7 @@
 }
 
 .status-available {
-  color: #155724;
+  color: var(--success-color, #1a6d2a);
 }
 
 .status-in-progress .status-dot {
@@ -37,7 +37,7 @@
 }
 
 .status-in-progress {
-  color: #856404;
+  color: var(--warning-color, #b8860b);
 }
 
 .status-completed .status-dot {
@@ -46,7 +46,7 @@
 }
 
 .status-completed {
-  color: #0052a3;
+  color: var(--info-color, #0052a3);
 }
 
 .status-inactive .status-dot {
@@ -55,7 +55,7 @@
 }
 
 .status-inactive {
-  color: #666;
+  color: var(--color-text-secondary, #666);
 }
 
 .status-pending .status-dot {
@@ -64,7 +64,7 @@
 }
 
 .status-pending {
-  color: #b3650b;
+  color: var(--warning-color, #b8860b);
 }
 
 .status-error .status-dot {
@@ -73,5 +73,5 @@
 }
 
 .status-error {
-  color: #721c24;
+  color: var(--error-color, #b71c1c);
 }

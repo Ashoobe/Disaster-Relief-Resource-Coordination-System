@@ -31,7 +31,12 @@ dist-ssr
 # Build outputs
 build/
 out/
+backend/target/
 
 # OS files
 Thumbs.db
 .DS_Store
+
+# Local runtime data
+.mongo-data/
+backend/runtime-logs/

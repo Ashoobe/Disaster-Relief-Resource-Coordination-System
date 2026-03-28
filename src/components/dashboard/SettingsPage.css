@@ -34,6 +34,13 @@
   border: 1px solid var(--success-color, #1a6d2a);
 }
 
+[data-theme='dark'] .settings-alert.success,
+.dark-mode .settings-alert.success {
+  background-color: rgba(129, 201, 149, 0.12);
+  color: var(--success-color, #81c995);
+  border-color: rgba(129, 201, 149, 0.35);
+}
+
 /* Grid for form fields */
 .settings-grid {
   display: grid;
@@ -127,6 +134,7 @@
   border: 1px solid #fecaca;
   border-radius: 8px;
   background-color: #fef2f2;
+  color: var(--color-text-primary);
 }
 
 [data-theme='dark'] .danger-item,

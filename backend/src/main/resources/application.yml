@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: disaster-relief-platform
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/disaster_relief}
+
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:disaster-relief-group}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+
+server:
+  port: ${PORT:8080}
+
+
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+
+
+logging:
+  level:
+    com.relief: ${LOG_LEVEL_APP:INFO}
+    org.springframework.data.mongodb: ${LOG_LEVEL_MONGO:WARN}
+    org.springframework.kafka: ${LOG_LEVEL_KAFKA:INFO}
+
+app:
+  kafka:
+    enabled: ${APP_KAFKA_ENABLED:false}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://127.0.0.1:3000}

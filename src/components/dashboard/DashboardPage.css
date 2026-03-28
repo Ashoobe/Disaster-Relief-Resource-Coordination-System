@@ -123,7 +123,7 @@
 
 .action-button {
   padding: 12px 16px;
-  background-color: var(--color-background, #f0f7ff);
+  background-color: var(--color-card, #ffffff);
   border: 1px solid var(--color-primary, #0066cc);
   border-radius: 6px;
   color: var(--color-primary, #0066cc);
@@ -137,8 +137,8 @@
 }
 
 .action-button:hover {
-  background-color: #0066cc;
-  color: white;
+  background-color: var(--color-primary, #0066cc);
+  color: #ffffff;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
 }
@@ -250,7 +250,7 @@
 }
 
 .btn-link:hover {
-  background-color: var(--color-background, #eff6ff);
+  background-color: var(--hover-bg, #eff6ff);
 }
 
 .btn-outline-sm {
@@ -266,7 +266,7 @@
 }
 
 .btn-outline-sm:hover {
-  background-color: var(--color-background, #f9fafb);
+  background-color: var(--hover-bg, #f9fafb);
   border-color: var(--color-text-tertiary, #9ca3af);
 }
 
@@ -301,7 +301,7 @@
 }
 
 .request-item:hover {
-  background-color: var(--color-background, #f9fafb);
+  background-color: var(--hover-bg, #f9fafb);
   border-color: var(--color-border, #d1d5db);
 }
 
@@ -390,7 +390,7 @@
 
 .task-item:hover {
   border-color: #3b82f6;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.18);
 }
 
 .task-header {

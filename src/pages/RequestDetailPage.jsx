@@ -27,7 +27,7 @@ const readStoredFormPayload = (requestId) => {
 
 const RequestDetailPage = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [request, setRequest] = useState(null);
   const [formPayload, setFormPayload] = useState(null);
   const [assignableUsers, setAssignableUsers] = useState([]);
@@ -42,7 +42,7 @@ const RequestDetailPage = () => {
       try {
         const [requestData, usersResponse] = await Promise.all([
           api.getRequestById(id),
-          getAllUsers(null, { status: 'active' }),
+          getAllUsers(token, { status: 'active' }),
         ]);
 
         const activeUsers = usersResponse?.users || [];

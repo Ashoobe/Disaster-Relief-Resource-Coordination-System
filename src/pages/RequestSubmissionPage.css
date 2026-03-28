@@ -20,7 +20,7 @@
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  background: #ffffff;
+  background: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -38,7 +38,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #0052a3;
+  color: var(--primary-color);
   font-weight: 700;
   text-decoration: none;
 }
@@ -61,7 +61,7 @@
 
 .request-public-nav-link {
   text-decoration: none;
-  color: #334155;
+  color: var(--text-secondary);
   border: 1px solid transparent;
   border-radius: 8px;
   padding: 8px 10px;
@@ -83,8 +83,8 @@
 }
 
 .request-public-footer {
-  background: #111827;
-  color: #f9fafb;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
@@ -132,19 +132,19 @@
 
 .request-public-footer-brand h3 {
   margin: 0;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .request-public-footer-brand p {
   margin: 0;
-  color: #d1d5db;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
 .request-public-footer-brand-icon {
-  background: rgba(17, 24, 39, 0.55);
-  color: #f9fafb;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 .request-public-footer-links {
@@ -154,7 +154,7 @@
 }
 
 .request-public-footer-links a {
-  color: #d1d5db;
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 14px;
 }
@@ -176,19 +176,24 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #d1d5db;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .request-submission-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   padding: 40px 20px;
 }
 
 [data-theme='dark'] .request-submission-page,
 .dark-mode .request-submission-page {
   background: linear-gradient(135deg, #202124 0%, #292a2d 100%);
+}
+
+[data-theme='dark'] .request-public-footer,
+.dark-mode .request-public-footer {
+  background: #181a1d;
 }
 
 .request-submission-page.success {

@@ -32,6 +32,8 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
 
   const [formData, setFormData] = useState({
     fullName: '',
+    // NEW: username required by backend RegisterRequest
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -80,8 +82,13 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
 
     // Validate form
     const validation = validateRegistrationForm(formData);
-    if (!validation.isValid) {
-      setErrors(validation.errors);
+    const allErrors = { ...validation.errors };
+    // NEW: validate username (not included in validateRegistrationForm)
+    if (!formData.username || formData.username.trim().length < 3) {
+      allErrors.username = 'Username must be at least 3 characters';
+    }
+    if (Object.keys(allErrors).length > 0) {
+      setErrors(allErrors);
       return;
     }
 
@@ -90,7 +97,8 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
 
     // Attempt registration
     // Role is always 'volunteer' on self-registration; pass empty string – server sets volunteer
-    const result = await register(formData.fullName, formData.email, formData.password, 'volunteer');
+    // NEW: pass username — backend RegisterRequest requires { fullName, username, email, password }
+    const result = await register(formData.fullName, formData.username, formData.email, formData.password, 'volunteer');
 
     if (!result.success) {
       setSubmittedError(result.message);
@@ -129,6 +137,29 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
         {errors.fullName && (
           <span className="error-message" id="fullName-error">
             {errors.fullName}
+          </span>
+        )}
+      </div>
+
+      {/* Username Field */}
+      {/* NEW: backend RegisterRequest requires a username field */}
+      <div className="form-group">
+        <label htmlFor="username">Username *</label>
+        <input
+          id="username"
+          type="text"
+          name="username"
+          value={formData.username}
+          onChange={handleInputChange}
+          placeholder="Choose a username (min 3 characters)"
+          className={errors.username ? 'input-error' : ''}
+          disabled={loading}
+          aria-invalid={!!errors.username}
+          aria-describedby={errors.username ? 'username-error' : undefined}
+        />
+        {errors.username && (
+          <span className="error-message" id="username-error">
+            {errors.username}
           </span>
         )}
       </div>
@@ -219,9 +250,9 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
 
       {/* Role Info */}
       <div className="form-group">
-        <div className="alert" style={{ background: 'var(--color-muted, #f1f5f9)', border: '1px solid var(--color-border, #e2e8f0)', borderRadius: 8, padding: '0.75rem 1rem', fontSize: '0.88rem', color: 'var(--color-muted-foreground, #64748b)' }}>
+        {/* NEW: replaced fragile inline styles with .role-info-box class for proper dark mode support */}
+        <div className="role-info-box">
           <strong>Starting role: Volunteer</strong>
-          <br />
           All new accounts start as <em>Volunteer</em>. To request a higher role
           (Coordinator or Organization Staff), use the <strong>Role Upgrade</strong> option
           in your profile after signing in — an admin will review and approve it.

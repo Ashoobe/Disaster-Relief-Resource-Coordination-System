@@ -38,6 +38,7 @@ const RequestForm = ({ onSuccess, onCancel }) => {
     description: '',
     disasterType: '',
     location: {
+      address: '',
       state: '',
       city: '',
       latitude: '',
@@ -160,7 +161,7 @@ const RequestForm = ({ onSuccess, onCancel }) => {
     setLoading(true);
     try {
       const response = await submitRequest(formData);
-      setSubmitSuccess(`Request submitted successfully! Request ID: ${response.requestId}`);
+      setSubmitSuccess(`Request submitted successfully! Tracking Code: ${response.trackingCode || response.requestId} — save this to check your request status.`);
       clearDraft('request-form');
       setUnsavedChanges(false);
 
@@ -169,7 +170,7 @@ const RequestForm = ({ onSuccess, onCancel }) => {
         title: '',
         description: '',
         disasterType: '',
-        location: { state: '', city: '', latitude: '', longitude: '', affectedAreaSize: '' },
+        location: { address: '', state: '', city: '', latitude: '', longitude: '', affectedAreaSize: '' },
         disasterDetails: {},
         resourceNeeds: {
           food: { needed: false, people: '', dietary: '' },
@@ -285,6 +286,19 @@ const RequestForm = ({ onSuccess, onCancel }) => {
         description="Where is the disaster occurring?"
         required
       >
+        <div className="form-group">
+          <label htmlFor="address">Exact Address *</label>
+          <input
+            id="address"
+            type="text"
+            placeholder="Street address, apartment/unit, building, or landmark details"
+            value={formData.location.address}
+            onChange={(e) => handleLocationChange('address', e.target.value)}
+            className={errors['location.address'] ? 'error' : ''}
+          />
+          {errors['location.address'] && <div className="field-error">{errors['location.address']}</div>}
+        </div>
+
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="state">State/Region *</label>
@@ -303,7 +317,7 @@ const RequestForm = ({ onSuccess, onCancel }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="city">City</label>
+            <label htmlFor="city">City *</label>
             <input
               id="city"
               type="text"

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AuthPageToolbar from '../components/auth/AuthPageToolbar';
 import { validateEmail } from '../utils/validation';
 import * as authService from '../services/authService';
 import './AuthPages.css';
@@ -64,6 +65,7 @@ const ForgotPasswordPage = () => {
   return (
     <div className="auth-page forgot-password-page">
       <div className="auth-page-content">
+        <AuthPageToolbar />
         <div className="auth-container">
           <form className="auth-form" onSubmit={handleSubmit}>
             <h2>Reset Your Password</h2>

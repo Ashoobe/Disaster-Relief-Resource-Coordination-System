@@ -761,6 +761,25 @@
   color: #ffffff;
 }
 
+[data-theme='dark'] .hero-btn-alert,
+.dark-mode .hero-btn-alert,
+[data-theme='dark'] .emergency-btn-outline,
+.dark-mode .emergency-btn-outline {
+  background: #b42318;
+  border-color: #b42318;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .hero-btn-alert:hover,
+.dark-mode .hero-btn-alert:hover,
+[data-theme='dark'] .hero-btn-alert.hero-btn-secondary:hover,
+.dark-mode .hero-btn-alert.hero-btn-secondary:hover,
+[data-theme='dark'] .emergency-btn-outline:hover,
+.dark-mode .emergency-btn-outline:hover {
+  background: #8f1d14;
+  border-color: #8f1d14;
+}
+
 [data-theme='dark'] .home-stat-label,
 [data-theme='dark'] .services-content > p,
 [data-theme='dark'] .service-card p,

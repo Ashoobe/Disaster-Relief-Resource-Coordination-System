@@ -12,6 +12,7 @@ import UsersPage from './components/users/UsersPage';
 import Placeholder from './components/common/Placeholder';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { RequestListPage } from './pages/RequestListPage';
+import RequestDetailPage from './pages/RequestDetailPage';
 import './App.css';
 
 // Protect routes - redirect to login if not authenticated
@@ -87,6 +88,16 @@ function AppRouter() {
           <ProtectedRoute>
             <MainLayout>
               <RequestListPage />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/requests/:id"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <RequestDetailPage />
             </MainLayout>
           </ProtectedRoute>
         }

@@ -13,6 +13,8 @@ export interface Location {
 
 export interface EmergencyRequest {
   id: string;
+  trackingCode?: string;
+  title?: string;
   timestamp: string;
   disasterType: DisasterType;
   category: RequestCategory;
@@ -24,9 +26,12 @@ export interface EmergencyRequest {
   contactPhone: string;
   assignedResources?: string[];
   assignedTo?: string;
+  assigneeName?: string;
   notes?: string;
-  updatedAt?: string;
+  completionNotes?: string;
   completedAt?: string;
+  completedBy?: string;
+  updatedAt?: string;
 }
 
 export interface DashboardStats {

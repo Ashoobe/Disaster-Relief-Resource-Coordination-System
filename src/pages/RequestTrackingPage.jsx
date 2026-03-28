@@ -176,7 +176,7 @@ const RequestTrackingPage = () => {
                 <input
                   type="text"
                   className="tracking-input"
-                  placeholder="e.g. REQ-20260318-AB123, email@example.com, or (555) 123-4567"
+                  placeholder="e.g. MARIA-2026-E564217D, email@example.com, or (555) 123-4567"
                   value={query}
                   onChange={(e) => { setQuery(e.target.value); setError(null); }}
                   aria-label="Enter tracking ID, email, or phone"
@@ -200,7 +200,7 @@ const RequestTrackingPage = () => {
             <div className="tracking-hints">
               <p>You can look up by:</p>
               <ul>
-                <li><strong>Tracking ID</strong> — shown on your confirmation screen (e.g. <code>REQ-20260318-AB123</code>)</li>
+                <li><strong>Tracking ID</strong> — shown on your confirmation screen (for example <code>MARIA-2026-E564217D</code>)</li>
                 <li><strong>Email address</strong> — used in the contact section of your request</li>
                 <li><strong>Phone number</strong> — primary phone number entered at submission</li>
               </ul>

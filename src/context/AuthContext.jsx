@@ -49,9 +49,10 @@ export const AuthProvider = ({ children }) => {
     return result;
   };
 
-  const register = async (fullName, email, password, role) => {
+  // NEW: added username parameter \u2014 backend RegisterRequest requires { fullName, username, email, password }
+  const register = async (fullName, username, email, password, role) => {
     setError(null);
-    const result = await registerUser(fullName, email, password, role);
+    const result = await registerUser(fullName, username, email, password, role);
     if (result.success) {
       setUser(result.user);
       setToken(result.token);

@@ -53,7 +53,7 @@ const saveTrackingIndex = (requestId, email, phone) => {
 };
 
 /**
- * Generate a unique request ID
+ * Generate a unique request ID for mock/local flows
  * @returns {string} - Unique request ID in format REQ-YYYYMMDD-XXXXX
  */
 const generateRequestId = () => {
@@ -77,37 +77,81 @@ export const submitRequest = async (requestData) => {
     };
   }
 
-  const resolveCategory = (resourceNeeds = {}) => {
-    if (resourceNeeds.medical?.needed) return 'medical';
-    if (resourceNeeds.shelter?.needed) return 'shelter';
-    if (resourceNeeds.food?.needed) return 'food';
-    if (resourceNeeds.searchRescue?.needed) return 'rescue';
-    return 'other';
+  // NEW: map frontend disasterType string to backend EmergencyType enum value (UPPER_CASE)
+  // Backend EmergencyType: FOOD, SHELTER, MEDICAL, WATER, RESCUE, EVACUATION, CLOTHING, TRANSPORTATION, OTHER
+  const resolveType = (disasterType = '') => {
+    const map = {
+      flood: 'RESCUE', earthquake: 'RESCUE', hurricane: 'RESCUE', tornado: 'RESCUE',
+      wildfire: 'EVACUATION', 'wild fire': 'EVACUATION',
+      medical: 'MEDICAL', health: 'MEDICAL',
+      food: 'FOOD', water: 'WATER', shelter: 'SHELTER',
+      clothing: 'CLOTHING', transportation: 'TRANSPORTATION',
+    };
+    return map[disasterType.toLowerCase()] || 'OTHER';
   };
 
-  const resolvePriority = (priority) => {
-    const supported = new Set(['critical', 'high', 'medium', 'low']);
-    return supported.has(priority) ? priority : 'medium';
+  // NEW: map frontend priority to backend Priority enum value (UPPER_CASE)
+  // Backend Priority: LOW, MEDIUM, HIGH, CRITICAL
+  const resolvePriority = (priority = '') => {
+    const supported = { critical: 'CRITICAL', high: 'HIGH', medium: 'MEDIUM', low: 'LOW' };
+    return supported[priority.toLowerCase()] || 'MEDIUM';
+  };
+
+  // NEW: collect requiredResources from resourceNeeds object
+  const resolveRequiredResources = (resourceNeeds = {}) => {
+    const resources = [];
+    if (resourceNeeds.food?.needed) resources.push('FOOD');
+    if (resourceNeeds.medical?.needed) resources.push('MEDICAL');
+    if (resourceNeeds.shelter?.needed) resources.push('SHELTER');
+    if (resourceNeeds.water?.needed) resources.push('WATER');
+    if (resourceNeeds.searchRescue?.needed) resources.push('RESCUE');
+    if (resourceNeeds.clothing?.needed) resources.push('CLOTHING');
+    if (resourceNeeds.transportation?.needed) resources.push('TRANSPORTATION');
+    return resources;
   };
 
   try {
-    const createdRequest = await api.createRequest({
-      disasterType: requestData.disasterType,
-      category: resolveCategory(requestData.resourceNeeds),
-      priority: resolvePriority(requestData.priority),
-      status: 'pending',
-      location: {
-        address: [requestData.location?.city, requestData.location?.state].filter(Boolean).join(', ') || 'Location not specified'
-      },
+    // NEW: build payload matching backend EmergencyRequest exactly:
+    //   title, description, type (EmergencyType enum), priority (Priority enum),
+    //   location { latitude, longitude, address, city, state, zipCode, country },
+    //   reportedBy, contactPhone (10 digits), contactEmail, affectedPeople (int), requiredResources
+    const backendPayload = {
+      title: requestData.title,
       description: requestData.description,
-      contactName: requestData.contact?.primaryName || requestData.authorizedBy || 'Unknown Contact',
-      contactPhone: requestData.contact?.primaryPhone || 'N/A',
-      notes: requestData.title
-    });
+      type: resolveType(requestData.disasterType),
+      disasterType: requestData.disasterType,
+      priority: resolvePriority(requestData.priority),
+      location: {
+        // Only send lat/long when the user actually entered them
+        latitude: requestData.location?.latitude !== '' && requestData.location?.latitude != null
+          ? parseFloat(requestData.location.latitude) : undefined,
+        longitude: requestData.location?.longitude !== '' && requestData.location?.longitude != null
+          ? parseFloat(requestData.location.longitude) : undefined,
+        address: requestData.location?.address?.trim(),
+        city: requestData.location?.city?.trim(),
+        state: requestData.location?.state || undefined,
+        zipCode: requestData.location?.zipCode || undefined,
+        country: requestData.location?.country || undefined,
+      },
+      reportedBy: requestData.contact?.primaryName || requestData.authorizedBy || 'Unknown',
+      // Send phone as stripped digits only; skip if fewer than 7 digits (backend accepts 7-15)
+      contactPhone: (() => {
+        const digits = (requestData.contact?.primaryPhone || '').replace(/\D/g, '');
+        return digits.length >= 7 ? digits : undefined;
+      })(),
+      contactEmail: requestData.contact?.primaryEmail || undefined,
+      affectedPeople: requestData.affectedPeople ? parseInt(requestData.affectedPeople, 10) : undefined,
+      requiredResources: resolveRequiredResources(requestData.resourceNeeds),
+    };
 
+    const createdRequest = await api.createRequest(backendPayload);
+
+    // NEW: backend returns a trackingCode field — save it alongside the ID
+    const trackingCode = createdRequest.trackingCode || createdRequest.id;
     saveRequestFormPayload(createdRequest.id, requestData);
+    saveRequestFormPayload(trackingCode, requestData);
     saveTrackingIndex(
-      createdRequest.id,
+      trackingCode,
       requestData.contact?.primaryEmail,
       requestData.contact?.primaryPhone
     );
@@ -116,11 +160,14 @@ export const submitRequest = async (requestData) => {
     return {
       success: true,
       requestId: createdRequest.id,
-      message: `Request ${createdRequest.id} submitted successfully`,
+      // NEW: expose trackingCode so the UI can show it for status lookups
+      trackingCode,
+      message: `Request submitted! Tracking code: ${trackingCode}`,
       timestamp: createdRequest.timestamp,
       status: createdRequest.status,
       data: {
         requestId: createdRequest.id,
+        trackingCode,
         ...requestData,
         submittedAt: createdRequest.timestamp,
         status: createdRequest.status
@@ -129,7 +176,7 @@ export const submitRequest = async (requestData) => {
   } catch (error) {
     throw {
       success: false,
-      message: 'Failed to submit request',
+      message: error?.message || 'Failed to submit request. Please try again.',
       error: error?.message || String(error)
     };
   }
@@ -145,6 +192,47 @@ export const trackRequest = async (query) => {
   const trimmed = (query || '').trim();
   if (!trimmed) {
     return { success: false, message: 'Please enter a tracking ID, email, or phone number.' };
+  }
+
+  // Try the real backend public tracking endpoint first (no auth required)
+  const DEMO_MODE = import.meta.env.VITE_ENABLE_DEMO_MODE === 'true';
+  if (!DEMO_MODE) {
+    try {
+      const API_BASE =
+        (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api') + '/v1';
+      const res = await fetch(
+        `${API_BASE}/emergencies/public/track/${encodeURIComponent(trimmed)}`
+      );
+      if (res.ok) {
+        const json = await res.json();
+        const d = json?.data ?? json;
+        return {
+          success: true,
+          request: {
+            id: d.id,
+            trackingCode: d.trackingCode,
+            status: ((d.status || 'pending').toLowerCase().replace(/_/g, '-') === 'resolved'
+              ? 'completed'
+              : (d.status || 'pending').toLowerCase().replace(/_/g, '-')),
+            title: d.title || '',
+            priority: (d.priority || 'medium').toLowerCase(),
+            disasterType: (d.disasterType || d.type || 'other').toLowerCase(),
+            location: d.location?.address
+              ? [d.location.address, d.location.city].filter(Boolean).join(', ')
+              : 'Not specified',
+            contactName: d.reportedBy || 'N/A',
+            assignedTo: d.assignedTo || null,
+            submittedAt: d.createdAt || d.timestamp || null,
+            updatedAt: d.updatedAt || null,
+            description: d.description || '',
+            notes: d.title || '',
+          },
+        };
+      }
+      // 404 or other non-ok = not found on backend; fall through to localStorage
+    } catch {
+      // network error — fall through to localStorage
+    }
   }
 
   try {
@@ -197,6 +285,7 @@ export const trackRequest = async (query) => {
       request: {
         id: resolvedRequestId,
         status: apiRequest?.status || 'pending',
+        title: apiRequest?.title || payload?.title || '',
         priority: apiRequest?.priority || payload?.priority || 'medium',
         disasterType: apiRequest?.disasterType || payload?.disasterType || 'unknown',
         location:

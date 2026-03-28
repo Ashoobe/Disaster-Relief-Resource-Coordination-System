@@ -135,12 +135,18 @@ const RequestSubmissionPage = ({ onNavigate }) => {
                 <strong>Request ID:</strong>
                 <span>{successMessage.requestId}</span>
               </div>
+              {successMessage.trackingCode && successMessage.trackingCode !== successMessage.requestId && (
+                <div className="request-id">
+                  <strong>Tracking Code:</strong>
+                  <span>{successMessage.trackingCode}</span>
+                </div>
+              )}
               <p className="redirect-message">
                 Our response team has received your submission and will review and handle it as soon as possible.
               </p>
               <div className="hero-actions" style={{ justifyContent: 'center', marginTop: '1rem' }}>
                 <Link
-                  to={`/track?requestId=${encodeURIComponent(successMessage.requestId)}`}
+                  to={`/track?requestId=${encodeURIComponent(successMessage.trackingCode || successMessage.requestId)}`}
                   className="hero-btn hero-btn-secondary"
                 >
                   Track This Request

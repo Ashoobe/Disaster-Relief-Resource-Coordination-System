@@ -65,12 +65,36 @@ export const validateState = (state) => {
 };
 
 /**
+ * Validate exact street address
+ * @param {string} address - The exact address
+ * @returns {object} - { isValid: boolean, error: string }
+ */
+export const validateAddress = (address) => {
+  if (!address || address.trim().length === 0) {
+    return { isValid: false, error: 'Exact address is required' };
+  }
+  if (address.trim().length < 5) {
+    return { isValid: false, error: 'Please enter a more complete address' };
+  }
+  if (address.length > 200) {
+    return { isValid: false, error: 'Address must not exceed 200 characters' };
+  }
+  return { isValid: true, error: '' };
+};
+
+/**
  * Validate city name
- * @param {string} city - The city name (optional)
+ * @param {string} city - The city name
  * @returns {object} - { isValid: boolean, error: string }
  */
 export const validateCity = (city) => {
-  if (city && city.length > 100) {
+  if (!city || city.trim().length === 0) {
+    return { isValid: false, error: 'City is required' };
+  }
+  if (city.trim().length < 2) {
+    return { isValid: false, error: 'City must be at least 2 characters' };
+  }
+  if (city.length > 100) {
     return { isValid: false, error: 'City must not exceed 100 characters' };
   }
   return { isValid: true, error: '' };
@@ -279,6 +303,9 @@ export const validateRequestForm = (formData) => {
   if (!disasterTypeError.isValid) errors.disasterType = disasterTypeError.error;
 
   // Location
+  const addressError = validateAddress(formData.location.address);
+  if (!addressError.isValid) errors['location.address'] = addressError.error;
+
   const stateError = validateState(formData.location.state);
   if (!stateError.isValid) errors['location.state'] = stateError.error;
 

@@ -651,16 +651,19 @@
 .live-weather-moderate {
   border-color: #f3d08d;
   background: #fffbeb;
+  color: var(--text-primary);
 }
 
 .live-weather-high {
   border-color: #f5a3a3;
   background: #fff1f1;
+  color: var(--text-primary);
 }
 
 .live-weather-severe {
   border-color: #ef4444;
   background: #fee2e2;
+  color: var(--text-primary);
 }
 
 .dark-mode .live-weather-moderate,
@@ -725,7 +728,7 @@
 .live-focus-tag {
   border-radius: 999px;
   border: 1px solid var(--border-color);
-  background: #ffffff;
+  background: var(--bg-primary);
   color: var(--text-primary);
   padding: 6px 10px;
   font-size: 12px;
@@ -757,7 +760,7 @@
   border: 1px solid var(--border-color);
   border-radius: 14px;
   padding: 14px;
-  background: #ffffff;
+  background: var(--bg-primary);
   display: grid;
   gap: 10px;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;

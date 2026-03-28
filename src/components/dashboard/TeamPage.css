@@ -132,7 +132,7 @@
 
 .btn-icon-danger:hover {
   border-color: #dc2626;
-  background-color: #fef2f2;
+  background-color: rgba(220, 38, 38, 0.12);
 }
 
 .team-footer {
