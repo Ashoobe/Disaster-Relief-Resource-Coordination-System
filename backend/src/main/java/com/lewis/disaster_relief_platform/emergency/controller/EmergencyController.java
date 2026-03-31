@@ -52,8 +52,30 @@ public class EmergencyController {
     @Operation(summary = "Create a new emergency for PUBLIC", description = "Submits a new emergency request and saves it to the database.")
     public ResponseEntity<ApiResponse<EmergencyResponse>> createPublicEmergency(
             @Valid @RequestBody EmergencyRequest request) {
-        log.info("Received request to create emergency: {}", request.getTitle());
-        EmergencyResponse response = emergencyService.CreateEmergency(request);
+        log.info("event=EMERGENCY_CREATE_REQUEST category={} affectedPeople={}",
+                request.getCategory(),
+                request.getAffectedPeople());
+        try {
+
+            long startTime = System.currentTimeMillis();
+
+            EmergencyResponse response = emergencyService.CreateEmergency(request);
+
+            long duration = System.currentTimeMillis() - startTime;
+
+            log.info("event=EMERGENCY_CREATED trackingCode={} durationMs={} status=SUCCESS",
+                    response.getTrackingCode(),
+                    duration);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.success(response));
+
+        } catch (Exception e) {
+
+            log.error("event=EMERGENCY_CREATE_FAILED status=ERROR message={}",
+                    e.getMessage(), e);
+            throw e;
+        }
         // Add tracking code to success message
         String message = String.format(
                 "Emergency created successfully. Your tracking code is: %s. Save this code to check your request status.",
@@ -70,7 +92,7 @@ public class EmergencyController {
     @GetMapping("/public/track/{trackingCode}")
     public ResponseEntity<ApiResponse<EmergencyTrackingResponse>> trackEmergency(
             @PathVariable String trackingCode) {
-        log.info("Tracking emergency with code: {}", trackingCode);
+        log.info("event=EMERGENCY_TRACK_REQUEST trackingCode={}", trackingCode);
         EmergencyTrackingResponse response = emergencyService.trackByCode(trackingCode);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -97,7 +119,8 @@ public class EmergencyController {
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "affectedPeople") String sortBy,
             @RequestParam(defaultValue = "DESC") String sortDirection) {
-        log.info("Fetching emergencies - page: {}, size: {}, sortBy: {}", page, size, sortBy);
+        log.info("event=FETCH_EMERGENCIES page={} size={} sortBy={}",
+                page, size, sortBy);
         Sort.Direction direction = sortDirection.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
         log.info("DIrection:: {}", direction);
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
@@ -142,7 +165,10 @@ public class EmergencyController {
     public ResponseEntity<ApiResponse<EmergencyResponse>> updateEmergency(
             @PathVariable String id,
             @RequestBody EmergencyUpdateRequest request) {
-        log.info("Updating emergency {} with: {}", id, request);
+        log.info("event=EMERGENCY_UPDATE emergencyId={} status={} volunteerId={}",
+                id,
+                request.getStatus(),
+                request.getVolunteerId());
         EmergencyResponse response = emergencyService.updateEmergency(id, request);
         return ResponseEntity.ok(ApiResponse.success(response, "Emergency updated successfully"));
     }
@@ -156,7 +182,8 @@ public class EmergencyController {
     @Operation(summary = "Update emergency status", description = "Updates the current status (e.g., PENDING, IN_PROGRESS, RESOLVED) of a specific emergency.")
     public ResponseEntity<ApiResponse<EmergencyResponse>> updateEmergencyStatus(@PathVariable String id,
             @RequestParam Status status) {
-        log.info("Updating emergency {} status to {}", id, status);
+       log.info("event=EMERGENCY_STATUS_UPDATE emergencyId={} newStatus={}",
+                id, status);
         EmergencyResponse response = emergencyService.updateEmergencyStatus(id, status);
         return ResponseEntity.ok(ApiResponse.success(response, "Emergency Status updated successfully. "));
     }
