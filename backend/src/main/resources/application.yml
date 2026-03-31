@@ -30,8 +30,12 @@ jwt:
 logging:
   level:
     com.relief: ${LOG_LEVEL_APP:INFO}
+    org.springframework.web: INFO
     org.springframework.data.mongodb: ${LOG_LEVEL_MONGO:WARN}
     org.springframework.kafka: ${LOG_LEVEL_KAFKA:INFO}
+
+file:
+    name: logs/disaster-relief.log
 
 app:
   kafka:
