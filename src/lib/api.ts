@@ -103,6 +103,10 @@ const mapEmergencyRecord = (e: any): EmergencyRequest => {
         || [location.city, location.state, location.country].filter(Boolean).join(', ')
         || e.address
         || 'Address not specified',
+      city: location.city,
+      state: location.state,
+      zipCode: location.zipCode,
+      country: location.country,
       ...(latitude != null && longitude != null
         ? { coordinates: { lat: latitude, lng: longitude } }
         : {}),

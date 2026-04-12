@@ -5,18 +5,16 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Phone, Mail, Menu, X } from 'lucide-react';
-import ThemeToggle from '../components/common/ThemeToggle';
+import { Phone, Mail, Shield } from 'lucide-react';
 import RequestForm from '../components/requests/RequestForm';
 import { Card } from '../components/common/Card';
+import PublicSiteHeader from '../components/layout/PublicSiteHeader';
+import PublicSiteFooter from '../components/layout/PublicSiteFooter';
 import './HomePage.css';
 import './RequestSubmissionPage.css';
 
-const futureNavItems = ['About', 'Services', 'Contact'];
-
 const RequestSubmissionPage = ({ onNavigate }) => {
   const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
 
   const handleFormSuccess = (response) => {
@@ -40,88 +38,7 @@ const RequestSubmissionPage = ({ onNavigate }) => {
 
   return (
     <div className="home-page">
-      <header className="public-header">
-        <div className="public-header-content">
-          <Link to="/" className="public-brand">
-            <span className="public-brand-icon" aria-hidden="true">
-              <Shield size={18} />
-            </span>
-            <span>DRRCS</span>
-          </Link>
-
-          <nav className="public-nav" aria-label="Public navigation">
-            <Link to="/" className="public-nav-link public-nav-link-active">Home</Link>
-            <Link to="/track" className="public-nav-link">Track Request</Link>
-            {futureNavItems.map((item) => (
-              <button
-                key={item}
-                type="button"
-                className="public-nav-link public-nav-link-disabled"
-                aria-disabled="true"
-                title="Coming soon"
-              >
-                {item}
-              </button>
-            ))}
-          </nav>
-
-          <div className="public-auth-links">
-            <div className="public-theme-toggle" aria-label="Theme toggle">
-              <ThemeToggle />
-            </div>
-            <Link to="/login" className="public-auth-link">Sign In</Link>
-            <Link to="/register" className="public-auth-link">Sign Up</Link>
-            <Link to="/dashboard" className="public-auth-link public-auth-link-primary">Dashboard</Link>
-          </div>
-
-          <button
-            type="button"
-            className="mobile-menu-toggle"
-            aria-label="Toggle mobile navigation"
-            aria-expanded={mobileMenuOpen}
-            aria-controls="submit-request-mobile-nav"
-            onClick={() => setMobileMenuOpen((previous) => !previous)}
-          >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-
-        {mobileMenuOpen && (
-          <div id="submit-request-mobile-nav" className="public-mobile-menu">
-            <nav className="public-mobile-nav" aria-label="Mobile navigation">
-              <Link to="/" className="public-nav-link public-nav-link-active" onClick={() => setMobileMenuOpen(false)}>
-                Home
-              </Link>
-              <Link to="/track" className="public-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                Track Request
-              </Link>
-              {futureNavItems.map((item) => (
-                <button
-                  key={`mobile-${item}`}
-                  type="button"
-                  className="public-nav-link public-nav-link-disabled"
-                  aria-disabled="true"
-                  title="Coming soon"
-                >
-                  {item}
-                </button>
-              ))}
-            </nav>
-
-            <div className="public-mobile-auth">
-              <div className="public-mobile-theme">
-                <span>Theme</span>
-                <ThemeToggle />
-              </div>
-              <Link to="/login" className="public-auth-link" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
-              <Link to="/register" className="public-auth-link" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
-              <Link to="/dashboard" className="public-auth-link public-auth-link-primary" onClick={() => setMobileMenuOpen(false)}>
-                Dashboard
-              </Link>
-            </div>
-          </div>
-        )}
-      </header>
+      <PublicSiteHeader activeKey={null} />
 
       <main>
         {successMessage ? (
@@ -215,57 +132,7 @@ const RequestSubmissionPage = ({ onNavigate }) => {
         )}
       </main>
 
-      <footer className="public-footer">
-        <div className="public-footer-content">
-          <div className="public-footer-grid">
-            <section className="public-footer-about">
-              <Link to="/" className="public-footer-brand" aria-label="Go to home page">
-                <span className="public-brand-icon public-footer-brand-icon" aria-hidden="true">
-                  <Shield size={18} />
-                </span>
-                <div>
-                  <h3>DRRCS</h3>
-                  <p>Relief &amp; Response</p>
-                </div>
-              </Link>
-              <p>
-                Dedicated to rapid and effective disaster response support for communities in need.
-              </p>
-            </section>
-
-            <section>
-              <h4>Quick Links</h4>
-              <ul className="public-footer-links">
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/track">Track Request</Link></li>
-                <li><button type="button" className="public-footer-link-disabled" aria-disabled="true" title="Coming soon">About</button></li>
-                <li><button type="button" className="public-footer-link-disabled" aria-disabled="true" title="Coming soon">Services</button></li>
-                <li><button type="button" className="public-footer-link-disabled" aria-disabled="true" title="Coming soon">Contact</button></li>
-                <li><Link to="/login">Sign In</Link></li>
-                <li><Link to="/register">Sign Up</Link></li>
-              </ul>
-            </section>
-
-            <section>
-              <h4>Contact</h4>
-              <ul className="public-footer-contact">
-                <li>
-                  <Phone size={14} />
-                  <span>1-800-DISASTER</span>
-                </li>
-                <li>
-                  <Mail size={14} />
-                  <span>help@drrcs.org</span>
-                </li>
-              </ul>
-            </section>
-          </div>
-
-          <div className="public-footer-bottom">
-            <p>&copy; 2026 DRRCS. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <PublicSiteFooter />
     </div>
   );
 };

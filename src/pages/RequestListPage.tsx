@@ -20,6 +20,7 @@ export function RequestListPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [disasterFilter, setDisasterFilter] = useState<string>('all');
+  const [sortOption, setSortOption] = useState<string>('time-desc');
 
   useEffect(() => {
     loadRequests();
@@ -35,6 +36,8 @@ export function RequestListPage() {
           req.id.toLowerCase().includes(query) ||
           req.description.toLowerCase().includes(query) ||
           req.location.address.toLowerCase().includes(query) ||
+          req.location.city?.toLowerCase().includes(query) ||
+          req.location.zipCode?.toLowerCase().includes(query) ||
           req.contactName.toLowerCase().includes(query)
       );
     }
@@ -51,16 +54,31 @@ export function RequestListPage() {
       filtered = filtered.filter((req) => req.disasterType === disasterFilter);
     }
 
+    filtered.sort((a, b) => {
+      switch (sortOption) {
+        case 'time-asc':
+          return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+        case 'city-asc':
+          return (a.location.city || '').localeCompare(b.location.city || '');
+        case 'city-desc':
+          return (b.location.city || '').localeCompare(a.location.city || '');
+        case 'zip-asc':
+          return (a.location.zipCode || '').localeCompare(b.location.zipCode || '');
+        case 'zip-desc':
+          return (b.location.zipCode || '').localeCompare(a.location.zipCode || '');
+        case 'time-desc':
+        default:
+          return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+      }
+    });
+
     setFilteredRequests(filtered);
-  }, [requests, searchQuery, statusFilter, priorityFilter, disasterFilter]);
+  }, [requests, searchQuery, statusFilter, priorityFilter, disasterFilter, sortOption]);
 
   const loadRequests = async () => {
     try {
       const data = await api.getRequests();
-      const sorted = [...data].sort(
-        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-      );
-      setRequests(sorted);
+      setRequests(data);
     } catch (error) {
       console.error('Failed to load requests:', error);
     } finally {
@@ -129,13 +147,13 @@ export function RequestListPage() {
               <SelectTrigger className="filter-select-trigger">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="assigned">Assigned</SelectItem>
-                <SelectItem value="in-progress">In Progress</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="cancelled">Cancelled</SelectItem>
+              <SelectContent className="request-filter-select-content">
+                <SelectItem className="request-filter-select-item" value="all">All Status</SelectItem>
+                <SelectItem className="request-filter-select-item" value="pending">Pending</SelectItem>
+                <SelectItem className="request-filter-select-item" value="assigned">Assigned</SelectItem>
+                <SelectItem className="request-filter-select-item" value="in-progress">In Progress</SelectItem>
+                <SelectItem className="request-filter-select-item" value="completed">Completed</SelectItem>
+                <SelectItem className="request-filter-select-item" value="cancelled">Cancelled</SelectItem>
               </SelectContent>
             </Select>
 
@@ -143,12 +161,12 @@ export function RequestListPage() {
               <SelectTrigger className="filter-select-trigger">
                 <SelectValue placeholder="All Priorities" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Priorities</SelectItem>
-                <SelectItem value="critical">Critical</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
+              <SelectContent className="request-filter-select-content">
+                <SelectItem className="request-filter-select-item" value="all">All Priorities</SelectItem>
+                <SelectItem className="request-filter-select-item" value="critical">Critical</SelectItem>
+                <SelectItem className="request-filter-select-item" value="high">High</SelectItem>
+                <SelectItem className="request-filter-select-item" value="medium">Medium</SelectItem>
+                <SelectItem className="request-filter-select-item" value="low">Low</SelectItem>
               </SelectContent>
             </Select>
 
@@ -156,14 +174,28 @@ export function RequestListPage() {
               <SelectTrigger className="filter-select-trigger">
                 <SelectValue placeholder="All Disasters" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Disasters</SelectItem>
-                <SelectItem value="flood">Flood</SelectItem>
-                <SelectItem value="earthquake">Earthquake</SelectItem>
-                <SelectItem value="hurricane">Hurricane</SelectItem>
-                <SelectItem value="wildfire">Wildfire</SelectItem>
-                <SelectItem value="tornado">Tornado</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+              <SelectContent className="request-filter-select-content">
+                <SelectItem className="request-filter-select-item" value="all">All Disasters</SelectItem>
+                <SelectItem className="request-filter-select-item" value="flood">Flood</SelectItem>
+                <SelectItem className="request-filter-select-item" value="earthquake">Earthquake</SelectItem>
+                <SelectItem className="request-filter-select-item" value="hurricane">Hurricane</SelectItem>
+                <SelectItem className="request-filter-select-item" value="wildfire">Wildfire</SelectItem>
+                <SelectItem className="request-filter-select-item" value="tornado">Tornado</SelectItem>
+                <SelectItem className="request-filter-select-item" value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={sortOption} onValueChange={setSortOption}>
+              <SelectTrigger className="filter-select-trigger">
+                <SelectValue placeholder="Sort By" />
+              </SelectTrigger>
+              <SelectContent className="request-filter-select-content">
+                <SelectItem className="request-filter-select-item" value="time-desc">Newest First</SelectItem>
+                <SelectItem className="request-filter-select-item" value="time-asc">Oldest First</SelectItem>
+                <SelectItem className="request-filter-select-item" value="city-asc">City A-Z</SelectItem>
+                <SelectItem className="request-filter-select-item" value="city-desc">City Z-A</SelectItem>
+                <SelectItem className="request-filter-select-item" value="zip-asc">ZIP Low-High</SelectItem>
+                <SelectItem className="request-filter-select-item" value="zip-desc">ZIP High-Low</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -171,8 +203,8 @@ export function RequestListPage() {
           <div className="filters-actions">
             <div className="filters-summary">Showing <strong>{filteredRequests.length}</strong> of <strong>{requests.length}</strong> requests</div>
             <div>
-              {(searchQuery || statusFilter !== 'all' || priorityFilter !== 'all' || disasterFilter !== 'all') && (
-                <Button variant="outline" size="sm" onClick={() => { setSearchQuery(''); setStatusFilter('all'); setPriorityFilter('all'); setDisasterFilter('all'); }}>
+              {(searchQuery || statusFilter !== 'all' || priorityFilter !== 'all' || disasterFilter !== 'all' || sortOption !== 'time-desc') && (
+                <Button className="clear-filters-button" variant="outline" size="sm" onClick={() => { setSearchQuery(''); setStatusFilter('all'); setPriorityFilter('all'); setDisasterFilter('all'); setSortOption('time-desc'); }}>
                   Clear Filters
                 </Button>
               )}
