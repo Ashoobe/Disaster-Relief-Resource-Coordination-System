@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import { Menu, Shield, X } from 'lucide-react';
 import ThemeToggle from '../common/ThemeToggle';
 
-const futureNavItems = ['About', 'Services'];
+const futureNavItems = ['About'];
 
 const navItems = [
   { key: 'home', label: 'Home', to: '/' },
+  { key: 'services', label: 'Services', to: '/services' },
   { key: 'live-activity', label: 'Live Activity', to: '/live-activity' },
   { key: 'track-request', label: 'Track Request', to: '/track' },
   { key: 'contact', label: 'Contact', to: '/contact' },

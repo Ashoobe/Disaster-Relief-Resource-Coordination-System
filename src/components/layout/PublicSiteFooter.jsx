@@ -26,6 +26,7 @@ const PublicSiteFooter = () => {
             <h4>Explore</h4>
             <ul className="public-footer-links">
               <li><Link to="/">Home</Link></li>
+              <li><Link to="/services">Services</Link></li>
               <li><Link to="/live-activity">Live Activity</Link></li>
               <li><Link to="/track">Track Request</Link></li>
               <li><Link to="/contact">Contact</Link></li>

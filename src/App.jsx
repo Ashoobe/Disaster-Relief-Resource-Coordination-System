@@ -27,6 +27,7 @@ import RequestTrackingPage from './pages/RequestTrackingPage';
 import HomePage from './pages/HomePage';
 import LiveActivityPage from './pages/LiveActivityPage';
 import ContactPage from './pages/ContactPage';
+import ServicesPage from './pages/ServicesPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import { getDefaultRouteForRole, hasRequiredRole } from './lib/permissions';
@@ -70,6 +71,7 @@ function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/services" element={<ServicesPage />} />
       <Route path="/live-activity" element={<LiveActivityPage />} />
       <Route path="/submit-emergency-request" element={<RequestSubmissionPage />} />
       <Route path="/track" element={<RequestTrackingPage />} />
