@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Menu, Shield, X } from 'lucide-react';
+import { Globe, Heart, LayoutDashboard, Menu, X } from 'lucide-react';
 import ThemeToggle from '../common/ThemeToggle';
 
 const futureNavItems = ['About'];
@@ -21,7 +21,8 @@ const PublicSiteHeader = ({ activeKey }) => {
       <div className="public-header-content">
         <Link to="/" className="public-brand">
           <span className="public-brand-icon" aria-hidden="true">
-            <Shield size={18} />
+            <Globe size={15} />
+            <span className="public-brand-icon-accent"><Heart size={7} /></span>
           </span>
           <span>DRRCS</span>
         </Link>

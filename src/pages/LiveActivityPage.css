@@ -54,7 +54,7 @@
 }
 
 .live-critical-strip-content {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   padding: 10px 20px;
   display: flex;
@@ -107,7 +107,7 @@
 }
 
 .live-hero-content {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   padding: 48px 20px;
   display: grid;
@@ -263,7 +263,7 @@
 
 
 .live-content {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   padding: 28px 20px 0;
   display: grid;

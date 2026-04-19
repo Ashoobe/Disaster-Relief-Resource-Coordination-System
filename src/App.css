@@ -84,7 +84,7 @@ body {
 /* Dashboard Content */
 .dashboard-content {
   padding: 40px 24px;
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
 }
 

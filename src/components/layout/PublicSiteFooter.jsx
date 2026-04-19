@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, Shield } from 'lucide-react';
+import { Globe, Heart, Mail, Phone } from 'lucide-react';
 
 const PublicSiteFooter = () => {
   return (
@@ -10,7 +10,8 @@ const PublicSiteFooter = () => {
           <section className="public-footer-about">
             <Link to="/" className="public-footer-brand" aria-label="Go to home page">
               <span className="public-brand-icon public-footer-brand-icon" aria-hidden="true">
-                <Shield size={18} />
+                <Globe size={15} />
+                <span className="public-brand-icon-accent"><Heart size={7} /></span>
               </span>
               <div>
                 <h3>DRRCS</h3>

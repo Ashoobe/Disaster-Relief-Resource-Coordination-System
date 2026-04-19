@@ -13,9 +13,9 @@
 }
 
 .public-header-content {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 12px 20px;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -32,11 +32,26 @@
 }
 
 .public-brand-icon {
+  position: relative;
   width: 28px;
   height: 28px;
   border-radius: 999px;
   background: var(--primary-light);
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.public-brand-icon-accent {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #ffffff;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -183,7 +198,7 @@
 }
 
 .hero-content {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   padding: 56px 20px;
   display: grid;
@@ -293,7 +308,7 @@
 }
 
 .home-stats-grid {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   padding: 42px 20px 54px;
   display: grid;
@@ -366,7 +381,7 @@
 }
 
 .services-content {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   text-align: center;
 }
@@ -450,7 +465,7 @@
 
 .coverage-content,
 .how-content {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   text-align: center;
 }
@@ -674,7 +689,7 @@
 }
 
 .public-footer-content {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   padding: 48px 20px 24px;
 }
