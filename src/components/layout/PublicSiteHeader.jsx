@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, Shield, X } from 'lucide-react';
+import { LayoutDashboard, Menu, Shield, X } from 'lucide-react';
 import ThemeToggle from '../common/ThemeToggle';
 
 const futureNavItems = ['About'];
@@ -55,6 +55,10 @@ const PublicSiteHeader = ({ activeKey }) => {
           </div>
           <Link to="/login" className="public-auth-link">Sign In</Link>
           <Link to="/register" className="public-auth-link">Sign Up</Link>
+          <Link to="/dashboard" className="public-auth-link public-auth-link-dashboard">
+            <LayoutDashboard size={15} />
+            Dashboard
+          </Link>
           <Link to="/submit-emergency-request" className="public-auth-link public-auth-link-primary">
             Submit Request
           </Link>
@@ -104,6 +108,10 @@ const PublicSiteHeader = ({ activeKey }) => {
             </div>
             <Link to="/login" className="public-auth-link" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
             <Link to="/register" className="public-auth-link" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
+            <Link to="/dashboard" className="public-auth-link public-auth-link-dashboard" onClick={() => setMobileMenuOpen(false)}>
+              <LayoutDashboard size={15} />
+              Dashboard
+            </Link>
             <Link to="/submit-emergency-request" className="public-auth-link public-auth-link-primary" onClick={() => setMobileMenuOpen(false)}>
               Submit Request
             </Link>
