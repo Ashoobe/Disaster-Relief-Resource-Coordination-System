@@ -1,35 +1,13 @@
 /**
- * Authentication Service
- *
- * ORIGINAL: Authentication Service with Mocked API Calls
- *           This service handles all authentication-related API calls
- *           Backend integration ready for Week 9
- *
- * UPDATED:  Now connects to the real Spring Boot backend when VITE_ENABLE_DEMO_MODE
- *           is NOT "true" in the .env file.  All original mock code has been kept
- *           intact below each function as the demo / offline fallback.
- *
- * HOW TO SWITCH:
- *   - Real backend  → set  VITE_ENABLE_DEMO_MODE=false  in .env
- *   - Demo / mock   → set  VITE_ENABLE_DEMO_MODE=true   in .env
+ * Authentication service used by the auth context.
+ * It can talk to the backend or fall back to local demo data.
  */
 
-// ─────────────────────────────────────────────────────────────────────────────
-// NEW: Backend connection helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
-// NEW: Base URL read from .env (VITE_API_BASE_URL) — falls back to the
-//      default Spring Boot dev port if the variable is not set.
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
-// NEW: Feature flag that lets teammates keep using mock data by setting
-//      VITE_ENABLE_DEMO_MODE=true in .env — when true the real fetch calls
-//      are skipped and every function falls through to its original mock block.
 const DEMO_MODE = import.meta.env.VITE_ENABLE_DEMO_MODE === 'true';
 
-// NEW: Normalises Spring Security role strings so the frontend always receives
-//      lowercase plain-English roles (e.g. 'admin', 'volunteer', 'organization_staff').
-//      Handles formats: 'ROLE_ADMIN', 'ADMIN', 'admin', 'ORGANIZATION_STAFF', etc.
+// Normalize backend role formats such as ROLE_ADMIN or ADMIN for frontend routing.
 const _normalizeRole = (role = '') => {
   const r = role.toUpperCase().replace(/^ROLE_/, '');
   if (r === 'ADMIN') return 'admin';
@@ -38,10 +16,7 @@ const _normalizeRole = (role = '') => {
   return role.toLowerCase();
 };
 
-// NEW: Reusable fetch helper for the backend.
-//      - Automatically sets Content-Type and forwards any extra headers.
-//      - Unwraps the Spring Boot ApiResponse<T> envelope when present.
-//      - Throws a descriptive Error on non-2xx responses so callers can .catch().
+// Shared fetch helper for auth endpoints.
 const _apiFetch = async (path, options = {}) => {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
@@ -52,14 +27,8 @@ const _apiFetch = async (path, options = {}) => {
   return json;
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ORIGINAL: Mock helpers (kept for demo / offline mode)
-// ─────────────────────────────────────────────────────────────────────────────
-
-// Mock delay to simulate network latency (used in demo mode only)
 const MOCK_DELAY = 1000; // 1 second
 
-// Browser-compatible base64 encoding/decoding
 const btoa_compat = (str) => {
   try {
     return btoa(JSON.stringify(str));
@@ -149,16 +118,10 @@ const MOCK_USERS = [
   },
 ];
 
-/**
- * Sleep utility for simulating async operations
- */
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/**
- * Generate mock JWT-like token (for testing only)
- */
+// Demo tokens are only used to keep local auth flows consistent during UI work.
 const generateMockToken = (user) => {
-  // Simple base64 encoding, NOT secure - for testing only
   const tokenData = {
     userId: user.id,
     username: user.username,
@@ -233,17 +196,12 @@ const getMockUserFromToken = (token) => {
  * @returns {Promise} - { success: boolean, token: string, user: object, message: string }
  */
 export const loginUser = async (email, password, rememberMe = false) => {
-  // ── NEW: Real backend call ───────────────────────────────────────────────────
-  // Calls POST /api/auth/login with username + password.
-  // NEW FIX: backend LoginRequest expects { username, password } — not email.
-  // The 'email' parameter now carries the username value typed in the login form.
-  // role from backend is a Set<String> array like ["VOLUNTEER"], so we take first element.
+  // The first argument is still named "email" in older callers, but the backend
+  // expects that value in the username field.
   if (!DEMO_MODE) {
     try {
       const json = await _apiFetch('/v1/auth/login', {
         method: 'POST',
-        // ORIGINAL: body: JSON.stringify({ email, password }),
-        // NEW: backend expects username field
         body: JSON.stringify({ username: email, password }),
       });
       const p = json?.data ?? json; // unwrap ApiResponse<T> envelope if present
@@ -255,7 +213,6 @@ export const loginUser = async (email, password, rememberMe = false) => {
           username: p.username,
           email: p.email,
           fullName: p.fullName ?? p.name,
-          // NEW FIX: role is a Set/array from backend e.g. ["VOLUNTEER"] — normalise first element
           role: _normalizeRole(Array.isArray(p.role) ? [...p.role][0] : p.role),
         },
         message: json.message ?? 'Login successful',
@@ -272,7 +229,6 @@ export const loginUser = async (email, password, rememberMe = false) => {
       return { success: false, token: null, user: null, message: err.message || 'An error occurred during login. Please try again.' };
     }
   }
-  // ── ORIGINAL: Mock / demo fallback (active when VITE_ENABLE_DEMO_MODE=true) ──
   try {
     return await loginWithMockUser(email, password);
   } catch (error) {
@@ -298,16 +254,11 @@ export const loginUser = async (email, password, rememberMe = false) => {
  * @returns {Promise} - { success: boolean, token: string, user: object, message: string }
  */
 export const registerUser = async (fullName, username, email, password, role) => {
-  // ── NEW: Real backend call ───────────────────────────────────────────────────
-  // Calls POST /api/auth/register with { fullName, username, email, password }.
-  // NEW FIX: backend RegisterRequest requires a username field.
-  // role excluded — backend assigns VOLUNTEER to all self-registrations.
+  // Self-registration always starts as volunteer on the backend.
   if (!DEMO_MODE) {
     try {
       const json = await _apiFetch('/v1/auth/register', {
         method: 'POST',
-        // ORIGINAL: body: JSON.stringify({ fullName, email, password, role }),
-        // NEW FIX: backend RegisterRequest requires { fullName, username, email, password }
         body: JSON.stringify({ fullName, username, email, password }),
       });
       const p = json?.data ?? json; // unwrap ApiResponse<T> envelope if present
@@ -319,7 +270,6 @@ export const registerUser = async (fullName, username, email, password, role) =>
           username: p.username ?? username,
           email: p.email,
           fullName: p.fullName ?? fullName,
-          // NEW FIX: role is a Set/array from backend e.g. ["VOLUNTEER"] — normalise first element
           role: _normalizeRole(Array.isArray(p.role) ? [...p.role][0] : p.role),
         },
         message: json.message ?? 'Registration successful!',
@@ -328,7 +278,6 @@ export const registerUser = async (fullName, username, email, password, role) =>
       return { success: false, token: null, user: null, message: err.message || 'An error occurred during registration. Please try again.' };
     }
   }
-  // ── ORIGINAL: Mock / demo fallback (active when VITE_ENABLE_DEMO_MODE=true) ──
   try {
     // Simulate network delay
     await sleep(MOCK_DELAY);
@@ -393,16 +342,13 @@ export const registerUser = async (fullName, username, email, password, role) =>
  * @returns {Promise} - { success: boolean, message: string }
  */
 export const forgotPassword = async (email) => {
-  // ── NEW: Real backend call ───────────────────────────────────────────────────
-  // Calls POST /api/auth/forgot-password.  Any fetch error is silently swallowed
-  // so the response never reveals whether an account exists (security best practice).
+  // Keep the response generic so the UI does not reveal whether an email exists.
   if (!DEMO_MODE) {
     try {
       await _apiFetch('/v1/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) });
     } catch { /* intentionally silent — do not reveal if email exists */ }
     return { success: true, message: 'If an account exists with this email, you will receive password reset instructions.' };
   }
-  // ── ORIGINAL: Mock / demo fallback (active when VITE_ENABLE_DEMO_MODE=true) ──
   try {
     // Simulate network delay
     await sleep(MOCK_DELAY);
@@ -479,14 +425,10 @@ export const refreshToken = async (token) => {
  * @returns {Promise} - { success: boolean, message: string }
  */
 export const logoutUser = async () => {
-  // ── NEW: Real backend handling ───────────────────────────────────────────────
-  // JWTs are stateless — the token is invalidated client-side by removing it
-  // from localStorage.  No HTTP call to the backend is required for logout.
-  // (If the backend ever adds a token-blacklist endpoint, add the call here.)
+  // JWT logout is client-side unless the backend later adds token revocation.
   if (!DEMO_MODE) {
     return { success: true, message: 'Logged out successfully' };
   }
-  // ── ORIGINAL: Mock / demo fallback (active when VITE_ENABLE_DEMO_MODE=true) ──
   try {
     // Simulate network delay
     await sleep(MOCK_DELAY / 2);
@@ -512,10 +454,7 @@ export const logoutUser = async () => {
  * @returns {Promise} - { success: boolean, user: object, message: string }
  */
 export const getCurrentUser = async (token) => {
-  // ── NEW: Real backend call ───────────────────────────────────────────────────
-  // Calls GET /api/auth/me with the stored JWT in the Authorization header.
-  // Used by AuthContext on app load to rehydrate the logged-in user from a
-  // persisted token without requiring the user to log in again.
+  // AuthContext uses this during app startup to restore a saved session.
   if (!DEMO_MODE) {
     if (!token) return { success: false, user: null, message: 'No token provided' };
     try {
@@ -537,7 +476,6 @@ export const getCurrentUser = async (token) => {
       return { success: false, user: null, message: 'Session expired. Please log in again.' };
     }
   }
-  // ── ORIGINAL: Mock / demo fallback (active when VITE_ENABLE_DEMO_MODE=true) ──
   try {
     // Simulate network delay
     await sleep(MOCK_DELAY / 2);

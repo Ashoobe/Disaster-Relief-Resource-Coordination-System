@@ -195,14 +195,15 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-  color: white;
+  background: #0f4c81;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1rem;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .user-details {
@@ -220,10 +221,10 @@
   display: inline-block;
   padding: 0.125rem 0.5rem;
   background-color: var(--color-primary);
-  color: white;
+  color: #ffffff;
   font-size: 0.75rem;
   border-radius: 4px;
-  font-weight: 500;
+  font-weight: 600;
   width: fit-content;
 }
 
@@ -688,7 +689,7 @@
 }
 
 .user-avatar {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent)) !important;
+  background: #0f4c81 !important;
   color: var(--color-card) !important;
 }
 
@@ -752,6 +753,18 @@
   color: var(--color-text-primary) !important;
 }
 
+.users-page .users-table tbody td .user-avatar,
+.users-page .users-table tbody td .user-avatar * {
+  background: #0f4c81 !important;
+  color: #ffffff !important;
+}
+
+.users-page .users-table tbody td .user-badge,
+.users-page .users-table tbody td .user-badge * {
+  background: #0052a3 !important;
+  color: #ffffff !important;
+}
+
 /* Make action icons visible */
 .users-page .user-actions .btn-icon-action {
   color: var(--color-text-primary) !important;
@@ -777,8 +790,6 @@
 .dark-mode .users-page .user-name,
 [data-theme='dark'] .users-page .user-email,
 .dark-mode .users-page .user-email,
-[data-theme='dark'] .users-page .user-badge,
-.dark-mode .users-page .user-badge,
 [data-theme='dark'] .users-page .btn-icon-action,
 .dark-mode .users-page .btn-icon-action {
   color: var(--color-text-primary) !important;
@@ -786,10 +797,28 @@
   opacity: 1 !important;
 }
 
-/* Make sure avatar text remains visible */
+/* Keep avatars and the "You" badge consistent and readable in both themes */
 [data-theme='dark'] .users-page .user-avatar,
 .dark-mode .users-page .user-avatar {
-  color: var(--color-card) !important;
+  background: #0f4c81 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+[data-theme='dark'] .users-page .users-table tbody td .user-avatar,
+.dark-mode .users-page .users-table tbody td .user-avatar,
+[data-theme='dark'] .users-page .users-table tbody td .user-avatar *,
+.dark-mode .users-page .users-table tbody td .user-avatar * {
+  background: #0f4c81 !important;
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .users-page .users-table tbody td .user-badge,
+.dark-mode .users-page .users-table tbody td .user-badge,
+[data-theme='dark'] .users-page .users-table tbody td .user-badge *,
+.dark-mode .users-page .users-table tbody td .user-badge * {
+  background: #0052a3 !important;
+  color: #ffffff !important;
 }
 
 /* Prevent any hover from making text white */

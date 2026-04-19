@@ -131,4 +131,4 @@
 ---
 
 ## Notes
-This document will be updated as requirements evolve during development.
+This document summarizes the current frontend scope and ownership boundaries for the project.

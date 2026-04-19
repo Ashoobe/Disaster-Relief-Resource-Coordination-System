@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     return result;
   };
 
-  // NEW: added username parameter \u2014 backend RegisterRequest requires { fullName, username, email, password }
+  // Registration includes username because the backend requires it.
   const register = async (fullName, username, email, password, role) => {
     setError(null);
     const result = await registerUser(fullName, username, email, password, role);

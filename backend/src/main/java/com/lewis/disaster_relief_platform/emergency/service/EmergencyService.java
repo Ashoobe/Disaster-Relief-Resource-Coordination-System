@@ -72,9 +72,6 @@ public class EmergencyService {
         log.info("FROM SERVICE: ", emergency);
         Emergency savedEmergency = emergencyRepository.save(emergency);
 
-        // TODO: Send tracking code via email
-        // emailService.sendTrackingCode(request.getContactEmail(), trackingCode);
-
         emergencyEventPublisher.publishEmergencyCreated(savedEmergency);
         log.info("Emergency saved with ID: {}", savedEmergency.getId());
         return EmergencyResponse.fromEntity(savedEmergency);

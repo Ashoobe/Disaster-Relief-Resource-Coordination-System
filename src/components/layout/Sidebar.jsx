@@ -1,9 +1,8 @@
-﻿import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import './Sidebar.css';
 
-// Menu items organized by user role
 const MENU_ITEMS = {
   admin: [
     { label: 'Dashboard', icon: '📊', path: '/dashboard' },
@@ -31,24 +30,25 @@ const MENU_ITEMS = {
 
 export const Sidebar = ({ isOpen, onClose, currentPath = '/dashboard' }) => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const userRole = user?.role || 'volunteer';
   const menuItems = MENU_ITEMS[userRole] || MENU_ITEMS.volunteer;
 
   const handleLogout = async () => {
+    onClose?.();
     await logout();
+    navigate('/', { replace: true });
   };
 
   return (
     <>
-      {/* Mobile Overlay */}
       {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
 
-      {/* Sidebar */}
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <h2>Menu</h2>
-          <button className="sidebar-close" onClick={onClose} aria-label="Close sidebar">
+          <button type="button" className="sidebar-close" onClick={onClose} aria-label="Close sidebar">
             ✕
           </button>
         </div>
@@ -68,9 +68,9 @@ export const Sidebar = ({ isOpen, onClose, currentPath = '/dashboard' }) => {
         </nav>
 
         <div className="sidebar-footer">
-          <button className="logout-button" onClick={handleLogout}>
+          <button type="button" className="logout-button" onClick={handleLogout}>
             <span className="nav-icon">🚪</span>
-            <span className="nav-label">Logout</span>
+            <span className="nav-label">Log Out</span>
           </button>
         </div>
       </aside>
@@ -79,4 +79,3 @@ export const Sidebar = ({ isOpen, onClose, currentPath = '/dashboard' }) => {
 };
 
 export default Sidebar;
-

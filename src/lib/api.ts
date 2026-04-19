@@ -1,29 +1,16 @@
 import { EmergencyRequest, DashboardStats } from '../types';
 import { mockRequests } from './mockData';
 
-// ORIGINAL: Mock API functions that will be replaced with actual API calls to
-//           Java Spring Boot backend.  The originals are preserved below each
-//           method (commented out) so they can be quickly restored if needed.
-
-// ─────────────────────────────────────────────────────────────────────────────
-// NEW: Backend connection helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
-// NEW: Feature flag — set VITE_ENABLE_DEMO_MODE=true in .env to skip all real
-//      API calls and use local mock data instead (handy for offline UI work).
+// API helpers for switching between backend data and local demo data.
+// Demo mode keeps the local mock path available for UI work without the backend.
 const DEMO_MODE = import.meta.env.VITE_ENABLE_DEMO_MODE === 'true';
 
-// ORIGINAL: kept as-is — read from .env or fall back to Spring Boot dev port
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
-// NEW: Reads the JWT that AuthContext stores under 'drrcs_token' so every
-//      request can send it in the Authorization header automatically.
 const TOKEN_KEY = 'drrcs_token';
 const getToken = (): string | null => localStorage.getItem(TOKEN_KEY);
 
-// NEW: Builds the common request headers:
-//      - Content-Type always set to JSON
-//      - Authorization: Bearer <token> added whenever a token is present
+// Attach the saved token automatically when the user is signed in.
 const authHeaders = (): Record<string, string> => {
   const token = getToken();
   return {
@@ -32,12 +19,7 @@ const authHeaders = (): Record<string, string> => {
   };
 };
 
-// NEW: Thin fetch wrapper shared by all backend calls.
-//      - Merges authHeaders() with any caller-supplied headers/options.
-//      - Unwraps Spring Boot's optional ApiResponse<T> envelope (json.data)
-//        so callers always receive the plain payload object.
-//      - Throws a descriptive Error on non-2xx so callers can .catch().
-// NOTE: all paths must include /v1/ to match backend RequestMapping
+// Central request helper so auth headers and ApiResponse unwrapping stay consistent.
 const apiFetch = async (path: string, options: RequestInit = {}): Promise<any> => {
   const res = await fetch(`${API_BASE_URL}/v1${path}`, {
     ...options,
@@ -51,13 +33,9 @@ const apiFetch = async (path: string, options: RequestInit = {}): Promise<any> =
     throw new Error(err.message || `Request failed (${res.status})`);
   }
   const json = await res.json();
-  // Unwrap envelope: Spring Boot returns { data: T, message: '...' } or just T
   return json?.data ?? json;
 };
 
-// NEW: Maps a raw backend emergency object to the frontend EmergencyRequest
-//      shape.  Both camelCase variants of each field are tried so the mapping
-//      stays resilient to small naming differences between backend versions.
 const mapEmergency = (e: any): EmergencyRequest => ({
   id: e.id,
   trackingCode: e.trackingCode,
@@ -125,6 +103,10 @@ const mapEmergencyRecord = (e: any): EmergencyRequest => {
         || [location.city, location.state, location.country].filter(Boolean).join(', ')
         || e.address
         || 'Address not specified',
+      city: location.city,
+      state: location.state,
+      zipCode: location.zipCode,
+      country: location.country,
       ...(latitude != null && longitude != null
         ? { coordinates: { lat: latitude, lng: longitude } }
         : {}),
@@ -144,11 +126,10 @@ const mapEmergencyRecord = (e: any): EmergencyRequest => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ORIGINAL: Mock helpers (kept for demo / offline mode)
+// Local storage helpers used only when demo mode is enabled.
 // ─────────────────────────────────────────────────────────────────────────────
 const REQUESTS_STORAGE_KEY = 'drrcs_requests_store';
 
-// Simulate network delay
 const simulateDelay = () => delay(300);
 
 const getStoredRequests = (): EmergencyRequest[] => {
@@ -182,25 +163,17 @@ export const api = {
   // ── Authentication ──────────────────────────────────────────────────────────
 
   /**
-   * Login — POST /api/auth/login
-   * NEW: When DEMO_MODE is off, calls the real backend and returns the JWT +
-   *      user from Spring Security.  The mock path below is preserved for
-   *      offline / demo use.
+   * Authenticate a user against the backend or the local demo store.
    */
   async login(username: string, password: string): Promise<{ token: string; user: any }> {
-    // ── NEW: Real backend ──────────────────────────────────────────────────
     if (!DEMO_MODE) {
-      // ORIGINAL: body: JSON.stringify({ email: username, password }),
-      // NEW FIX: backend LoginRequest expects { username, password } not email
       const data = await apiFetch('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ username, password }),
       });
       return { token: data.token, user: data };
     }
-    // ── ORIGINAL: mock path (commented out — kept for reference / demo mode) ──
     await simulateDelay();
-    // Mock JWT token - replace with actual API call
     if (username && password) {
       return {
         token: 'mock-jwt-token-' + Date.now(),
@@ -216,50 +189,36 @@ export const api = {
   },
 
   /**
-   * Logout — no backend call needed for stateless JWT.
-   * NEW: When DEMO_MODE is off just clears localStorage; original mock kept.
+   * Clear the local session. JWT logout is handled client-side.
    */
   async logout(): Promise<void> {
-    // ── NEW: Real backend ──────────────────────────────────────────────────
     if (!DEMO_MODE) {
-      // JWT is stateless — just remove the token from localStorage
       localStorage.removeItem(TOKEN_KEY);
       return;
     }
-    // ── ORIGINAL: mock path ─────────────────────────────────────────────────
     await simulateDelay();
-    // Replace with actual API call
     localStorage.removeItem('auth_token');
   },
 
 // ── Emergency Requests ──────────────────────────────────────────────────────
 
   /**
-   * Get all emergency requests — GET /api/emergencies
-   * NEW: When DEMO_MODE is off, fetches the live list from the backend and
-   *      maps each item to the frontend EmergencyRequest shape.
+   * Fetch requests visible to the current user.
    */
   async getRequests(): Promise<EmergencyRequest[]> {
-    // ── NEW: Real backend ──────────────────────────────────────────────────
     if (!DEMO_MODE) {
-      // Backend: GET /api/v1/emergencies (ADMIN or COORDINATOR only)
-      // Returns PageResponse<EmergencyResponse> — handle both paginated and plain array
       const data = await apiFetch('/emergencies/visible');
       const items: any[] = Array.isArray(data) ? data : (data.content ?? data.items ?? []);
       return items.map(mapEmergencyRecord);
     }
-    // ── ORIGINAL: mock path ─────────────────────────────────────────────────
     await simulateDelay();
-    // Replace with: fetch(`${API_BASE_URL}/requests`, { headers: { Authorization: `Bearer ${token}` } })
     return [...getStoredRequests()];
   },
 
   /**
-   * Get one emergency request by ID — GET /api/emergencies/{id}
-   * NEW: Real backend call; original localStorage lookup kept below.
+   * Fetch a single request. Returns null if it cannot be loaded.
    */
   async getRequestById(id: string): Promise<EmergencyRequest | null> {
-    // ── NEW: Real backend ──────────────────────────────────────────────────
     if (!DEMO_MODE) {
       try {
         const data = await apiFetch(`/emergencies/${id}`);
@@ -269,31 +228,23 @@ export const api = {
         return null;
       }
     }
-    // ── ORIGINAL: mock path ─────────────────────────────────────────────────
     await simulateDelay();
-    // Replace with: fetch(`${API_BASE_URL}/requests/${id}`, { headers: { Authorization: `Bearer ${token}` } })
     const requests = getStoredRequests();
     return requests.find(req => req.id === id) || null;
   },
 
   /**
-   * Submit a new emergency request — POST /api/emergencies
-   * NEW: Real backend call; original localStorage version kept below.
+   * Create a new emergency request.
    */
   async createRequest(request: Omit<EmergencyRequest, 'id' | 'timestamp'>): Promise<EmergencyRequest> {
-    // ── NEW: Real backend ──────────────────────────────────────────────────
     if (!DEMO_MODE) {
-      // POST /api/v1/emergencies/public/requests — no auth required
-      // The body must match backend EmergencyRequest exactly (see EmergencyRequest.java)
       const data = await apiFetch('/emergencies/public/requests', {
         method: 'POST',
         body: JSON.stringify(request),
       });
       return mapEmergencyRecord(data);
     }
-    // ── ORIGINAL: mock path ─────────────────────────────────────────────────
     await simulateDelay();
-    // Replace with: fetch(`${API_BASE_URL}/requests`, { method: 'POST', body: JSON.stringify(request) })
     const requests = getStoredRequests();
     const newRequest: EmergencyRequest = {
       ...request,
@@ -306,11 +257,9 @@ export const api = {
   },
 
   /**
-   * Update an emergency request — PUT /api/emergencies/{id}
-   * NEW: Real backend call; original localStorage version kept below.
+   * Update a request record.
    */
   async updateRequest(id: string, updates: Partial<EmergencyRequest>): Promise<EmergencyRequest> {
-    // ── NEW: Real backend ──────────────────────────────────────────────────
     if (!DEMO_MODE) {
       const data = await apiFetch(`/emergencies/${id}`, {
         method: 'PUT',
@@ -318,9 +267,7 @@ export const api = {
       });
       return mapEmergencyRecord(data);
     }
-    // ── ORIGINAL: mock path ─────────────────────────────────────────────────
     await simulateDelay();
-    // Replace with: fetch(`${API_BASE_URL}/requests/${id}`, { method: 'PUT', body: JSON.stringify(updates) })
     const requests = getStoredRequests();
     const index = requests.findIndex(req => req.id === id);
     if (index !== -1) {
@@ -336,23 +283,17 @@ export const api = {
   },
 
   /**
-   * Update the status of an emergency request — PATCH /api/emergencies/{id}/status
-   * NEW: Real backend PATCH call; original fallback kept below.
+   * Update only the request status.
    */
   async updateRequestStatus(id: string, status: string, notes?: string): Promise<EmergencyRequest> {
-    // ── NEW: Real backend ──────────────────────────────────────────────────
     if (!DEMO_MODE) {
-      // Backend: PATCH /api/v1/emergencies/{id}/status?status=IN_PROGRESS
-      // Status must be uppercase enum value matching backend Status enum
       const backendStatus = status.toUpperCase().replace(/-/g, '_');
       const data = await apiFetch(`/emergencies/${id}/status?status=${backendStatus}`, {
         method: 'PATCH',
       });
       return mapEmergencyRecord(data);
     }
-    // ── ORIGINAL: mock path ─────────────────────────────────────────────────
     await simulateDelay();
-    // Replace with: fetch(`${API_BASE_URL}/requests/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status, notes }) })
     return this.updateRequest(id, { 
       status: status as any, 
       notes,
@@ -361,11 +302,9 @@ export const api = {
   },
 
   /**
-   * Assign resources to a request — PATCH /api/emergencies/{id}/assign
-   * NEW: Real backend PATCH call; original fallback kept below.
+   * Assign resources or an assignee to a request.
    */
   async assignResources(id: string, resources: string[], assignedTo?: string): Promise<EmergencyRequest> {
-    // ── NEW: Real backend ──────────────────────────────────────────────────
     if (!DEMO_MODE) {
       const data = await apiFetch(`/emergencies/${id}/assign`, {
         method: 'PATCH',
@@ -373,9 +312,7 @@ export const api = {
       });
       return mapEmergencyRecord(data);
     }
-    // ── ORIGINAL: mock path ─────────────────────────────────────────────────
     await simulateDelay();
-    // Replace with: fetch(`${API_BASE_URL}/requests/${id}/assign`, { method: 'PATCH', body: JSON.stringify({ resources, assignedTo }) })
     return this.updateRequest(id, {
       assignedResources: resources,
       assignedTo,
@@ -386,15 +323,10 @@ export const api = {
   // ── Dashboard Stats ─────────────────────────────────────────────────────────
 
   /**
-   * Get dashboard statistics — GET /api/dashboard/stats
-   * NEW: Real backend call; original computed-from-localStorage version kept below.
+   * Load summary counts for dashboard cards.
    */
   async getDashboardStats(): Promise<DashboardStats> {
-    // ── NEW: Real backend ──────────────────────────────────────────────────
     if (!DEMO_MODE) {
-      // Backend: GET /api/v1/emergencies/stats (ADMIN or COORDINATOR)
-      // Returns { total, pending, resolved, in_progress }
-      // We map it to the frontend DashboardStats shape.
       try {
         const data = await apiFetch('/emergencies/stats');
         return {
@@ -418,9 +350,7 @@ export const api = {
         };
       }
     }
-    // ── ORIGINAL: mock path (computes stats from localStorage) ─────────────
     await simulateDelay();
-    // Replace with: fetch(`${API_BASE_URL}/dashboard/stats`, { headers: { Authorization: `Bearer ${token}` } })
     const requests = getStoredRequests();
     const pending = requests.filter(r => r.status === 'pending').length;
     const inProgress = requests.filter(r => r.status === 'in-progress').length;

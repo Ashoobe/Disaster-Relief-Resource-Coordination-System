@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Shield, Search, CheckCircle, Clock, AlertCircle, Loader, Menu, X } from 'lucide-react';
-import ThemeToggle from '../components/common/ThemeToggle';
+import { Search, CheckCircle, Clock, AlertCircle, Loader, Shield } from 'lucide-react';
+import PublicSiteHeader from '../components/layout/PublicSiteHeader';
+import PublicSiteFooter from '../components/layout/PublicSiteFooter';
 import { trackRequest } from '../services/requestService';
 import './RequestTrackingPage.css';
 
@@ -46,7 +47,7 @@ const PriorityBadge = ({ priority }) => {
 };
 
 const formatDate = (dateStr) => {
-  if (!dateStr) return '—';
+  if (!dateStr) return '-';
   try {
     return new Date(dateStr).toLocaleDateString('en-US', {
       year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit',
@@ -62,7 +63,6 @@ const RequestTrackingPage = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const runTrackingSearch = async (value) => {
     setError(null);
@@ -108,58 +108,9 @@ const RequestTrackingPage = () => {
 
   return (
     <div className="tracking-page">
-      {/* Header */}
-      <header className="public-header">
-        <div className="public-header-content">
-          <Link to="/" className="public-brand">
-            <span className="public-brand-icon" aria-hidden="true"><Shield size={18} /></span>
-            <span>DRRCS</span>
-          </Link>
-
-          <nav className="public-nav" aria-label="Public navigation">
-            <Link to="/" className="public-nav-link">Home</Link>
-            <Link to="/live-activity" className="public-nav-link">Live Activity</Link>
-            <Link to="/track" className="public-nav-link public-nav-link-active">Track Request</Link>
-          </nav>
-
-          <div className="public-auth-links">
-            <div className="public-theme-toggle"><ThemeToggle /></div>
-            <Link to="/login" className="public-auth-link">Sign In</Link>
-            <Link to="/register" className="public-auth-link">Sign Up</Link>
-            <Link to="/submit-emergency-request" className="public-auth-link public-auth-link-primary">
-              Submit Request
-            </Link>
-          </div>
-
-          <button
-            type="button"
-            className="mobile-menu-toggle"
-            aria-label="Toggle mobile navigation"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((p) => !p)}
-          >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-
-        {mobileMenuOpen && (
-          <div className="public-mobile-menu">
-            <nav className="public-mobile-nav" aria-label="Mobile navigation">
-              <Link to="/" className="public-nav-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-              <Link to="/live-activity" className="public-nav-link" onClick={() => setMobileMenuOpen(false)}>Live Activity</Link>
-              <Link to="/track" className="public-nav-link public-nav-link-active" onClick={() => setMobileMenuOpen(false)}>Track Request</Link>
-            </nav>
-            <div className="public-mobile-auth">
-              <div className="public-mobile-theme"><span>Theme</span><ThemeToggle /></div>
-              <Link to="/login" className="public-auth-link" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
-              <Link to="/register" className="public-auth-link" onClick={() => setMobileMenuOpen(false)}>Sign Up</Link>
-            </div>
-          </div>
-        )}
-      </header>
+      <PublicSiteHeader activeKey="track-request" />
 
       <main className="tracking-main">
-        {/* Hero search section */}
         <section className="tracking-hero">
           <div className="tracking-hero-content">
             <div className="tracking-hero-icon">
@@ -187,7 +138,7 @@ const RequestTrackingPage = () => {
                   className="tracking-submit-btn"
                   disabled={loading || !query.trim()}
                 >
-                  {loading ? 'Searching…' : 'Track Now'}
+                  {loading ? 'Searching...' : 'Track Now'}
                 </button>
               </div>
               {error && (
@@ -200,15 +151,14 @@ const RequestTrackingPage = () => {
             <div className="tracking-hints">
               <p>You can look up by:</p>
               <ul>
-                <li><strong>Tracking ID</strong> — shown on your confirmation screen (for example <code>MARIA-2026-E564217D</code>)</li>
-                <li><strong>Email address</strong> — used in the contact section of your request</li>
-                <li><strong>Phone number</strong> — primary phone number entered at submission</li>
+                <li><strong>Tracking ID</strong> - shown on your confirmation screen (for example <code>MARIA-2026-E564217D</code>)</li>
+                <li><strong>Email address</strong> - used in the contact section of your request</li>
+                <li><strong>Phone number</strong> - primary phone number entered at submission</li>
               </ul>
             </div>
           </div>
         </section>
 
-        {/* Results section */}
         {result && (
           <section className="tracking-results" aria-live="polite">
             <div className="tracking-results-inner">
@@ -220,7 +170,6 @@ const RequestTrackingPage = () => {
                 <StatusBadge status={result.status} />
               </div>
 
-              {/* Status timeline */}
               <div className="tracking-timeline">
                 {TIMELINE_STEPS.map((step, idx) => {
                   const active = step.statuses.includes(currentStatus);
@@ -238,7 +187,6 @@ const RequestTrackingPage = () => {
                 })}
               </div>
 
-              {/* Request details */}
               <div className="tracking-details-grid">
                 <div className="tracking-detail-card">
                   <h3>Request Details</h3>
@@ -307,9 +255,7 @@ const RequestTrackingPage = () => {
         )}
       </main>
 
-      <footer className="public-footer">
-        <p>© 2026 Disaster Relief Resource Coordination System. All rights reserved.</p>
-      </footer>
+      <PublicSiteFooter />
     </div>
   );
 };

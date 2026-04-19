@@ -18,19 +18,17 @@ This repository now contains the full application stack for DRRCS, including aut
 
 Deployment instructions are in [DEPLOYMENT.md](DEPLOYMENT.md).
 
-## Features (Implementation)
+## Features
 
-###  Completed
+### Completed
 
-- **Login Page**: Email/password login with validation
-- **Registration Page**: User signup with role selection
-- **Form Validation**: Client-side validation with real-time feedback
-- **Password Strength Indicator**: Visual feedback for password quality
-- **Authentication Context**: Global state management for auth
-- **Mock API Service**: Simulated backend API calls
+- **Authentication**: Login, registration, and protected dashboard access
+- **Emergency Requests**: Public submission flow, tracking, and dashboard visibility
+- **Dashboard Workflows**: Request lists, detail views, analytics, and role-aware visibility
+- **Form Validation**: Client-side validation with inline feedback
 - **Responsive Design**: Mobile, tablet, and desktop support
-- **Accessibility**: WCAG 2.1 compliant forms
-- **Demo Accounts**: Pre-populated credentials for testing
+- **Accessibility**: Keyboard-friendly forms and improved contrast handling
+- **Theme Support**: Light and dark mode across public and dashboard pages
 
 ## Project Structure
 
@@ -103,10 +101,10 @@ public/
    Copy-Item frontend.environment .env.local
    ```
 
-2. **Configure if needed** (currently using mocked API)
+2. **Configure the frontend**
    ```
    VITE_API_BASE_URL=http://localhost:8080/api
-   VITE_ENABLE_DEMO_MODE=true
+   VITE_ENABLE_DEMO_MODE=false
    ```
 
 3. **Backend handoff for cloud database**
@@ -121,9 +119,9 @@ public/
    - `MONGODB_DATABASE`
    - `CORS_ALLOWED_ORIGINS`
 
-## Testing Demo Accounts and Signing In
+## Local Sign-In Accounts
 
-The application includes pre-configured demo and admin accounts for local testing (mocked in `src/services/authService.js` and `src/services/userService.js`). Use the email/password pairs below to sign in via the login page (`/login`).
+The project includes local test accounts for development and validation. Use the credentials below on the login page (`/login`).
 
 ### Admin Accounts (added)
 - **Sowjanya Gottimukkala**
@@ -139,30 +137,25 @@ The application includes pre-configured demo and admin accounts for local testin
    - Password: Password@123
    - Role: admin
 
-### Existing Demo Accounts
-- **Admin Demo**
-   - Email: admin@drrcs.test
-   - Password: Admin@123456
+### Existing Local Accounts
+- **Admin**
+   - Username: admin
+   - Password: Password@123
    - Role: admin
-- **Volunteer Demo**
-   - Email: volunteer@drrcs.test
+- **Volunteer**
+   - Username: volunteer
    - Password: Volunteer@123
    - Role: volunteer
-- **Organization Demo**
-   - Email: org@drrcs.test
+- **Organization Staff**
+   - Username: orgstaff
    - Password: Organization@123
    - Role: organization_staff
 
 Signing in:
 - Open the app and navigate to the Login page (`/login`).
-- Enter the email and password for any demo account above and submit the form.
-- The app uses an in-memory mock service, so accounts are available only while the dev server is running.
-
-Quick-fill and testing tips:
-- The login form may include role quick-fill buttons — clicking them auto-populates demo credentials.
-- To add or change mock accounts, edit `src/services/authService.js` or `src/services/userService.js` and restart the dev server.
-
-Security note: These mock accounts store plain-text passwords for local testing only. Do not use these credentials in production.
+- Enter the username and password for any local account above and submit the form.
+- When the backend and MongoDB are running locally, authentication uses the backend API.
+- Demo mode remains available only for offline UI work.
 
 ## Available Scripts
 
@@ -207,20 +200,19 @@ Format code with Prettier
 ### Authentication Flow
 
 1. **Login**
-   - User enters email and password
+   - User enters username and password
    - Real-time validation provides feedback
    - Remember me checkbox stores preference
-   - Mocked API simulates server response
-   - User data stored in localStorage
+   - Session state is restored from saved auth data
    - Success redirects to dashboard
 
 2. **Registration**
-   - User enters full name, email, password, and selects role
+   - User enters full name, username, email, and password
    - Password strength indicator shows quality
    - Confirm password must match
    - Terms and conditions must be accepted
-   - Email uniqueness checked against mock database
-   - Auto-login on successful registration
+   - Registration follows the backend request contract
+   - Successful registration signs the user in
 
 3. **Session Management**
    - Authentication token stored in localStorage
@@ -239,7 +231,6 @@ Format code with Prettier
   - At least one special character
 - **Confirm Password**: Must match password field
 - **Full Name**: Required, minimum 2 characters
-- **Role**: Required dropdown selection
 - **Terms**: Must be checked to register
 
 ### Components
@@ -267,7 +258,7 @@ Format code with Prettier
 const { user, token, isAuthenticated, loading, login, register, logout } = useAuth();
 ```
 
-### API Service (Mock)
+### API Service
 
 The `authService.js` provides these functions:
 - `loginUser(email, password, rememberMe)`
@@ -276,8 +267,6 @@ The `authService.js` provides these functions:
 - `refreshToken(token)`
 - `logoutUser()`
 - `getCurrentUser(token)`
-
-**Backend Integration Ready**: Replace mock implementations with real API calls in Week 9
 
 ## Styling
 
@@ -316,7 +305,7 @@ The `authService.js` provides these functions:
 
 - Vite for fast development and optimized builds
 - Code splitting for efficient loading
-- Lazy loading ready for future features
+- Supports further feature expansion through the current routing and component structure
 - Optimized CSS and JavaScript
 
 ## Future Enhancements (Week 9+)
@@ -354,17 +343,10 @@ npm install
 
 ## API Integration Roadmap
 
-### Current State (Week 4)
-- Mock API responses in `authService.js`
-- Simulated network delays
-- Test data stored in memory
-
-### Week 9 Integration
-- Replace mock functions with real HTTP calls
-- Integrate with backend API
-- Implement proper error handling
-- Add request interceptors
-- Token refresh mechanism
+### Current State
+- Frontend and backend are connected for authentication and emergency request flows
+- Local demo mode is still available for UI-only testing when needed
+- Environment variables control which backend the frontend uses
 
 ### Backend Endpoints (Ready for integration)
 ```

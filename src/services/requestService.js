@@ -77,8 +77,7 @@ export const submitRequest = async (requestData) => {
     };
   }
 
-  // NEW: map frontend disasterType string to backend EmergencyType enum value (UPPER_CASE)
-  // Backend EmergencyType: FOOD, SHELTER, MEDICAL, WATER, RESCUE, EVACUATION, CLOTHING, TRANSPORTATION, OTHER
+  // Convert UI disaster labels to the backend enum used for routing and reporting.
   const resolveType = (disasterType = '') => {
     const map = {
       flood: 'RESCUE', earthquake: 'RESCUE', hurricane: 'RESCUE', tornado: 'RESCUE',
@@ -90,14 +89,13 @@ export const submitRequest = async (requestData) => {
     return map[disasterType.toLowerCase()] || 'OTHER';
   };
 
-  // NEW: map frontend priority to backend Priority enum value (UPPER_CASE)
-  // Backend Priority: LOW, MEDIUM, HIGH, CRITICAL
+  // Keep priority names aligned with the backend enum.
   const resolvePriority = (priority = '') => {
     const supported = { critical: 'CRITICAL', high: 'HIGH', medium: 'MEDIUM', low: 'LOW' };
     return supported[priority.toLowerCase()] || 'MEDIUM';
   };
 
-  // NEW: collect requiredResources from resourceNeeds object
+  // Flatten selected resource groups into the backend list format.
   const resolveRequiredResources = (resourceNeeds = {}) => {
     const resources = [];
     if (resourceNeeds.food?.needed) resources.push('FOOD');
@@ -111,10 +109,7 @@ export const submitRequest = async (requestData) => {
   };
 
   try {
-    // NEW: build payload matching backend EmergencyRequest exactly:
-    //   title, description, type (EmergencyType enum), priority (Priority enum),
-    //   location { latitude, longitude, address, city, state, zipCode, country },
-    //   reportedBy, contactPhone (10 digits), contactEmail, affectedPeople (int), requiredResources
+    // Build the request body expected by the emergency submission endpoint.
     const backendPayload = {
       title: requestData.title,
       description: requestData.description,
@@ -146,7 +141,6 @@ export const submitRequest = async (requestData) => {
 
     const createdRequest = await api.createRequest(backendPayload);
 
-    // NEW: backend returns a trackingCode field — save it alongside the ID
     const trackingCode = createdRequest.trackingCode || createdRequest.id;
     saveRequestFormPayload(createdRequest.id, requestData);
     saveRequestFormPayload(trackingCode, requestData);
@@ -160,7 +154,6 @@ export const submitRequest = async (requestData) => {
     return {
       success: true,
       requestId: createdRequest.id,
-      // NEW: expose trackingCode so the UI can show it for status lookups
       trackingCode,
       message: `Request submitted! Tracking code: ${trackingCode}`,
       timestamp: createdRequest.timestamp,
@@ -314,7 +307,6 @@ export const trackRequest = async (query) => {
 export const getRequest = async (requestId) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      // Mock data for demonstration
       const mockRequest = {
         requestId: requestId,
         title: 'Sample Disaster Request',
@@ -365,7 +357,6 @@ export const getRequest = async (requestId) => {
 export const getRequests = async (options = {}) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      // Mock data for demonstration
       const mockRequests = [
         {
           requestId: 'REQ-20260217-ABC12',

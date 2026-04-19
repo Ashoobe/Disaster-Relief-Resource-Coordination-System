@@ -32,7 +32,7 @@ public class Emergency {
     private String id;
 
     @Indexed(unique = true)
-    private String trackingCode; // ← NEW: e.g., "DIS-2024-A7B3C8F1"
+    private String trackingCode;
 
     @Indexed
     private String title;
@@ -55,7 +55,7 @@ public class Emergency {
     private String reportedBy;
 
     @Indexed
-    private String reportedByEmail; // ← NEW: For linking to user accounts
+    private String reportedByEmail;
 
     private String contactPhone;
 
@@ -66,7 +66,7 @@ public class Emergency {
     private List<String> requiredResources;
 
     @Indexed
-    private String createdByUserId; // ← NEW: NULL if public, User ID if logged in
+    private String createdByUserId;
 
     private String assignedVolunteerId;
 

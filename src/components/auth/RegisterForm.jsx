@@ -32,7 +32,6 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
 
   const [formData, setFormData] = useState({
     fullName: '',
-    // NEW: username required by backend RegisterRequest
     username: '',
     email: '',
     password: '',
@@ -83,7 +82,6 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
     // Validate form
     const validation = validateRegistrationForm(formData);
     const allErrors = { ...validation.errors };
-    // NEW: validate username (not included in validateRegistrationForm)
     if (!formData.username || formData.username.trim().length < 3) {
       allErrors.username = 'Username must be at least 3 characters';
     }
@@ -97,7 +95,6 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
 
     // Attempt registration
     // Role is always 'volunteer' on self-registration; pass empty string – server sets volunteer
-    // NEW: pass username — backend RegisterRequest requires { fullName, username, email, password }
     const result = await register(formData.fullName, formData.username, formData.email, formData.password, 'volunteer');
 
     if (!result.success) {
@@ -142,7 +139,6 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
       </div>
 
       {/* Username Field */}
-      {/* NEW: backend RegisterRequest requires a username field */}
       <div className="form-group">
         <label htmlFor="username">Username *</label>
         <input
@@ -250,7 +246,6 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
 
       {/* Role Info */}
       <div className="form-group">
-        {/* NEW: replaced fragile inline styles with .role-info-box class for proper dark mode support */}
         <div className="role-info-box">
           <strong>Starting role: Volunteer</strong>
           All new accounts start as <em>Volunteer</em>. To request a higher role

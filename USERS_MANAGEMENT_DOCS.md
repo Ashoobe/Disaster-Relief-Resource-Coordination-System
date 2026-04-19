@@ -1,7 +1,7 @@
 # Users Management Feature Documentation
 
 ## Overview
-A complete user management UI for administrators to manage system users with full CRUD operations.
+This document summarizes the user management interface for administrators, including the current UI behavior and service integration points.
 
 ## Features Implemented
 
@@ -33,7 +33,7 @@ A complete user management UI for administrators to manage system users with ful
 ### 4. Delete User
 - Delete user with confirmation dialog
 - Users cannot delete themselves (button disabled)
-- Permanent deletion (mock implementation)
+- Permanent deletion through the current service layer
 
 ### 5. Change Role
 - Change user role via prompt dialog
@@ -85,9 +85,9 @@ Added route: `/users` - User management page (admin only)
 ### 2. `src/components/layout/Sidebar.jsx`
 Updated Users menu link to point to `/users`
 
-## Mock Data
+## Seed and Sample Users
 
-Pre-populated with 6 test users:
+The development environment includes sample users for validation and UI testing:
 1. **Hlay Aliotte** (Admin) - hlayaliotte@lewisu.edu
 2. **Prithu Kathet** (Admin) - prithukathet@lewisu.edu
 3. **Sree Soumith Thanigondala** (Admin) - sreesoumiththanigo@lewisu.edu
@@ -126,18 +126,17 @@ Pre-populated with 6 test users:
 - Duplicate email detection
 - Self-action prevention (users can't delete/modify themselves)
 
-### Backend Integration Ready
-All service methods are structured for easy backend integration:
+### Service Integration
+All service methods follow the same API and error-handling structure:
 - Token-based authentication
 - RESTful API patterns
 - Error handling
 - Success/failure responses
 
-### Migration to Real Backend (Week 9)
-Replace mock functions in `userService.js` with actual API calls:
+### Backend Connection Pattern
+The example below shows the request structure used for backend-connected service methods:
 
 ```javascript
-// Example: Convert mock to real API
 export const getAllUsers = async (token, filters = {}) => {
   try {
     const queryString = new URLSearchParams(filters).toString();

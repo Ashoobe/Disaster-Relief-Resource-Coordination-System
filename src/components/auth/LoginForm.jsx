@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { validateLoginForm } from '../../utils/validation';
-// NOTE: validateEmail removed — login now uses username, not email
 import { useAuth } from '../../hooks/useAuth';
 import './AuthForms.css';
 
-// Login form with validation
 const LoginForm = ({ onSuccess, onNavigateToRegister, onNavigateToForgotPassword }) => {
   const { login, loading } = useAuth();
 
-  // NEW: changed email→username to match backend LoginRequest
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -59,7 +56,6 @@ const LoginForm = ({ onSuccess, onNavigateToRegister, onNavigateToForgotPassword
     setErrors({});
 
     // Attempt login
-    // NEW: pass username — backend LoginRequest expects { username, password }
     const result = await login(formData.username, formData.password, formData.rememberMe);
 
     if (!result.success) {
@@ -82,7 +78,6 @@ const LoginForm = ({ onSuccess, onNavigateToRegister, onNavigateToForgotPassword
       )}
 
       {/* Username Field */}
-      {/* NEW: changed from Email to Username — backend LoginRequest expects { username, password } */}
       <div className="form-group">
         <label htmlFor="username">Username</label>
         <input

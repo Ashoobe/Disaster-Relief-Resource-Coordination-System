@@ -129,7 +129,7 @@ export const validateRequired = (value, fieldName, minLength = 1) => {
 export const validateLoginForm = (data) => {
   const errors = {};
 
-  // NEW: backend accepts username (not email) for login
+  // Login is username-based even though older screens referred to email.
   if (!data.username || data.username.trim().length < 3) {
     errors.username = 'Username must be at least 3 characters';
   }
