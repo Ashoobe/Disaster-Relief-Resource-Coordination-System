@@ -1,0 +1,123 @@
+.profile-page {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+
+.profile-subtitle,
+.profile-field-label,
+.profile-upgrade-copy,
+.profile-upgrade-meta {
+  color: var(--color-muted-foreground);
+}
+
+.profile-shell {
+  margin-top: 0.5rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.profile-card {
+  background: var(--surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.profile-card h3 {
+  margin: 0 0 0.75rem;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  row-gap: 0.5rem;
+  column-gap: 0.75rem;
+}
+
+.profile-field-label {
+  font-size: 0.875rem;
+}
+
+.profile-role-value {
+  text-transform: capitalize;
+}
+
+.profile-upgrade-copy {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+}
+
+.profile-upgrade-note {
+  background: var(--color-muted);
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+}
+
+.profile-upgrade-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.profile-form-row label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.profile-field-optional {
+  font-weight: 400;
+  color: var(--color-muted-foreground);
+}
+
+.profile-select,
+.profile-textarea {
+  width: 100%;
+  max-width: 320px;
+}
+
+.profile-textarea {
+  max-width: none;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+
+.profile-status {
+  padding: 0.625rem 0.875rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  border: 1px solid transparent;
+}
+
+.profile-status-success {
+  background: var(--success-light);
+  color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+.profile-status-error {
+  background: var(--error-light);
+  color: var(--error-color);
+  border-color: var(--error-color);
+}
+
+@media (max-width: 640px) {
+  .profile-page {
+    padding: 1rem;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-select {
+    max-width: none;
+  }
+}
