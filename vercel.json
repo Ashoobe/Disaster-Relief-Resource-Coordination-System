@@ -1,0 +1,11 @@
+{
+  "installCommand": "cd fontend && npm ci",
+  "buildCommand": "cd fontend && npm run build",
+  "outputDirectory": "fontend/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
