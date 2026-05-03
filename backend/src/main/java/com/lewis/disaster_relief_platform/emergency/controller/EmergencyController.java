@@ -22,7 +22,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.shaded.com.google.protobuf.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -52,8 +51,8 @@ public class EmergencyController {
     @Operation(summary = "Create a new emergency for PUBLIC", description = "Submits a new emergency request and saves it to the database.")
     public ResponseEntity<ApiResponse<EmergencyResponse>> createPublicEmergency(
             @Valid @RequestBody EmergencyRequest request) {
-        log.info("event=EMERGENCY_CREATE_REQUEST category={} affectedPeople={}",
-                request.getCategory(),
+        log.info("event=EMERGENCY_CREATE_REQUEST type={} affectedPeople={}",
+                request.getType(),
                 request.getAffectedPeople());
         try {
 
@@ -67,8 +66,11 @@ public class EmergencyController {
                     response.getTrackingCode(),
                     duration);
 
+            String message = String.format(
+                    "Emergency created successfully. Your tracking code is: %s. Save this code to check your request status.",
+                    response.getTrackingCode());
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(ApiResponse.success(response));
+                    .body(ApiResponse.success(response, message));
 
         } catch (Exception e) {
 
@@ -76,13 +78,6 @@ public class EmergencyController {
                     e.getMessage(), e);
             throw e;
         }
-        // Add tracking code to success message
-        String message = String.format(
-                "Emergency created successfully. Your tracking code is: %s. Save this code to check your request status.",
-                response.getTrackingCode());
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(ApiResponse.success(response, message));
     }
 
     /**
@@ -168,7 +163,7 @@ public class EmergencyController {
         log.info("event=EMERGENCY_UPDATE emergencyId={} status={} volunteerId={}",
                 id,
                 request.getStatus(),
-                request.getVolunteerId());
+                request.getAssignedTo());
         EmergencyResponse response = emergencyService.updateEmergency(id, request);
         return ResponseEntity.ok(ApiResponse.success(response, "Emergency updated successfully"));
     }

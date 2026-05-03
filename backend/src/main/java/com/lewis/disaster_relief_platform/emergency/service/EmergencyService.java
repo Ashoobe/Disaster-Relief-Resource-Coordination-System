@@ -23,6 +23,7 @@ import com.lewis.disaster_relief_platform.emergency.model.Emergency;
 import com.lewis.disaster_relief_platform.emergency.model.Location;
 import com.lewis.disaster_relief_platform.emergency.model.Status;
 import com.lewis.disaster_relief_platform.emergency.repository.EmergencyRepository;
+import com.lewis.disaster_relief_platform.notification.AdminAlertEmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -44,6 +45,7 @@ public class EmergencyService {
     private final EmergencyRepository emergencyRepository;
     private final EmergencyEventPublisher emergencyEventPublisher;
     private final UserRepository userRepository;
+    private final AdminAlertEmailService adminAlertEmailService;
 
     @Transactional
     public EmergencyResponse CreateEmergency(EmergencyRequest request) {
@@ -72,6 +74,8 @@ public class EmergencyService {
         log.info("FROM SERVICE: ", emergency);
         Emergency savedEmergency = emergencyRepository.save(emergency);
 
+        // Notify the configured Gmail/admin inbox after MongoDB saves the request so staff can respond quickly without risking data loss if email fails.
+        adminAlertEmailService.sendNewRequestAlert(savedEmergency);
         emergencyEventPublisher.publishEmergencyCreated(savedEmergency);
         log.info("Emergency saved with ID: {}", savedEmergency.getId());
         return EmergencyResponse.fromEntity(savedEmergency);
