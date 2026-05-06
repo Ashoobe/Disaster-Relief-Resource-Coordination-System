@@ -1,0 +1,171 @@
+/* Help Page Styles */
+.help-page {
+  padding: 2rem;
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.help-header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.help-header p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.help-contact {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.help-contact-icon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.help-contact-title {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+
+.help-contact-desc {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.help-contact-desc a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.help-contact-desc a:hover {
+  text-decoration: underline;
+}
+
+.resource-notice {
+  margin-bottom: 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  background: var(--info-light);
+  color: var(--info-color);
+  border: 1px solid var(--info-color);
+  font-weight: 500;
+}
+
+/* FAQ */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  text-align: left;
+  gap: 0.75rem;
+}
+
+.faq-question:hover {
+  color: var(--color-primary);
+}
+
+.faq-chevron {
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+.faq-answer {
+  padding: 0 0 1rem 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* Resources */
+.resources-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.resource-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-card);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  font-family: inherit;
+  width: 100%;
+}
+
+.resource-card:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-background);
+}
+
+.resource-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.resource-info {
+  flex: 1;
+}
+
+.resource-title {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: 0.9375rem;
+  margin-bottom: 2px;
+}
+
+.resource-desc {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.resource-arrow {
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .help-page { padding: 1rem; }
+}
