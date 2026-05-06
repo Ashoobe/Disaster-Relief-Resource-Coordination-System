@@ -8,7 +8,6 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   const handleRegisterSuccess = () => {
-    console.log('Registration successful!');
     navigate('/dashboard');
   };
 

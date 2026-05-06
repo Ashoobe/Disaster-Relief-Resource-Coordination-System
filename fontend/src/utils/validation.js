@@ -7,14 +7,6 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Password requirements
 const PASSWORD_MIN_LENGTH = 8;
-const PASSWORD_REQUIREMENTS = {
-  minLength: PASSWORD_MIN_LENGTH,
-  hasUppercase: true,
-  hasLowercase: true,
-  hasNumber: true,
-  hasSpecialChar: true,
-};
-
 /**
  * Validates email format
  * @param {string} email - Email to validate
@@ -72,7 +64,7 @@ export const validatePassword = (password) => {
   }
 
   // Check for special character
-  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
     errors.push('one special character');
   } else {
     strength++;

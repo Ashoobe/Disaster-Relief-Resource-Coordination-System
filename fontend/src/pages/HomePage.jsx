@@ -6,7 +6,6 @@ import {
   Users,
   Heart,
   Phone,
-  Mail,
   Droplets,
   Flame,
   Wind,
@@ -190,7 +189,7 @@ const HomePage = () => {
         <section className="emergency-cta">
           <div className="emergency-cta-content">
             <h2>Need Emergency Assistance?</h2>
-            <p>Our team is standing by 24/7 to respond to disaster emergencies. Don't hesitate to reach out.</p>
+            <p>Our team is standing by 24/7 to respond to disaster emergencies. Don&apos;t hesitate to reach out.</p>
             <div className="emergency-cta-actions">
               <Link to="/submit-emergency-request" className="emergency-btn emergency-btn-solid">
                 <AlertCircle size={16} />

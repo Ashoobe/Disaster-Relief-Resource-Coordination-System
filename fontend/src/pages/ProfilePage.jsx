@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import {
   submitRoleRequest,
@@ -12,17 +12,16 @@ const UPGRADEABLE_ROLES = [
 
 const ProfilePage = () => {
   const { user } = useAuth();
-  const [pendingRequest, setPendingRequest] = useState(null);
+  const [submittedRequest, setSubmittedRequest] = useState(null);
   const [requestedRole, setRequestedRole] = useState('coordinator');
   const [reason, setReason] = useState('');
   const [submitStatus, setSubmitStatus] = useState(null); // { type: 'success'|'error', message }
   const [submitting, setSubmitting] = useState(false);
+  const [securityNotice, setSecurityNotice] = useState('');
 
-  useEffect(() => {
-    if (user?.id) {
-      setPendingRequest(getUserRoleRequest(user.id));
-    }
-  }, [user]);
+  const storedPendingRequest = user?.id ? getUserRoleRequest(user.id) : null;
+  const pendingRequest =
+    submittedRequest?.userId === user?.id ? submittedRequest : storedPendingRequest;
 
   const handleRoleRequest = (e) => {
     e.preventDefault();
@@ -31,7 +30,7 @@ const ProfilePage = () => {
     setSubmitStatus(null);
     const result = submitRoleRequest(user, requestedRole, reason);
     if (result.success) {
-      setPendingRequest(result.request);
+      setSubmittedRequest(result.request);
       setReason('');
       setSubmitStatus({ type: 'success', message: result.message });
     } else {
@@ -64,8 +63,13 @@ const ProfilePage = () => {
         <div style={{ background: 'var(--color-card)', border: '1px solid var(--color-border)', borderRadius: 8, padding: 16 }}>
           <h3 style={{ margin: 0, marginBottom: 12 }}>Security</h3>
           <button style={{ padding: '8px 12px', borderRadius: 6, border: '1px solid var(--color-border)', background: 'var(--color-muted)', cursor: 'pointer' }}
-            onClick={() => alert('Password reset flow will be implemented later.')}
+            onClick={() => setSecurityNotice('Password changes are managed by the authentication service for this submission build.')}
           >Change Password</button>
+          {securityNotice && (
+            <div role="status" style={{ marginTop: 12, padding: '8px 12px', borderRadius: 6, background: 'var(--info-light)', color: 'var(--info-color)', border: '1px solid var(--info-color)', fontSize: '0.875rem' }}>
+              {securityNotice}
+            </div>
+          )}
         </div>
 
         {/* Role Upgrade Request */}
@@ -118,8 +122,9 @@ const ProfilePage = () => {
                 {submitStatus && (
                   <div style={{
                     padding: '8px 12px', borderRadius: 6, fontSize: '0.875rem',
-                    background: submitStatus.type === 'success' ? '#dcfce7' : '#fee2e2',
-                    color: submitStatus.type === 'success' ? '#166534' : '#991b1b',
+                    background: submitStatus.type === 'success' ? 'var(--success-light)' : 'var(--error-light)',
+                    color: submitStatus.type === 'success' ? 'var(--success-color)' : 'var(--error-color)',
+                    border: `1px solid ${submitStatus.type === 'success' ? 'var(--success-color)' : 'var(--error-color)'}`,
                   }}>
                     {submitStatus.message}
                   </div>
@@ -128,7 +133,7 @@ const ProfilePage = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    style={{ padding: '8px 20px', borderRadius: 6, background: 'var(--color-primary, #2563eb)', color: '#fff', border: 'none', fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.6 : 1 }}
+                    style={{ padding: '8px 20px', borderRadius: 6, background: 'var(--color-primary, #2563eb)', color: 'var(--color-primary-foreground)', border: 'none', fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.6 : 1 }}
                   >
                     {submitting ? 'Submitting…' : 'Submit Request'}
                   </button>

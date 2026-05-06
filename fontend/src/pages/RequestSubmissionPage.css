@@ -285,8 +285,8 @@
 .success-icon {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #27ae60, #229954);
-  color: white;
+  background: linear-gradient(135deg, var(--success-color), var(--success-hover));
+  color: var(--interactive-inverse);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -307,7 +307,7 @@
   margin: 0 0 24px 0;
 }
 
-.request-id {
+.request-submission-page .request-id {
   background: #f0f7ff;
   border: 1px solid #3498db;
   border-radius: 8px;
@@ -318,12 +318,12 @@
   gap: 8px;
 }
 
-.request-id strong {
+.request-submission-page .request-id strong {
   color: #1a1a1a;
   font-size: 14px;
 }
 
-.request-id span {
+.request-submission-page .request-id span {
   font-family: 'Courier New', monospace;
   background: white;
   padding: 8px 12px;
@@ -334,19 +334,19 @@
 }
 
 /* Dark mode overrides for request-id */
-[data-theme='dark'] .request-id,
-.dark-mode .request-id {
+[data-theme='dark'] .request-submission-page .request-id,
+.dark-mode .request-submission-page .request-id {
   background: #1a3a52;
   border-color: #2a5a82;
 }
 
-[data-theme='dark'] .request-id strong,
-.dark-mode .request-id strong {
+[data-theme='dark'] .request-submission-page .request-id strong,
+.dark-mode .request-submission-page .request-id strong {
   color: #f8f9fa;
 }
 
-[data-theme='dark'] .request-id span,
-.dark-mode .request-id span {
+[data-theme='dark'] .request-submission-page .request-id span,
+.dark-mode .request-submission-page .request-id span {
   background: #292a2d;
   color: #8ab4f8;
 }

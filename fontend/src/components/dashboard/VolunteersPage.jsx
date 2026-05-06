@@ -15,6 +15,7 @@ const VolunteersPage = () => {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [notice, setNotice] = useState('');
 
   useEffect(() => {
     const fetchVolunteers = async () => {
@@ -63,10 +64,16 @@ const VolunteersPage = () => {
           <h1>Volunteers</h1>
           <p>Manage and monitor volunteer assignments</p>
         </div>
-        <button className="btn btn-primary" onClick={() => alert('Invite volunteer flow coming soon.')}>
+        <button className="btn btn-primary" onClick={() => setNotice('Volunteer invitations are managed from Team Members in this submission build.')}>
           ➕ Invite Volunteer
         </button>
       </div>
+
+      {notice && (
+        <div className="vol-notice" role="status">
+          {notice}
+        </div>
+      )}
 
       {/* Summary cards */}
       <div className="volunteers-stats">
@@ -167,8 +174,8 @@ const VolunteersPage = () => {
                       </td>
                       <td>
                         <div className="vol-actions">
-                          <button className="btn-icon-action" title="View profile" onClick={() => alert(`Profile for ${vol.fullName}`)}>👁️</button>
-                          <button className="btn-icon-action" title="Assign task" onClick={() => alert(`Assign task to ${vol.fullName}`)}>📋</button>
+                          <button className="btn-icon-action" title="View profile" aria-label={`View profile for ${vol.fullName}`} onClick={() => setNotice(`Profile for ${vol.fullName} is available from the Users page.`)}>👁️</button>
+                          <button className="btn-icon-action" title="Assign task" aria-label={`Assign task to ${vol.fullName}`} onClick={() => setNotice(`Task assignment for ${vol.fullName} starts from an available request.`)}>📋</button>
                         </div>
                       </td>
                     </tr>

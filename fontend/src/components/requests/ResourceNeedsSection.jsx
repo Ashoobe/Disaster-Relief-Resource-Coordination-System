@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-const ResourceNeedsSection = ({ resourceNeeds, onChange, errors = {} }) => {
+const ResourceNeedsSection = ({ resourceNeeds, onChange, _errors = {} }) => {
   const handleResourceCheck = (resource, checked) => {
     onChange({
       ...resourceNeeds,

@@ -154,7 +154,7 @@ const LoginForm = ({ onSuccess, onNavigateToRegister, onNavigateToForgotPassword
       {/* Sign Up Link */}
       <div className="auth-footer">
         <p>
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <button
             type="button"
             className="link-button"

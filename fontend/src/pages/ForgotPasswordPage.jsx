@@ -47,7 +47,7 @@ const ForgotPasswordPage = () => {
       } else {
         setMessage(result.message);
       }
-    } catch (error) {
+    } catch {
       setMessage('An error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -70,7 +70,7 @@ const ForgotPasswordPage = () => {
           <form className="auth-form" onSubmit={handleSubmit}>
             <h2>Reset Your Password</h2>
             <p className="form-subtitle">
-              Enter your email and we'll send you instructions to reset your password
+              Enter your email and we&apos;ll send you instructions to reset your password
             </p>
 
             {message && (
@@ -116,7 +116,7 @@ const ForgotPasswordPage = () => {
                   Check your email for instructions on how to reset your password.
                 </p>
                 <p className="form-help" style={{ marginTop: '10px' }}>
-                  Didn't receive the email? Check your spam folder or{' '}
+                  Didn&apos;t receive the email? Check your spam folder or{' '}
                   <button
                     type="button"
                     className="link-button"
@@ -146,7 +146,7 @@ const ForgotPasswordPage = () => {
                 </button>
               </p>
               <p>
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <button
                   type="button"
                   className="link-button"

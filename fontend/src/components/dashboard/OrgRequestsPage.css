@@ -51,7 +51,7 @@
 .summary-chip.active {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
-  color: #fff;
+  color: var(--color-primary-foreground);
 }
 
 .org-req-list {
@@ -159,7 +159,7 @@
 
 .btn-primary {
   background-color: var(--color-primary);
-  color: #fff;
+  color: var(--color-primary-foreground);
 }
 
 .btn-primary:hover {

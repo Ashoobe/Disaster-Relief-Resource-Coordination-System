@@ -23,8 +23,6 @@ const UsersPage = () => {
     status: 'all',
   });
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',

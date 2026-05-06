@@ -224,7 +224,7 @@
 
 .button-primary {
   background-color: var(--primary-color);
-  color: #ffffff;
+  color: var(--interactive-inverse);
 }
 
 .button-primary:hover:not(:disabled) {

@@ -28,7 +28,7 @@ const MENU_ITEMS = {
   ],
 };
 
-export const Sidebar = ({ isOpen, onClose, currentPath = '/dashboard' }) => {
+export const Sidebar = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { getRoleLabel } from '../../lib/permissions';
 import ThemeToggle from '../common/ThemeToggle';
-import { getUnreadNotificationCount, notificationEvents } from '../../services/notificationService';
+import { getUnreadNotificationCount, notificationEvents, refreshNotificationsFromServer } from '../../services/notificationService';
 import './Navbar.css';
 
 export const Navbar = ({ onMenuToggle }) => {
@@ -15,17 +15,27 @@ export const Navbar = ({ onMenuToggle }) => {
   const userInitial = user?.fullName?.trim()?.charAt(0)?.toUpperCase() || 'U';
 
   useEffect(() => {
-    const syncCount = () => {
+    let cancelled = false;
+    const syncCount = async () => {
+      await refreshNotificationsFromServer(user);
+      if (!cancelled) {
+        setUnreadNotifications(getUnreadNotificationCount(user));
+      }
+    };
+    const syncLocalCount = () => {
       setUnreadNotifications(getUnreadNotificationCount(user));
     };
 
     syncCount();
-    window.addEventListener('storage', syncCount);
-    window.addEventListener(notificationEvents.updated, syncCount);
+    const intervalId = window.setInterval(syncCount, 30000);
+    window.addEventListener('storage', syncLocalCount);
+    window.addEventListener(notificationEvents.updated, syncLocalCount);
 
     return () => {
-      window.removeEventListener('storage', syncCount);
-      window.removeEventListener(notificationEvents.updated, syncCount);
+      cancelled = true;
+      window.clearInterval(intervalId);
+      window.removeEventListener('storage', syncLocalCount);
+      window.removeEventListener(notificationEvents.updated, syncLocalCount);
     };
   }, [user]);
 

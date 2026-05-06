@@ -9,7 +9,7 @@ import {
 } from '../lib/permissions';
 import { useAuth } from '../hooks/useAuth';
 import { getAllUsers } from '../services/userService';
-import { createRequestAssignedNotification, createRequestCompletedNotification } from '../services/notificationService';
+import { refreshNotificationsFromServer } from '../services/notificationService';
 import './RequestDetailPage.css';
 
 const REQUEST_FORM_PAYLOADS_KEY = 'drrcs_request_form_payloads';
@@ -151,7 +151,7 @@ const RequestDetailPage = () => {
         status: updated.status || 'assigned',
         backendStatus: updated.backendStatus || 'assigned',
       }));
-      createRequestAssignedNotification(updated, assignee);
+      await refreshNotificationsFromServer(user);
     } catch (error) {
       setActionError(error?.message || 'Failed to assign the request. Please try again.');
     } finally {
@@ -205,7 +205,7 @@ const RequestDetailPage = () => {
         status: updated.status || 'assigned',
         backendStatus: updated.backendStatus || 'assigned',
       }));
-      createRequestAssignedNotification(updated, selfCandidate);
+      await refreshNotificationsFromServer(user);
     } catch (error) {
       setActionError(error?.message || 'Failed to assign this request to yourself. Please try again.');
     } finally {
@@ -289,7 +289,7 @@ const RequestDetailPage = () => {
         completedBy: user?.fullName || request.assigneeName || 'Response Team',
       });
       setRequest(updated);
-      createRequestCompletedNotification(updated, updated.completedBy || 'Response Team');
+      await refreshNotificationsFromServer(user);
     } catch (error) {
       setActionError(error?.message || 'Failed to complete this task. Please try again.');
     } finally {

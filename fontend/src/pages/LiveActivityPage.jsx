@@ -12,7 +12,6 @@ import {
   MapPin,
   RefreshCw,
   Search,
-  Shield,
   Sun,
   Wind,
   Bell,
@@ -82,6 +81,24 @@ const formatCoordinates = (coordinates) => {
   }
 
   return `${coordinates.latitude.toFixed(2)}, ${coordinates.longitude.toFixed(2)}`;
+};
+
+const splitAlertAreas = (areaDesc = '') => areaDesc
+  .split(';')
+  .map((area) => area.trim())
+  .filter(Boolean);
+
+const summarizeAlertAreas = (areaDesc = '', visibleCount = 2) => {
+  const areas = splitAlertAreas(areaDesc);
+
+  if (areas.length === 0) {
+    return { text: 'Area details pending', extraCount: 0 };
+  }
+
+  return {
+    text: areas.slice(0, visibleCount).join('; '),
+    extraCount: Math.max(areas.length - visibleCount, 0),
+  };
 };
 
 const chartTypes = [
@@ -318,13 +335,20 @@ const LiveActivityPage = () => {
   }, [selectedWeatherDate, tenDayWeather]);
 
   const focusAreas = useMemo(() => {
-    const areas = alerts
-      .slice(0, 6)
-      .map((alert) => alert.areaDesc)
-      .filter(Boolean);
+    const areaCounts = new Map();
 
-    return Array.from(new Set(areas));
+    alerts.forEach((alert) => {
+      splitAlertAreas(alert.areaDesc).forEach((area) => {
+        areaCounts.set(area, (areaCounts.get(area) || 0) + 1);
+      });
+    });
+
+    return Array.from(areaCounts.entries())
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([area]) => area);
   }, [alerts]);
+  const visibleFocusAreas = focusAreas.slice(0, 6);
+  const hiddenFocusAreaCount = Math.max(focusAreas.length - visibleFocusAreas.length, 0);
 
   const handleLocationSubmit = async (event) => {
     event.preventDefault();
@@ -688,8 +712,21 @@ const LiveActivityPage = () => {
 
           <section className="live-panel live-critical-alerts-card">
             <div className="live-critical-header">
+              <div className="live-critical-title">
+                <span className="live-critical-title-icon"><TriangleAlert size={18} /></span>
+                <div>
+                  <span className="live-critical-eyebrow">NOAA priority monitor</span>
+                  <h3>Critical Weather Alerts</h3>
+                </div>
+              </div>
+              <div className="live-critical-summary">
+                <span>{criticalAlertCount}</span>
+                <p>Active critical alerts</p>
+              </div>
+            </div>
+
+            <div className="live-critical-subheader">
               <div>
-                <h3>Critical Weather Alerts</h3>
                 <p>Red priority feed for dangerous conditions where people should focus right now.</p>
               </div>
               {alertsLastUpdated && (
@@ -699,13 +736,16 @@ const LiveActivityPage = () => {
 
             {alertsError && <p className="live-error">{alertsError}</p>}
 
-            {focusAreas.length > 0 && (
+            {visibleFocusAreas.length > 0 && (
               <div className="live-focus-areas">
-                <strong>Focus Areas:</strong>
+                <strong>Top Focus Areas</strong>
                 <div className="live-focus-tags">
-                  {focusAreas.map((area) => (
+                  {visibleFocusAreas.map((area) => (
                     <span key={area} className="live-focus-tag">{area}</span>
                   ))}
+                  {hiddenFocusAreaCount > 0 && (
+                    <span className="live-focus-tag live-focus-tag-muted">+{hiddenFocusAreaCount} more</span>
+                  )}
                 </div>
               </div>
             )}
@@ -714,24 +754,34 @@ const LiveActivityPage = () => {
               <div className="live-empty-state">No severe/critical weather alerts are active in the NOAA feed right now.</div>
             ) : (
               <div className="live-critical-grid">
-                {alerts.slice(0, 8).map((alert) => (
-                  <article key={alert.id} className="live-critical-card">
-                    <div className="live-critical-card-top">
-                      <span className="live-critical-event">{alert.event}</span>
-                      <span className="live-critical-severity">{alert.severity}</span>
-                    </div>
-                    <p className="live-critical-area"><MapPin size={13} /> {alert.areaDesc}</p>
-                    <p className="live-critical-headline">{alert.headline}</p>
-                    <div className="live-critical-times">
-                      <span><Clock size={12} /> Sent {formatTimestamp(alert.sent, { hour: 'numeric', minute: '2-digit' })}</span>
-                      <span>Status: {alert.status}</span>
-                    </div>
-                    <a className="live-critical-link" href={alert.sourceUrl} target="_blank" rel="noreferrer">
-                      Open NOAA Alert
-                      <ExternalLink size={12} />
-                    </a>
-                  </article>
-                ))}
+                {alerts.slice(0, 8).map((alert) => {
+                  const areaSummary = summarizeAlertAreas(alert.areaDesc, 2);
+
+                  return (
+                    <article key={alert.id} className="live-critical-card">
+                      <div className="live-critical-card-top">
+                        <span className="live-critical-event">{alert.event}</span>
+                        <span className="live-critical-severity">{alert.severity}</span>
+                      </div>
+                      <p className="live-critical-area">
+                        <MapPin size={13} />
+                        <span>{areaSummary.text}</span>
+                        {areaSummary.extraCount > 0 && (
+                          <span className="live-critical-more">+{areaSummary.extraCount} more</span>
+                        )}
+                      </p>
+                      <p className="live-critical-headline">{alert.headline}</p>
+                      <div className="live-critical-times">
+                        <span><Clock size={12} /> {formatTimestamp(alert.sent, { hour: 'numeric', minute: '2-digit' })}</span>
+                        <span>{alert.status}</span>
+                      </div>
+                      <a className="live-critical-link" href={alert.sourceUrl} target="_blank" rel="noreferrer">
+                        NOAA details
+                        <ExternalLink size={12} />
+                      </a>
+                    </article>
+                  );
+                })}
               </div>
             )}
           </section>
