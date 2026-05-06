@@ -66,7 +66,7 @@ const ForgotPasswordPage = () => {
     <div className="auth-page forgot-password-page">
       <div className="auth-page-content">
         <AuthPageToolbar />
-        <div className="auth-container">
+        <div className="auth-container" data-animate="fade-up">
           <form className="auth-form" onSubmit={handleSubmit}>
             <h2>Reset Your Password</h2>
             <p className="form-subtitle">

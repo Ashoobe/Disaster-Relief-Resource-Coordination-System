@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import PublicSiteHeader from '../components/layout/PublicSiteHeader';
 import PublicSiteFooter from '../components/layout/PublicSiteFooter';
+import useScrollReveal from '../hooks/useScrollReveal';
 import './HomePage.css';
 import './ServicesPage.css';
 
@@ -196,13 +197,15 @@ const disasterTypes = [
 ];
 
 const ServicesPage = () => {
+  useScrollReveal();
+
   return (
     <div className="services-page">
       <PublicSiteHeader activeKey="services" />
 
       <main className="services-main">
         <section className="services-hero">
-          <div className="services-shell services-hero-copy">
+          <div className="services-shell services-hero-copy" data-animate="fade-up">
             <h1>Our Services</h1>
             <p>
               Comprehensive disaster response and relief services available 24/7 to help
@@ -220,11 +223,18 @@ const ServicesPage = () => {
                     key={title}
                     className={`services-primary-card ${reverse ? 'services-primary-card-reverse' : ''}`}
                   >
-                    <div className="services-primary-media">
+                    <div
+                      className="services-primary-media"
+                      data-animate={reverse ? 'fade-left' : 'fade-right'}
+                    >
                       <img src={image} alt={imageAlt} />
                     </div>
 
-                    <div className="services-primary-copy">
+                    <div
+                      className="services-primary-copy"
+                      data-animate={reverse ? 'fade-right' : 'fade-left'}
+                      data-delay="150"
+                    >
                       <span className={`services-icon-chip ${tone}`} aria-hidden="true">
                         <Icon size={28} />
                       </span>
@@ -249,7 +259,7 @@ const ServicesPage = () => {
 
         <section className="services-support-section">
           <div className="services-shell">
-            <div className="services-section-heading">
+            <div className="services-section-heading" data-animate="fade-up">
               <h2>Additional Support Services</h2>
               <p>
                 Beyond our core services, we provide comprehensive support to help communities
@@ -258,8 +268,8 @@ const ServicesPage = () => {
             </div>
 
             <div className="services-support-grid">
-              {supportServices.map(({ title, description, bullets, icon: Icon, tone }) => (
-                <article key={title} className="services-support-card">
+              {supportServices.map(({ title, description, bullets, icon: Icon, tone }, i) => (
+                <article key={title} className="services-support-card" data-animate="fade-up" data-delay={i % 3 * 150}>
                   <span className={`services-icon-chip ${tone}`} aria-hidden="true">
                     <Icon size={24} />
                   </span>
@@ -278,7 +288,7 @@ const ServicesPage = () => {
 
         <section className="coverage-section services-coverage-section">
           <div className="coverage-content services-shell">
-            <div className="services-section-heading">
+            <div className="services-section-heading" data-animate="fade-up">
               <h2>Disaster Types We Respond To</h2>
               <p>
                 Our teams are trained and equipped to respond to all types of natural and
@@ -287,8 +297,8 @@ const ServicesPage = () => {
             </div>
 
             <div className="coverage-grid services-coverage-grid">
-              {disasterTypes.map(({ label, shortLabel, secondaryLabel, icon: Icon, tone, description }) => (
-                <article key={label} className="coverage-card services-coverage-card" tabIndex="0">
+              {disasterTypes.map(({ label, shortLabel, secondaryLabel, icon: Icon, tone, description }, i) => (
+                <article key={label} className="coverage-card services-coverage-card" tabIndex="0" data-animate="zoom-in" data-delay={i % 3 * 100}>
                   <span className={`coverage-icon coverage-icon-${tone}`} aria-hidden="true">
                     <Icon size={30} />
                   </span>
@@ -309,7 +319,7 @@ const ServicesPage = () => {
         </section>
 
         <section className="emergency-cta">
-          <div className="emergency-cta-content services-shell">
+          <div className="emergency-cta-content services-shell" data-animate="fade-up">
             <h2>Need Emergency Assistance?</h2>
             <p>
               Our team is standing by 24/7 to respond to disaster emergencies. Don&apos;t

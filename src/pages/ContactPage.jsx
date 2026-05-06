@@ -102,7 +102,7 @@ const ContactPage = () => {
 
       <main className="contact-main">
         <section className="contact-hero-banner">
-          <div className="contact-shell contact-hero-copy">
+          <div className="contact-shell contact-hero-copy" data-animate="fade-up">
             <h1>Contact Us</h1>
             <p>
               Get in touch with our team. We&apos;re available 24/7 to respond to emergency requests
@@ -114,7 +114,7 @@ const ContactPage = () => {
         <section className="contact-info-band">
           <div className="contact-shell">
             <div className="contact-info-grid">
-              {contactCards.map(({ title, primary, secondary, href, icon: Icon, tone }) => {
+              {contactCards.map(({ title, primary, secondary, href, icon: Icon, tone }, i) => {
                 const content = (
                   <>
                     <span className={`contact-icon-chip ${tone}`}>
@@ -127,11 +127,11 @@ const ContactPage = () => {
                 );
 
                 return href ? (
-                  <a key={title} href={href} className={`contact-info-card ${tone}`} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noreferrer' : undefined}>
+                  <a key={title} href={href} className={`contact-info-card ${tone}`} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noreferrer' : undefined} data-animate="fade-up" data-delay={i * 100}>
                     {content}
                   </a>
                 ) : (
-                  <article key={title} className={`contact-info-card ${tone}`}>
+                  <article key={title} className={`contact-info-card ${tone}`} data-animate="fade-up" data-delay={i * 100}>
                     {content}
                   </article>
                 );
@@ -142,12 +142,12 @@ const ContactPage = () => {
 
         <section className="contact-form-section">
           <div className="contact-shell">
-            <div className="contact-section-heading">
+            <div className="contact-section-heading" data-animate="fade-up">
               <h2>Send Us a Message</h2>
               <p>Fill out the form below and our team will get back to you as soon as possible.</p>
             </div>
 
-            <div className="contact-form-card">
+            <div className="contact-form-card" data-animate="fade-up" data-delay="100">
               <h3>Contact Form</h3>
 
               {submitted && (
@@ -228,14 +228,14 @@ const ContactPage = () => {
 
         <section className="contact-faq-section">
           <div className="contact-shell">
-            <div className="contact-section-heading">
+            <div className="contact-section-heading" data-animate="fade-up">
               <h2>Frequently Asked Questions</h2>
               <p>Quick answers to common questions about our services.</p>
             </div>
 
             <div className="contact-faq-list">
-              {faqItems.map(({ question, answer }) => (
-                <article key={question} className="contact-faq-card">
+              {faqItems.map(({ question, answer }, i) => (
+                <article key={question} className="contact-faq-card" data-animate="fade-up" data-delay={i % 2 * 100}>
                   <h3>{question}</h3>
                   <p>{answer}</p>
                 </article>

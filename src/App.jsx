@@ -33,7 +33,9 @@ import TermsPage from './pages/TermsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import { getDefaultRouteForRole, hasRequiredRole } from './lib/permissions';
 import SkipLink from './components/common/SkipLink';
+import useScrollReveal from './hooks/useScrollReveal';
 import './App.css';
+import './styles/scroll-animations.css';
 
 // Protect routes - redirect to login if not authenticated
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
@@ -52,6 +54,8 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
+
+  useScrollReveal([pathname]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
