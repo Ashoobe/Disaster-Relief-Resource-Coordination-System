@@ -6,6 +6,7 @@ import {
   markAllNotificationsRead,
   markNotificationRead,
   notificationEvents,
+  refreshNotificationsFromServer,
 } from '../services/notificationService';
 
 const NotificationsPage = () => {
@@ -14,29 +15,39 @@ const NotificationsPage = () => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    const syncNotifications = () => {
+    let cancelled = false;
+    const syncNotifications = async () => {
+      const notifications = await refreshNotificationsFromServer(user);
+      if (!cancelled) {
+        setItems(notifications);
+      }
+    };
+    const syncLocalNotifications = () => {
       setItems(getNotifications(user));
     };
 
     syncNotifications();
-    window.addEventListener('storage', syncNotifications);
-    window.addEventListener(notificationEvents.updated, syncNotifications);
+    const intervalId = window.setInterval(syncNotifications, 30000);
+    window.addEventListener('storage', syncLocalNotifications);
+    window.addEventListener(notificationEvents.updated, syncLocalNotifications);
 
     return () => {
-      window.removeEventListener('storage', syncNotifications);
-      window.removeEventListener(notificationEvents.updated, syncNotifications);
+      cancelled = true;
+      window.clearInterval(intervalId);
+      window.removeEventListener('storage', syncLocalNotifications);
+      window.removeEventListener(notificationEvents.updated, syncLocalNotifications);
     };
   }, [user]);
 
-  const markAllRead = () => {
-    markAllNotificationsRead(user);
-    setItems(getNotifications(user));
+  const markAllRead = async () => {
+    await markAllNotificationsRead(user);
+    setItems(await refreshNotificationsFromServer(user));
   };
 
-  const handleOpenNotification = (notification) => {
+  const handleOpenNotification = async (notification) => {
     if (!notification.read) {
-      markNotificationRead(notification.id, user);
-      setItems(getNotifications(user));
+      await markNotificationRead(notification.id, user);
+      setItems(await refreshNotificationsFromServer(user));
     }
 
     if (notification.actionPath) {

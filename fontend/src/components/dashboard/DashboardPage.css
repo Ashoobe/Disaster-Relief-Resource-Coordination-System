@@ -138,7 +138,7 @@
 
 .action-button:hover {
   background-color: var(--color-primary, #0066cc);
-  color: #ffffff;
+  color: var(--color-primary-foreground, #ffffff);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
 }
@@ -319,6 +319,36 @@
   font-weight: 600;
 }
 
+.notification-tracking-id {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.notification-tracking-label {
+  color: var(--color-text-secondary, #6b7280);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.notification-tracking-value {
+  max-width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--color-primary, #2563eb);
+  border-radius: 6px;
+  background: var(--color-primary-subtle, #eff6ff);
+  color: var(--color-primary, #1d4ed8);
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
 .request-badges {
   display: flex;
   gap: 8px;
@@ -447,12 +477,12 @@
 
 /* Action Buttons */
 .action-button.primary {
-  background: #3b82f6;
-  color: white;
+  background: var(--color-primary, #0052a3);
+  color: var(--color-primary-foreground, #ffffff);
 }
 
 .action-button.primary:hover {
-  background: #2563eb;
+  background: var(--primary-hover, #003f7a);
 }
 
 /* Responsive */

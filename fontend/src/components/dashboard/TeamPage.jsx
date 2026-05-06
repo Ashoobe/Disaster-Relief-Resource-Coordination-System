@@ -13,6 +13,7 @@ const TeamPage = () => {
   const [error, setError] = useState(null);
   const [showInvite, setShowInvite] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
+  const [notice, setNotice] = useState('');
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -51,9 +52,13 @@ const TeamPage = () => {
 
   const handleInvite = (e) => {
     e.preventDefault();
-    alert(`Invitation sent to ${inviteEmail}`);
+    setNotice(`Invitation queued for ${inviteEmail}.`);
     setInviteEmail('');
     setShowInvite(false);
+  };
+
+  const showReadOnlyNotice = (action, memberName) => {
+    setNotice(`${action} for ${memberName} is read-only in this submission build.`);
   };
 
   return (
@@ -70,6 +75,11 @@ const TeamPage = () => {
 
       <Card elevation="elevated">
         <Card.Body>
+          {notice && (
+            <div className="team-notice" role="status">
+              {notice}
+            </div>
+          )}
           {loading ? (
             <div className="team-footer"><p>Loading team members…</p></div>
           ) : error ? (
@@ -107,8 +117,8 @@ const TeamPage = () => {
                       </td>
                       <td>
                         <div className="team-actions">
-                          <button className="btn-icon-action" title="Edit" onClick={() => alert(`Edit ${member.fullName}`)}>✏️</button>
-                          <button className="btn-icon-action btn-icon-danger" title="Remove" onClick={() => alert(`Remove ${member.fullName}`)}>🗑️</button>
+                          <button className="btn-icon-action" title="Edit" aria-label={`Edit ${member.fullName}`} onClick={() => showReadOnlyNotice('Edit', member.fullName)}>✏️</button>
+                          <button className="btn-icon-action btn-icon-danger" title="Remove" aria-label={`Remove ${member.fullName}`} onClick={() => showReadOnlyNotice('Remove', member.fullName)}>🗑️</button>
                         </div>
                       </td>
                     </tr>
@@ -159,4 +169,3 @@ const TeamPage = () => {
 };
 
 export default TeamPage;
-

@@ -27,8 +27,8 @@
   --error-hover: #8b0000;
   --error-light: #fce8e6;
   
-  --warning-color: #b8860b;
-  --warning-hover: #8b6914;
+  --warning-color: #8b6914;
+  --warning-hover: #6f4f00;
   --warning-light: #fff4e6;
   
   --info-color: #0052a3;
@@ -41,8 +41,8 @@
   
   --text-primary: #202124;
   --text-secondary: #5f6368;
-  --text-tertiary: #80868b;
-  --text-disabled: #bdc1c6;
+  --text-tertiary: #6b7280;
+  --text-disabled: #62686f;
   
   /* Borders & Dividers */
   --border-color: #dadce0;
@@ -74,8 +74,15 @@
   --color-sidebar-foreground: var(--text-primary);
   --color-sidebar-accent: var(--hover-bg);
   --color-primary: var(--primary-color);
+  --color-primary-foreground: var(--interactive-inverse);
+  --color-primary-subtle: var(--primary-light);
   --color-accent: var(--hover-bg);
   --color-destructive: var(--error-color);
+  --color-destructive-foreground: var(--interactive-inverse);
+  --color-success: var(--success-color);
+  --color-success-foreground: var(--interactive-inverse);
+  --color-warning: var(--warning-color);
+  --color-warning-foreground: var(--interactive-inverse);
   --color-muted: var(--bg-tertiary);
   --color-muted-foreground: var(--text-secondary);
   --color-border: var(--border-color);
@@ -124,7 +131,7 @@
   --text-primary: #f8f9fa;
   --text-secondary: #dadce0;
   --text-tertiary: #9aa0a6;
-  --text-disabled: #5f6368;
+  --text-disabled: #9aa0a6;
   
   /* Borders & Dividers */
   --border-color: #5f6368;
@@ -156,8 +163,15 @@
   --color-sidebar-foreground: var(--text-primary);
   --color-sidebar-accent: var(--hover-bg);
   --color-primary: var(--primary-color);
+  --color-primary-foreground: var(--interactive-inverse);
+  --color-primary-subtle: var(--primary-light);
   --color-accent: var(--hover-bg);
   --color-destructive: var(--error-color);
+  --color-destructive-foreground: var(--interactive-inverse);
+  --color-success: var(--success-color);
+  --color-success-foreground: var(--interactive-inverse);
+  --color-warning: var(--warning-color);
+  --color-warning-foreground: var(--interactive-inverse);
   --color-muted: var(--bg-tertiary);
   --color-muted-foreground: var(--text-secondary);
   --color-border: var(--border-color);

@@ -2,33 +2,50 @@ import React, { createContext, useState, useEffect, useCallback } from 'react';
 
 const ThemeContext = createContext();
 
+const getSystemPreference = () => {
+  try {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+  } catch (error) {
+    console.error('Error reading system theme:', error);
+  }
+  return 'light';
+};
+
+const getInitialTheme = () => {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem('app-theme') || getSystemPreference();
+    }
+  } catch (error) {
+    console.error('Error initializing theme:', error);
+  }
+  return getSystemPreference();
+};
+
 // Handle light/dark theme switching
 const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
-  const [systemPreference, setSystemPreference] = useState('light');
-  const [isClient, setIsClient] = useState(false);
+  const [theme, setTheme] = useState(getInitialTheme);
+  const [systemPreference, setSystemPreference] = useState(getSystemPreference);
 
-  // Load theme preference on mount
+  // Keep the stored system preference current for the auto option.
   useEffect(() => {
-    setIsClient(true);
-    
-    try {
-      if (window.matchMedia) {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setSystemPreference(prefersDark ? 'dark' : 'light');
-
-        const savedTheme = localStorage.getItem('app-theme');
-        setTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
-      }
-    } catch (error) {
-      console.error('Error initializing theme:', error);
+    if (typeof window === 'undefined' || !window.matchMedia) {
+      return undefined;
     }
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (event) => {
+      setSystemPreference(event.matches ? 'dark' : 'light');
+    };
+
+    mediaQuery.addEventListener?.('change', handleChange);
+    return () => mediaQuery.removeEventListener?.('change', handleChange);
   }, []);
 
   // Apply theme class to document
   useEffect(() => {
-    if (!isClient) return;
-    
     try {
       const root = document.documentElement;
       root.setAttribute('data-theme', theme);
@@ -38,7 +55,7 @@ const ThemeProvider = ({ children }) => {
     } catch (error) {
       console.error('Error applying theme:', error);
     }
-  }, [theme, isClient]);
+  }, [theme]);
 
   const toggleTheme = useCallback(() => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
@@ -55,6 +72,7 @@ const ThemeProvider = ({ children }) => {
     setAutoTheme,
     isDark: theme === 'dark',
     isLight: theme === 'light',
+    isClient: true,
   };
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

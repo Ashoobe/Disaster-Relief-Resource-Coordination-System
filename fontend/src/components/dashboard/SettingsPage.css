@@ -34,11 +34,24 @@
   border: 1px solid var(--success-color, #1a6d2a);
 }
 
+.settings-alert.info {
+  background-color: var(--info-light, #e6f0ff);
+  color: var(--info-color, #0052a3);
+  border: 1px solid var(--info-color, #0052a3);
+}
+
 [data-theme='dark'] .settings-alert.success,
 .dark-mode .settings-alert.success {
   background-color: rgba(129, 201, 149, 0.12);
   color: var(--success-color, #81c995);
   border-color: rgba(129, 201, 149, 0.35);
+}
+
+[data-theme='dark'] .settings-alert.info,
+.dark-mode .settings-alert.info {
+  background-color: var(--info-light, #1a3a52);
+  color: var(--info-color, #8ab4f8);
+  border-color: rgba(138, 180, 248, 0.35);
 }
 
 /* Grid for form fields */
@@ -172,7 +185,7 @@
 
 .btn-primary {
   background-color: var(--color-primary);
-  color: #fff;
+  color: var(--color-primary-foreground);
 }
 
 .btn-primary:hover {
@@ -181,12 +194,12 @@
 }
 
 .btn-danger {
-  background-color: #ef4444;
-  color: #fff;
+  background-color: var(--color-destructive);
+  color: var(--color-destructive-foreground);
 }
 
 .btn-danger:hover {
-  background-color: #dc2626;
+  background-color: var(--error-hover, #8b0000);
 }
 
 .settings-footer {

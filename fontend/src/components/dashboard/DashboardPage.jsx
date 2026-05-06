@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { useAuth } from '../../hooks/useAuth';
-import { getNotifications, notificationEvents } from '../../services/notificationService';
+import { getNotifications, notificationEvents, refreshNotificationsFromServer } from '../../services/notificationService';
 import Card from '../common/Card';
 import { Badge } from '../common/Badge';
-import { TrendingUp, FileText, Clock, AlertCircle, ArrowRight, Flame, Droplets, Wind, CheckCircle } from 'lucide-react';
+import { TrendingUp, FileText, Clock, AlertCircle, Flame, Droplets, Wind } from 'lucide-react';
 import {
   AreaChart,
   Area,
@@ -16,12 +16,7 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell,
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  Legend
+  Cell
 } from 'recharts';
 import './DashboardPage.css';
 
@@ -36,30 +31,50 @@ export const DashboardPage = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [user?.id, user?.role]);
 
   useEffect(() => {
-    const syncNotifications = () => {
+    let cancelled = false;
+    const syncNotifications = async () => {
+      const notifications = await refreshNotificationsFromServer(user);
+      if (!cancelled) {
+        setRecentNotifications(notifications.slice(0, 5));
+      }
+    };
+    const syncLocalNotifications = () => {
       setRecentNotifications(getNotifications(user).slice(0, 5));
     };
 
     syncNotifications();
-    window.addEventListener('storage', syncNotifications);
-    window.addEventListener(notificationEvents.updated, syncNotifications);
+    const intervalId = window.setInterval(syncNotifications, 30000);
+    window.addEventListener('storage', syncLocalNotifications);
+    window.addEventListener(notificationEvents.updated, syncLocalNotifications);
 
     return () => {
-      window.removeEventListener('storage', syncNotifications);
-      window.removeEventListener(notificationEvents.updated, syncNotifications);
+      cancelled = true;
+      window.clearInterval(intervalId);
+      window.removeEventListener('storage', syncLocalNotifications);
+      window.removeEventListener(notificationEvents.updated, syncLocalNotifications);
     };
   }, [user]);
 
   const loadData = async () => {
     try {
       setLoadError('');
-      const [statsData, requestsData] = await Promise.all([
-        api.getDashboardStats(),
-        api.getRequests(),
-      ]);
+      let statsData;
+      let requestsData;
+
+      if (user?.role === 'volunteer') {
+        // Volunteers cannot use admin request lists; their dashboard must summarize work assigned to their MongoDB user id.
+        requestsData = await api.getMyAssignedRequests();
+        statsData = buildStatsFromRequests(requestsData);
+      } else {
+        [statsData, requestsData] = await Promise.all([
+          api.getDashboardStats(),
+          api.getRequests(),
+        ]);
+      }
+
       const sortedRequests = [...requestsData].sort(
         (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
       );
@@ -74,25 +89,14 @@ export const DashboardPage = () => {
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'assigned': return 'bg-blue-100 text-blue-800';
-      case 'in-progress': return 'bg-purple-100 text-purple-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+  const buildStatsFromRequests = (items) => ({
+    totalRequests: items.length,
+    pendingRequests: items.filter((request) => request.status === 'assigned' || request.status === 'pending').length,
+    inProgressRequests: items.filter((request) => request.status === 'in-progress').length,
+    completedRequests: items.filter((request) => request.status === 'completed').length,
+    criticalRequests: items.filter((request) => request.priority === 'critical').length,
+    averageResponseTime: 'N/A',
+  });
 
   const getDisasterIcon = (type) => {
     switch (type) {
@@ -102,6 +106,34 @@ export const DashboardPage = () => {
       case 'tornado': return <Wind className="icon" />;
       default: return <AlertCircle className="icon" />;
     }
+  };
+
+  const findNotificationRequest = (notification) => {
+    return requests.find((request) => (
+      request.id === notification.requestId ||
+      request.trackingCode === notification.requestId ||
+      request.id === notification.trackingCode ||
+      request.trackingCode === notification.trackingCode
+    ));
+  };
+
+  const getNotificationTrackingId = (notification) => {
+    const request = findNotificationRequest(notification);
+    return notification.trackingCode || request?.trackingCode || notification.requestId || 'Notice';
+  };
+
+  const getNotificationBody = (notification) => {
+    const request = findNotificationRequest(notification);
+    const trackingId = getNotificationTrackingId(notification);
+    let body = notification.body || '';
+
+    [notification.requestId, request?.id].forEach((rawId) => {
+      if (rawId && trackingId && rawId !== trackingId) {
+        body = body.replaceAll(rawId, trackingId);
+      }
+    });
+
+    return body;
   };
 
   const requestTrendData = requests.length
@@ -276,11 +308,14 @@ export const DashboardPage = () => {
             {recentNotifications.map((notification) => (
               <div key={notification.id} className="request-item">
                 <div className="request-item-header">
-                  <span className="request-id">{notification.requestId || 'Notice'}</span>
+                  <div className="notification-tracking-id">
+                    <span className="notification-tracking-label">Tracking ID</span>
+                    <span className="notification-tracking-value">{getNotificationTrackingId(notification)}</span>
+                  </div>
                   {!notification.read && <Badge variant="warning">new</Badge>}
                 </div>
                 <p className="request-description">{notification.title}</p>
-                <p className="request-location">{notification.body}</p>
+                <p className="request-location">{getNotificationBody(notification)}</p>
                 <div className="request-item-footer">
                   <span className="request-contact">{new Date(notification.createdAt).toLocaleString()}</span>
                   {notification.actionPath && (
@@ -297,7 +332,7 @@ export const DashboardPage = () => {
         <Card.Header>
           <div className="card-header-row">
             <h3>Recent Emergency Requests</h3>
-            <Link className="btn-link" to="/admin/requests">View All</Link>
+            <Link className="btn-link" to={user?.role === 'volunteer' ? '/volunteer/tasks' : '/admin/requests'}>View All</Link>
           </div>
         </Card.Header>
         <Card.Body>

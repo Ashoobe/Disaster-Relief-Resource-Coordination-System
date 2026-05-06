@@ -6,7 +6,6 @@ import {
   MapPin,
   Phone,
   Send,
-  Shield,
 } from 'lucide-react';
 import PublicSiteHeader from '../components/layout/PublicSiteHeader';
 import PublicSiteFooter from '../components/layout/PublicSiteFooter';

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { Search, CheckCircle, Clock, AlertCircle, Loader, Shield } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { Search, CheckCircle, Clock, AlertCircle, Loader } from 'lucide-react';
 import PublicSiteHeader from '../components/layout/PublicSiteHeader';
 import PublicSiteFooter from '../components/layout/PublicSiteFooter';
 import { trackRequest } from '../services/requestService';
@@ -133,7 +133,7 @@ const RequestTrackingPage = () => {
                 <input
                   type="text"
                   className="tracking-input"
-                  placeholder="e.g. MARIA-2026-E564217D, email@example.com, or (555) 123-4567"
+                  placeholder="Tracking ID, email, or phone"
                   value={query}
                   onChange={(e) => { setQuery(e.target.value); setError(null); }}
                   aria-label="Enter tracking ID, email, or phone"

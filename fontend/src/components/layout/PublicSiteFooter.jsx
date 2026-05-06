@@ -1,70 +1,78 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Globe, Heart, Mail, Phone } from 'lucide-react';
+import { Globe, Heart, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
 
 const PublicSiteFooter = () => {
   return (
     <footer className="public-footer">
       <div className="public-footer-content">
-        <div className="public-footer-grid">
-          <section className="public-footer-about">
-            <Link to="/" className="public-footer-brand" aria-label="Go to home page">
-              <span className="public-brand-icon public-footer-brand-icon" aria-hidden="true">
-                <Globe size={15} />
-                <span className="public-brand-icon-accent"><Heart size={7} /></span>
-              </span>
-              <div>
-                <h3>DRRCS</h3>
-                <p>Relief &amp; Response</p>
-              </div>
-            </Link>
-            <p className="public-footer-copy">
-              Rapid disaster coordination, emergency support, and request tracking for communities that need help fast.
-            </p>
-          </section>
+        <div className="public-footer-panel">
+          <div className="public-footer-grid">
+            <section className="public-footer-about">
+              <Link to="/" className="public-footer-brand" aria-label="Go to home page">
+                <span className="public-brand-icon public-footer-brand-icon" aria-hidden="true">
+                  <Globe size={15} />
+                  <span className="public-brand-icon-accent"><Heart size={7} /></span>
+                </span>
+                <div>
+                  <h3>DRRCS</h3>
+                  <p>Relief &amp; Response</p>
+                </div>
+              </Link>
+              <p className="public-footer-copy">
+                Rapid disaster coordination, emergency support, and request tracking for communities that need help fast.
+              </p>
+              <p className="public-footer-note">
+                <ShieldCheck size={15} />
+                Public request support
+              </p>
+            </section>
 
-          <section>
-            <h4>Explore</h4>
-            <ul className="public-footer-links">
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/services">Services</Link></li>
-              <li><Link to="/live-activity">Live Activity</Link></li>
-              <li><Link to="/about">About</Link></li>
-              <li><Link to="/contact">Contact</Link></li>
-            </ul>
-          </section>
+            <section>
+              <h4>Explore</h4>
+              <ul className="public-footer-links">
+                <li><Link to="/">Home</Link></li>
+                <li><Link to="/services">Services</Link></li>
+                <li><Link to="/live-activity">Live Activity</Link></li>
+                <li><Link to="/about">About</Link></li>
+                <li><Link to="/contact">Contact</Link></li>
+              </ul>
+            </section>
 
-          <section>
-            <h4>Access &amp; Legal</h4>
-            <ul className="public-footer-links">
-              <li><Link to="/track">Track Request</Link></li>
-              <li><Link to="/login">Sign In</Link></li>
-              <li><Link to="/register">Sign Up</Link></li>
-              <li><Link to="/terms">Terms &amp; Conditions</Link></li>
-              <li><Link to="/privacy-policy">Privacy Policy</Link></li>
-            </ul>
-          </section>
+            <section>
+              <h4>Access &amp; Legal</h4>
+              <ul className="public-footer-links">
+                <li><Link to="/track">Track Request</Link></li>
+                <li><Link to="/login">Sign In</Link></li>
+                <li><Link to="/register">Sign Up</Link></li>
+                <li><Link to="/terms">Terms &amp; Conditions</Link></li>
+                <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+              </ul>
+            </section>
 
-          <section>
-            <h4>Contact</h4>
-            <ul className="public-footer-contact">
-              <li>
-                <Phone size={14} />
-                <span>1-800-DISASTER</span>
-              </li>
-              <li>
-                <Mail size={14} />
-                <span>help@drrcs.org</span>
-              </li>
-              <li className="public-footer-contact-text">
-                <span>1 University Pkwy, Romeoville, IL 60446</span>
-              </li>
-            </ul>
-          </section>
+            <section>
+              <h4>Contact</h4>
+              <ul className="public-footer-contact">
+                <li>
+                  <Phone size={15} />
+                  <span>1-800-DISASTER</span>
+                </li>
+                <li>
+                  <Mail size={15} />
+                  <span>help@drrcs.org</span>
+                </li>
+                <li>
+                  <MapPin size={15} />
+                  <span>1 University Pkwy, Romeoville, IL 60446</span>
+                </li>
+              </ul>
+            </section>
+          </div>
         </div>
 
         <div className="public-footer-bottom">
           <p>&copy; 2026 DRRCS. Built for disaster response coordination and public request support.</p>
+          <span>Emergency-ready coordination tools</span>
         </div>
       </div>
     </footer>

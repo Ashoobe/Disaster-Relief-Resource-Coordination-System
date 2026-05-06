@@ -11,16 +11,22 @@ const VolunteerRequestsPage = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
 
-  const loadRequests = () => {
-    setLoading(true);
-    api.getRequests().then(data => {
-      setRequests(data.filter(r => r.status === 'pending' || r.status === 'assigned'));
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  };
-
   useEffect(() => {
-    loadRequests();
+    let cancelled = false;
+
+    api.getRequests()
+      .then(data => {
+        if (cancelled) return;
+        setRequests(data.filter(r => r.status === 'pending' || r.status === 'assigned'));
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const filtered = filter === 'all' ? requests : requests.filter(r => r.priority === filter);

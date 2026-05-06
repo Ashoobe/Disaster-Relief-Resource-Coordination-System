@@ -299,7 +299,7 @@ export const loadDraft = (draftKey) => {
   try {
     const draft = localStorage.getItem(`draft_${draftKey}`);
     return draft ? JSON.parse(draft) : null;
-  } catch (error) {
+  } catch {
     return null;
   }
 };

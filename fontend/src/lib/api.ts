@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EmergencyRequest, DashboardStats } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
@@ -44,6 +45,15 @@ const saveRequestOverride = (id: string, override: Partial<EmergencyRequest>): v
   writeRequestOverrides(current);
 };
 
+const clearRequestOverride = (id: string): void => {
+  if (!id) return;
+  const current = readRequestOverrides();
+  if (current[id]) {
+    delete current[id];
+    writeRequestOverrides(current);
+  }
+};
+
 const applyRequestOverride = (request: EmergencyRequest): EmergencyRequest => {
   if (!request?.id) return request;
   const override = readRequestOverrides()[request.id];
@@ -87,6 +97,14 @@ const normalizeAssignmentError = (message: string | undefined): string => {
 
 const isFetchFailure = (message: string | undefined): boolean => {
   return /failed to fetch|networkerror|load failed/i.test(String(message ?? '').trim());
+};
+
+const toBackendStatus = (status: string): string => {
+  const normalized = String(status).toLowerCase();
+  if (normalized === 'completed') return 'RESOLVED';
+  if (normalized === 'in-progress') return 'IN_PROGRESS';
+  if (normalized === 'pending-verification') return 'PENDING_VERIFICATION';
+  return normalized.toUpperCase().replace(/-/g, '_');
 };
 
 const mapEmergencyRecord = (e: any): EmergencyRequest => {
@@ -152,7 +170,7 @@ const mapEmergencyRecord = (e: any): EmergencyRequest => {
     notes: e.notes,
     completionNotes: e.completionNotes ?? e.notes,
     updatedAt: e.updatedAt,
-    completedAt: e.completedAt,
+    completedAt: e.completedAt ?? e.resolvedAt,
     completedBy: e.completedBy,
   };
 };
@@ -172,7 +190,7 @@ export const api = {
 
   async getRequests(): Promise<EmergencyRequest[]> {
     try {
-      const data = await apiFetch('/emergencies/visible');
+      const data = await apiFetch('/emergencies/visible?size=500');
       return extractPageItems(data).map(mapEmergencyRecord).map(applyRequestOverride);
     } catch (visibleError) {
       // Frontend fallback: some deployments return unstable errors on /visible for valid sessions.
@@ -184,6 +202,12 @@ export const api = {
         throw visibleError;
       }
     }
+  },
+
+  async getMyAssignedRequests(): Promise<EmergencyRequest[]> {
+    // Use the volunteer-specific endpoint so assigned work comes from MongoDB instead of admin-only request lists.
+    const data = await apiFetch('/emergencies/assigned/me?size=500&sortBy=updatedAt&sortDirection=DESC');
+    return extractPageItems(data).map(mapEmergencyRecord);
   },
 
   async getRequestById(id: string): Promise<EmergencyRequest | null> {
@@ -205,6 +229,10 @@ export const api = {
   },
 
   async updateRequest(id: string, updates: Partial<EmergencyRequest>): Promise<EmergencyRequest> {
+    if (updates.status) {
+      return this.updateRequestStatus(id, updates.status, updates);
+    }
+
     try {
       const data = await apiFetch(`/emergencies/${id}`, {
         method: 'PUT',
@@ -252,44 +280,23 @@ export const api = {
     }
   },
 
-  async updateRequestStatus(id: string, status: string): Promise<EmergencyRequest> {
-    const backendStatus = status.toUpperCase().replace(/-/g, '_');
-    try {
-      const data = await apiFetch(`/emergencies/${id}/status?status=${backendStatus}`, {
-        method: 'PATCH',
-      });
-      const mapped = applyRequestOverride(mapEmergencyRecord(data));
-      saveRequestOverride(id, {
-        status: mapped.status,
-        backendStatus: mapped.backendStatus,
-        updatedAt: mapped.updatedAt ?? new Date().toISOString(),
-      });
-      return mapped;
-    } catch (error: any) {
-      if (!isFetchFailure(error?.message) && !isGenericUnexpectedError(error?.message)) {
-        throw error;
-      }
-      const existing = await this.getRequestById(id);
-      const fallback: EmergencyRequest = applyRequestOverride({
-        ...(existing ?? {
-          id,
-          timestamp: new Date().toISOString(),
-          disasterType: 'other',
-          category: 'other',
-          priority: 'medium',
-          status: 'pending',
-          location: { address: 'Address not specified' },
-          description: '',
-          contactName: '',
-          contactPhone: '',
-        }),
-        status: status as EmergencyRequest['status'],
-        backendStatus: status,
-        updatedAt: new Date().toISOString(),
-      });
-      saveRequestOverride(id, fallback);
-      return fallback;
-    }
+  async updateRequestStatus(
+    id: string,
+    status: string,
+    updates: Partial<EmergencyRequest> = {},
+  ): Promise<EmergencyRequest> {
+    const backendStatus = toBackendStatus(status);
+    // Progress must be confirmed by MongoDB so admins and volunteers see the same status after refresh/login.
+    const data = await apiFetch(`/emergencies/${id}/progress`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        status: backendStatus,
+        completionNotes: updates.completionNotes ?? updates.notes,
+        completedBy: updates.completedBy,
+      }),
+    });
+    clearRequestOverride(id);
+    return mapEmergencyRecord(data);
   },
 
   async assignResources(
@@ -316,14 +323,9 @@ export const api = {
     };
 
     try {
-      const data = await apiFetch(`/emergencies/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          status: 'assigned',
-          assignedTo,
-          assignedVolunteerId: assignedTo,
-          assignedResources: resources,
-        }),
+      // Assignment must be confirmed by MongoDB; do not create a local-only assignment that disappears for the volunteer.
+      const data = await apiFetch(`/emergencies/${id}/assign/${assignedTo}`, {
+        method: 'PATCH',
       });
       const assignedRecord = toAssignedRecord(data);
       saveRequestOverride(id, {
@@ -335,82 +337,9 @@ export const api = {
         backendStatus: assignedRecord.backendStatus,
         updatedAt: new Date().toISOString(),
       });
-      return applyRequestOverride(assignedRecord);
-    } catch (putError: any) {
-      if (isFetchFailure(putError?.message)) {
-        const existing = await this.getRequestById(id);
-        const fallback: EmergencyRequest = applyRequestOverride({
-          ...(existing ?? {
-            id,
-            timestamp: new Date().toISOString(),
-            disasterType: 'other',
-            category: 'other',
-            priority: 'medium',
-            status: 'pending',
-            location: { address: 'Address not specified' },
-            description: '',
-            contactName: '',
-            contactPhone: '',
-          }),
-          assignedTo,
-          assigneeName: assignee?.name ?? existing?.assigneeName,
-          assigneeEmail: assignee?.email ?? existing?.assigneeEmail,
-          assignedResources: resources,
-          status: 'assigned',
-          backendStatus: 'assigned',
-          updatedAt: new Date().toISOString(),
-        });
-        saveRequestOverride(id, fallback);
-        return fallback;
-      }
-
-      try {
-        const data = await apiFetch(`/emergencies/${id}/${assignedTo}`, {
-          method: 'PATCH',
-        });
-        const assignedRecord = toAssignedRecord(data);
-        saveRequestOverride(id, {
-          assignedTo: assignedRecord.assignedTo,
-          assigneeName: assignedRecord.assigneeName,
-          assigneeEmail: assignedRecord.assigneeEmail,
-          assignedResources: assignedRecord.assignedResources,
-          status: assignedRecord.status,
-          backendStatus: assignedRecord.backendStatus,
-          updatedAt: new Date().toISOString(),
-        });
-        return applyRequestOverride(assignedRecord);
-      } catch (patchError: any) {
-        if (isFetchFailure(patchError?.message) || isGenericUnexpectedError(patchError?.message)) {
-          const existing = await this.getRequestById(id);
-          const fallback: EmergencyRequest = applyRequestOverride({
-            ...(existing ?? {
-              id,
-              timestamp: new Date().toISOString(),
-              disasterType: 'other',
-              category: 'other',
-              priority: 'medium',
-              status: 'pending',
-              location: { address: 'Address not specified' },
-              description: '',
-              contactName: '',
-              contactPhone: '',
-            }),
-            assignedTo,
-            assigneeName: assignee?.name ?? existing?.assigneeName,
-            assigneeEmail: assignee?.email ?? existing?.assigneeEmail,
-            assignedResources: resources,
-            status: 'assigned',
-            backendStatus: 'assigned',
-            updatedAt: new Date().toISOString(),
-          });
-          saveRequestOverride(id, fallback);
-          return fallback;
-        }
-        const preferredMessage = !isGenericUnexpectedError(patchError?.message) && !isFetchFailure(patchError?.message)
-          ? patchError?.message
-          : putError?.message;
-        throw new Error(normalizeAssignmentError(preferredMessage));
-      }
+      return assignedRecord;
+    } catch (error: any) {
+      throw new Error(normalizeAssignmentError(error?.message));
     }
   },
 

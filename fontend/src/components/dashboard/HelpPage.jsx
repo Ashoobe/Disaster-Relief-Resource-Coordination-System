@@ -38,6 +38,7 @@ const resources = [
 
 const HelpPage = () => {
   const [openIndex, setOpenIndex] = useState(null);
+  const [resourceNotice, setResourceNotice] = useState('');
 
   return (
     <div className="help-page">
@@ -83,9 +84,14 @@ const HelpPage = () => {
       <Card elevation="default">
         <Card.Header>📚 Resources &amp; Downloads</Card.Header>
         <Card.Body>
+          {resourceNotice && (
+            <div className="resource-notice" role="status">
+              {resourceNotice}
+            </div>
+          )}
           <div className="resources-grid">
             {resources.map((res, i) => (
-              <button key={i} className="resource-card" onClick={() => alert(`Download: ${res.title}`)}>
+              <button key={i} className="resource-card" onClick={() => setResourceNotice(`${res.title} will be included with the deployed resource library.`)}>
                 <span className="resource-icon">{res.icon}</span>
                 <div className="resource-info">
                   <div className="resource-title">{res.title}</div>

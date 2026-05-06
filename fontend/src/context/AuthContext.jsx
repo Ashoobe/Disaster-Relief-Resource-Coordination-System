@@ -11,29 +11,44 @@ export const AuthContext = createContext();
 
 const TOKEN_KEY = 'drrcs_token';
 
+const getStoredToken = () => {
+  try {
+    return typeof localStorage === 'undefined' ? null : localStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+};
+
 // Manage authentication state across the app
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(getStoredToken);
+  const [loading, setLoading] = useState(() => Boolean(getStoredToken()));
   const [error, setError] = useState(null);
 
   // Check if user has a saved session on mount
   useEffect(() => {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    if (storedToken) {
-      getCurrentUser(storedToken).then((result) => {
-        if (result.success) {
-          setUser(result.user);
-          setToken(storedToken);
-        } else {
-          localStorage.removeItem(TOKEN_KEY);
-        }
-        setLoading(false);
-      });
-    } else {
-      setLoading(false);
+    const storedToken = getStoredToken();
+    if (!storedToken) {
+      return undefined;
     }
+
+    let cancelled = false;
+    getCurrentUser(storedToken).then((result) => {
+      if (cancelled) return;
+      if (result.success) {
+        setUser(result.user);
+        setToken(storedToken);
+      } else {
+        localStorage.removeItem(TOKEN_KEY);
+        setToken(null);
+      }
+      setLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const login = async (email, password, rememberMe = false) => {

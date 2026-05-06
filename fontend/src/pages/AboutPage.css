@@ -284,7 +284,7 @@
 
 .about-cta-card .about-btn-primary {
   background: var(--primary-color);
-  color: #ffffff;
+  color: var(--interactive-inverse);
   box-shadow: var(--shadow-md);
 }
 

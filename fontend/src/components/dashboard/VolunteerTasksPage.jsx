@@ -18,11 +18,8 @@ const VolunteerTasksPage = () => {
   const loadTasks = async () => {
     setLoading(true);
     try {
-      const requests = await api.getRequests();
-      const mine = requests.filter((request) => {
-        if (!request.assignedTo && !request.assigneeEmail) return false;
-        return request.assignedTo === user?.id || request.assigneeEmail === user?.email;
-      });
+      // Assigned work must come from MongoDB using the logged-in volunteer id, not from an admin-only list filtered in the browser.
+      const mine = await api.getMyAssignedRequests();
 
       const sorted = [...mine].sort(
         (a, b) => new Date(b.updatedAt || b.timestamp).getTime() - new Date(a.updatedAt || a.timestamp).getTime()

@@ -32,6 +32,7 @@ import ServicesPage from './pages/ServicesPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import { getDefaultRouteForRole, hasRequiredRole } from './lib/permissions';
+import SkipLink from './components/common/SkipLink';
 import './App.css';
 
 // Protect routes - redirect to login if not authenticated
@@ -280,6 +281,7 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
+        <SkipLink />
         <AuthProvider>
           <ScrollToTop />
           <AppRouter />

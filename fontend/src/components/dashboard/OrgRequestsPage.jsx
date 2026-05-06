@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Card from '../common/Card';
 import Badge from '../common/Badge';
 import { api } from '../../lib/api';
@@ -30,7 +31,7 @@ const OrgRequestsPage = () => {
           <h1>My Requests</h1>
           <p>Track all emergency requests submitted by your organization</p>
         </div>
-        <a href="/submit-emergency-request" className="btn btn-primary">➕ Submit Emergency Request</a>
+        <Link to="/submit-emergency-request" className="btn btn-primary">Submit Emergency Request</Link>
       </div>
 
       <div className="org-req-filters">
@@ -82,9 +83,9 @@ const OrgRequestsPage = () => {
                   <span className="org-req-date">
                     Submitted: {new Date(req.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </span>
-                  <button className="btn btn-secondary btn-sm" onClick={() => alert(`Viewing request ${req.trackingCode || req.id}`)}>
+                  <Link className="btn btn-secondary btn-sm" to={`/requests/${req.id}`}>
                     View Details
-                  </button>
+                  </Link>
                 </div>
               </div>
             </Card.Body>

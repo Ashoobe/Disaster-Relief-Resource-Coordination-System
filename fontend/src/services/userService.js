@@ -42,7 +42,7 @@ function mapUser(u) {
 }
 
 // Create a new user — calls the same register endpoint used for sign-up
-export async function createUser(data, token) {
+export async function createUser(data, _token) {
   try {
     if (!data.fullName || !data.email || !data.password) {
       return { success: false, message: 'Full name, email, and password are required.' };
@@ -123,11 +123,11 @@ export async function changeUserRole(userId, newRole, token) {
 }
 
 // Toggle a user's active/inactive status — not yet implemented in backend
-export async function toggleUserStatus(userId, token) {
+export async function toggleUserStatus(_userId, _token) {
   return { success: false, message: 'Status toggle is not yet supported by the server.' };
 }
 
 // Reset a user's password — not yet implemented in backend
-export async function resetUserPassword(userId, newPassword, token) {
+export async function resetUserPassword(_userId, _newPassword, _token) {
   return { success: false, message: 'Password reset is not yet supported by the server.' };
 }
