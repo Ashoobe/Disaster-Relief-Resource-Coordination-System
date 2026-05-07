@@ -31,6 +31,29 @@
   margin-bottom: 16px;
 }
 
+.dashboard-grid > .card {
+  border-color: var(--surface-border-soft);
+  background: var(--surface-gradient);
+}
+
+.dashboard-grid > .card:nth-child(2) {
+  background: var(--surface-gradient-warm);
+}
+
+.dashboard-grid > .card:nth-child(3) {
+  background: var(--surface-gradient-success);
+}
+
+.dashboard-grid > .card:nth-child(4) {
+  background: var(--surface-gradient-alert);
+}
+
+.dashboard-charts-grid > .card,
+.dashboard-page > .card {
+  border-color: var(--surface-border-soft);
+  background: var(--surface-gradient-elevated);
+}
+
 .stat-card {
   display: flex;
   align-items: flex-start;

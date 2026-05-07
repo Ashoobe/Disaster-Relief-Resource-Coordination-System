@@ -64,6 +64,13 @@
   --surface-raised: #ffffff;
   --surface-muted: #f6f8fc;
   --surface-accent: #eef4ff;
+  --surface-gradient: linear-gradient(145deg, #ffffff 0%, #f7fbff 56%, #f4fbf7 100%);
+  --surface-gradient-elevated: linear-gradient(145deg, #ffffff 0%, #f3f8ff 52%, #eef8f1 100%);
+  --surface-gradient-cool: linear-gradient(145deg, #ffffff 0%, #eff6ff 58%, #f6f3ff 100%);
+  --surface-gradient-warm: linear-gradient(145deg, #ffffff 0%, #fff7ed 56%, #fef2f2 100%);
+  --surface-gradient-success: linear-gradient(145deg, #ffffff 0%, #f0fdf4 56%, #eff6ff 100%);
+  --surface-gradient-alert: linear-gradient(145deg, #ffffff 0%, #fff7ed 50%, #fee2e2 100%);
+  --surface-border-soft: rgba(148, 163, 184, 0.32);
   --text-strong: #081a3d;
   --text-soft: #425b82;
   --interactive-inverse: #ffffff;
@@ -153,6 +160,13 @@
   --surface-raised: #292a2d;
   --surface-muted: #262f3d;
   --surface-accent: #1d2838;
+  --surface-gradient: linear-gradient(145deg, rgba(32, 33, 36, 0.98) 0%, rgba(29, 40, 56, 0.96) 58%, rgba(28, 45, 40, 0.92) 100%);
+  --surface-gradient-elevated: linear-gradient(145deg, rgba(35, 37, 42, 0.98) 0%, rgba(27, 43, 64, 0.96) 56%, rgba(25, 48, 39, 0.92) 100%);
+  --surface-gradient-cool: linear-gradient(145deg, rgba(32, 33, 36, 0.98) 0%, rgba(24, 42, 69, 0.96) 58%, rgba(43, 34, 72, 0.92) 100%);
+  --surface-gradient-warm: linear-gradient(145deg, rgba(32, 33, 36, 0.98) 0%, rgba(62, 43, 24, 0.92) 56%, rgba(69, 31, 31, 0.9) 100%);
+  --surface-gradient-success: linear-gradient(145deg, rgba(32, 33, 36, 0.98) 0%, rgba(25, 54, 37, 0.94) 56%, rgba(24, 42, 69, 0.92) 100%);
+  --surface-gradient-alert: linear-gradient(145deg, rgba(32, 33, 36, 0.98) 0%, rgba(63, 52, 22, 0.94) 52%, rgba(69, 31, 31, 0.9) 100%);
+  --surface-border-soft: rgba(148, 163, 184, 0.24);
   --text-strong: #f8f9fa;
   --text-soft: #d7e3f8;
   --interactive-inverse: #0f172a;

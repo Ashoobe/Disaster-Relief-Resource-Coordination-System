@@ -37,15 +37,15 @@ const TermsPage = () => {
       <PublicSiteHeader activeKey={null} />
       <main className="legal-main">
         <div className="legal-shell">
-          <article className="legal-card">
+          <article className="legal-card" data-animate="fade-up">
             <span className="legal-eyebrow">Legal</span>
             <h1>Terms &amp; Conditions</h1>
             <p className="legal-intro">
               These terms describe the basic rules for using the DRRCS public website and response coordination tools.
             </p>
 
-            {sections.map((section) => (
-              <section key={section.title} className="legal-section">
+            {sections.map((section, i) => (
+              <section key={section.title} className="legal-section" data-animate="fade-up" data-delay={i % 3 * 100}>
                 <h2>{section.title}</h2>
                 <p>{section.body}</p>
               </section>

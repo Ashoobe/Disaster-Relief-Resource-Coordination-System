@@ -2097,3 +2097,55 @@
     padding: 16px;
   }
 }
+
+/* Modern gradient accents for live-data cards */
+.live-panel {
+  background: var(--surface-gradient-elevated);
+}
+
+.dark-mode .live-panel,
+[data-theme='dark'] .live-panel {
+  background: var(--surface-gradient-elevated);
+}
+
+.live-stat-card:nth-child(1),
+.live-chart-card:nth-child(1) {
+  background: var(--surface-gradient-cool);
+}
+
+.live-stat-card:nth-child(2),
+.live-critical-alerts-card {
+  background: var(--surface-gradient-alert);
+}
+
+.live-stat-card:nth-child(3),
+.live-stat-card:nth-child(4),
+.live-weather-card {
+  background: var(--surface-gradient-success);
+}
+
+.dark-mode .live-weather-card,
+[data-theme='dark'] .live-weather-card {
+  background: var(--surface-gradient-success);
+}
+
+.live-stat-card:nth-child(5) {
+  background: var(--surface-gradient-warm);
+}
+
+.dark-mode .live-critical-alerts-card,
+[data-theme='dark'] .live-critical-alerts-card {
+  background: var(--surface-gradient-alert);
+}
+
+.live-feed-item,
+.live-event-card {
+  background: var(--surface-gradient);
+}
+
+.dark-mode .live-feed-item,
+.dark-mode .live-event-card,
+[data-theme='dark'] .live-feed-item,
+[data-theme='dark'] .live-event-card {
+  background: var(--surface-gradient);
+}

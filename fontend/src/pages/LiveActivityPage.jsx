@@ -433,7 +433,7 @@ const LiveActivityPage = () => {
 
         <section className="live-hero">
           <div className="live-hero-content">
-            <div>
+            <div data-animate="fade-right">
               <span className="live-eyebrow">
                 <Activity size={14} />
                 Live hazard intelligence
@@ -455,7 +455,7 @@ const LiveActivityPage = () => {
               </div>
             </div>
 
-            <aside className="live-hero-panel">
+            <aside className="live-hero-panel" data-animate="fade-left" data-delay="150">
               <h2>Free public data sources</h2>
               <ul className="live-source-list">
                 {liveActivitySources.map((source) => (
@@ -669,7 +669,7 @@ const LiveActivityPage = () => {
           </section>
 
           <section className="live-stats-grid">
-            <article className="live-panel live-stat-card">
+            <article className="live-panel live-stat-card" data-animate="fade-up" data-delay="0">
               <div className="live-stat-top">
                 <span className="live-stat-icon live-stat-icon-blue"><Globe size={22} /></span>
               </div>
@@ -677,7 +677,7 @@ const LiveActivityPage = () => {
               <p className="live-stat-label">Open tracked incidents in this feed</p>
             </article>
 
-            <article className="live-panel live-stat-card">
+            <article className="live-panel live-stat-card" data-animate="fade-up" data-delay="100">
               <div className="live-stat-top">
                 <span className="live-stat-icon live-stat-icon-red"><Flame size={22} /></span>
               </div>
@@ -685,7 +685,7 @@ const LiveActivityPage = () => {
               <p className="live-stat-label">Wildfires in the active results</p>
             </article>
 
-            <article className="live-panel live-stat-card">
+            <article className="live-panel live-stat-card" data-animate="fade-up" data-delay="200">
               <div className="live-stat-top">
                 <span className="live-stat-icon live-stat-icon-blue"><Droplets size={22} /></span>
               </div>
@@ -693,7 +693,7 @@ const LiveActivityPage = () => {
               <p className="live-stat-label">Flood-related incidents</p>
             </article>
 
-            <article className="live-panel live-stat-card">
+            <article className="live-panel live-stat-card" data-animate="fade-up" data-delay="300">
               <div className="live-stat-top">
                 <span className="live-stat-icon live-stat-icon-purple"><Wind size={22} /></span>
               </div>
@@ -701,7 +701,7 @@ const LiveActivityPage = () => {
               <p className="live-stat-label">{activeLocation ? 'Closest incidents to your searched location' : 'Storm systems, hurricanes, and tornadoes'}</p>
             </article>
 
-            <article className="live-panel live-stat-card">
+            <article className="live-panel live-stat-card" data-animate="fade-up" data-delay="400">
               <div className="live-stat-top">
                 <span className="live-stat-icon live-stat-icon-danger"><TriangleAlert size={22} /></span>
               </div>

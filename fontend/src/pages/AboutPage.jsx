@@ -34,6 +34,9 @@ const milestones = [
   { label: '3-part', detail: 'Workflow: request, coordinate, track resolution' },
 ];
 
+const pillarDelays = [0, 150, 300];
+const milestoneDelays = [0, 100, 200, 300];
+
 const AboutPage = () => {
   return (
     <div className="home-page about-page">
@@ -42,7 +45,7 @@ const AboutPage = () => {
       <main className="about-main">
         <section className="about-hero">
           <div className="about-shell about-hero-grid">
-            <div className="about-hero-copy">
+            <div className="about-hero-copy" data-animate="fade-right">
               <span className="about-eyebrow">About Disaster Relief Resource Coordination System</span>
               <h1>Built to help communities move from crisis to coordinated action.</h1>
               <p>
@@ -61,7 +64,7 @@ const AboutPage = () => {
               </div>
             </div>
 
-            <aside className="about-hero-panel">
+            <aside className="about-hero-panel" data-animate="fade-left" data-delay="200">
               <div className="about-hero-panel-inner">
                 <Users size={28} />
                 <h2>What we do</h2>
@@ -78,7 +81,7 @@ const AboutPage = () => {
 
         <section className="about-pillars-section">
           <div className="about-shell">
-            <div className="about-section-heading">
+            <div className="about-section-heading" data-animate="fade-up">
               <h2>How Disaster Relief Resource Coordination System supports response work</h2>
               <p>
                 The platform is designed around the parts of disaster response that fail most often:
@@ -87,8 +90,8 @@ const AboutPage = () => {
             </div>
 
             <div className="about-pillars-grid">
-              {pillars.map(({ title, description, icon: Icon }) => (
-                <article key={title} className="about-pillar-card">
+              {pillars.map(({ title, description, icon: Icon }, i) => (
+                <article key={title} className="about-pillar-card" data-animate="fade-up" data-delay={pillarDelays[i]}>
                   <span className="about-pillar-icon">
                     <Icon size={20} />
                   </span>
@@ -102,7 +105,7 @@ const AboutPage = () => {
 
         <section className="about-mission-section">
           <div className="about-shell about-mission-grid">
-            <article className="about-story-card">
+            <article className="about-story-card" data-animate="fade-right">
               <span className="about-card-label">Mission</span>
               <h2>Deliver faster relief through clearer coordination.</h2>
               <p>
@@ -112,7 +115,7 @@ const AboutPage = () => {
               </p>
             </article>
 
-            <article className="about-story-card about-story-card-accent">
+            <article className="about-story-card about-story-card-accent" data-animate="fade-left" data-delay="150">
               <span className="about-card-label">Approach</span>
               <h2>Simple workflows for high-pressure situations.</h2>
               <p>
@@ -125,13 +128,13 @@ const AboutPage = () => {
 
         <section className="about-metrics-section">
           <div className="about-shell">
-            <div className="about-section-heading">
+            <div className="about-section-heading" data-animate="fade-up">
               <h2>Response model at a glance</h2>
             </div>
 
             <div className="about-metrics-grid">
-              {milestones.map(({ label, detail }) => (
-                <article key={label} className="about-metric-card">
+              {milestones.map(({ label, detail }, i) => (
+                <article key={label} className="about-metric-card" data-animate="zoom-in" data-delay={milestoneDelays[i]}>
                   <strong>{label}</strong>
                   <span>{detail}</span>
                 </article>
@@ -141,7 +144,7 @@ const AboutPage = () => {
         </section>
 
         <section className="about-cta-section">
-          <div className="about-shell about-cta-card">
+          <div className="about-shell about-cta-card" data-animate="fade-up">
             <div>
               <span className="about-card-label">Next step</span>
               <h2>Need support or want to coordinate with Disaster Relief Resource Coordination System?</h2>

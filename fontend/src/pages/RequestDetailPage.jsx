@@ -299,7 +299,7 @@ const RequestDetailPage = () => {
 
   return (
     <div className="request-detail-page">
-      <div className="request-detail-header">
+      <div className="request-detail-header" data-animate="fade-up">
         <div>
           <h1>Request Details</h1>
           <p>Complete submitted request information</p>
@@ -308,7 +308,7 @@ const RequestDetailPage = () => {
       </div>
 
       <div className="request-detail-grid">
-        <section className="request-detail-card">
+        <section className="request-detail-card" data-animate="fade-right">
           <h2>Request Summary</h2>
           <dl className="request-detail-list">
             <div><dt>Tracking ID</dt><dd>{request.trackingCode || request.id}</dd></div>

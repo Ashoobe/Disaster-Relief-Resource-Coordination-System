@@ -24,7 +24,7 @@ const HomePage = () => {
       <main>
         <section className="hero-section">
           <div className="hero-content">
-            <div className="hero-text">
+            <div className="hero-text" data-animate="fade-right">
               <h1>Rapid Response When Disaster Strikes</h1>
               <p>
                 We provide coordinated emergency relief and support to communities affected by natural disasters. Available 24/7 to respond to your emergency needs.
@@ -44,7 +44,7 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="hero-image-wrap">
+            <div className="hero-image-wrap" data-animate="fade-left" data-delay="150">
               <img
                 src="https://images.unsplash.com/photo-1764684994219-8347a5ab0e5e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkaXNhc3RlciUyMHJlbGllZiUyMGh1bWFuaXRhcmlhbiUyMGFpZHxlbnwxfHx8fDE3NzIwNjAxMjZ8MA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Disaster relief workers assisting community members"
@@ -56,22 +56,22 @@ const HomePage = () => {
 
         <section className="home-stats">
           <div className="home-stats-grid">
-            <article className="home-stat-card">
+            <article className="home-stat-card" data-animate="fade-up" data-delay="0">
               <span className="home-stat-icon home-stat-icon-blue"><Clock size={18} /></span>
               <h2 className="home-stat-value">24/7</h2>
               <p className="home-stat-label">Emergency Response</p>
             </article>
-            <article className="home-stat-card">
+            <article className="home-stat-card" data-animate="fade-up" data-delay="100">
               <span className="home-stat-icon home-stat-icon-green"><Users size={18} /></span>
               <h2 className="home-stat-value">10,000+</h2>
               <p className="home-stat-label">People Helped</p>
             </article>
-            <article className="home-stat-card">
+            <article className="home-stat-card" data-animate="fade-up" data-delay="200">
               <span className="home-stat-icon home-stat-icon-orange"><Shield size={18} /></span>
               <h2 className="home-stat-value">500+</h2>
               <p className="home-stat-label">Relief Operations</p>
             </article>
-            <article className="home-stat-card">
+            <article className="home-stat-card" data-animate="fade-up" data-delay="300">
               <span className="home-stat-icon home-stat-icon-red"><Heart size={18} /></span>
               <h2 className="home-stat-value">95%</h2>
               <p className="home-stat-label">Successful Outcomes</p>
@@ -81,14 +81,14 @@ const HomePage = () => {
 
         <section className="services-section">
           <div className="services-content">
-            <h2>Our Emergency Services</h2>
-            <p>
+            <h2 data-animate="fade-up">Our Emergency Services</h2>
+            <p data-animate="fade-up" data-delay="100">
               We provide comprehensive disaster response services to help communities during
               their most critical times.
             </p>
 
             <div className="services-grid">
-              <article className="service-card">
+              <article className="service-card service-card-blue" data-animate="fade-up" data-delay="0">
                 <span className="service-icon service-icon-blue"><Shield size={20} /></span>
                 <h3>Search &amp; Rescue</h3>
                 <p>
@@ -96,7 +96,7 @@ const HomePage = () => {
                 </p>
               </article>
 
-              <article className="service-card">
+              <article className="service-card service-card-red" data-animate="fade-up" data-delay="150">
                 <span className="service-icon service-icon-red"><Heart size={20} /></span>
                 <h3>Medical Aid</h3>
                 <p>
@@ -104,7 +104,7 @@ const HomePage = () => {
                 </p>
               </article>
 
-              <article className="service-card">
+              <article className="service-card service-card-green" data-animate="fade-up" data-delay="300">
                 <span className="service-icon service-icon-green"><House size={20} /></span>
                 <h3>Shelter &amp; Housing</h3>
                 <p>
@@ -112,7 +112,7 @@ const HomePage = () => {
                 </p>
               </article>
 
-              <article className="service-card">
+              <article className="service-card service-card-orange" data-animate="fade-up" data-delay="450">
                 <span className="service-icon service-icon-orange"><Users size={20} /></span>
                 <h3>Relief Supplies</h3>
                 <p>
@@ -125,35 +125,35 @@ const HomePage = () => {
 
         <section className="coverage-section">
           <div className="coverage-content">
-            <h2>Disaster Response Coverage</h2>
-            <p>Our team is trained and equipped to respond to all types of natural disasters.</p>
+            <h2 data-animate="fade-up">Disaster Response Coverage</h2>
+            <p data-animate="fade-up" data-delay="100">Our team is trained and equipped to respond to all types of natural disasters.</p>
             <div className="coverage-grid">
-              <article className="coverage-card" tabIndex="0">
+              <article className="coverage-card" tabIndex="0" data-animate="zoom-in" data-delay="0">
                 <span className="coverage-icon coverage-icon-blue"><Droplets size={18} /></span>
                 <h3>Floods</h3>
                 <p>Rapid rescue support, temporary shelter, and clean-water distribution.</p>
               </article>
-              <article className="coverage-card" tabIndex="0">
+              <article className="coverage-card" tabIndex="0" data-animate="zoom-in" data-delay="100">
                 <span className="coverage-icon coverage-icon-orange"><Flame size={18} /></span>
                 <h3>Wildfires</h3>
                 <p>Evacuation coordination, respiratory aid, and emergency supply delivery.</p>
               </article>
-              <article className="coverage-card" tabIndex="0">
+              <article className="coverage-card" tabIndex="0" data-animate="zoom-in" data-delay="200">
                 <span className="coverage-icon coverage-icon-purple"><Wind size={18} /></span>
                 <h3>Hurricanes</h3>
                 <p>Storm response teams for evacuation, shelter, and post-storm relief.</p>
               </article>
-              <article className="coverage-card" tabIndex="0">
+              <article className="coverage-card" tabIndex="0" data-animate="zoom-in" data-delay="300">
                 <span className="coverage-icon coverage-icon-gray"><Wind size={18} /></span>
                 <h3>Tornadoes</h3>
                 <p>Immediate response for injuries, housing displacement, and debris impact.</p>
               </article>
-              <article className="coverage-card" tabIndex="0">
+              <article className="coverage-card" tabIndex="0" data-animate="zoom-in" data-delay="400">
                 <span className="coverage-icon coverage-icon-red"><AlertCircle size={18} /></span>
                 <h3>Earthquakes</h3>
                 <p>Search assistance, first aid coordination, and urgent resource mobilization.</p>
               </article>
-              <article className="coverage-card" tabIndex="0">
+              <article className="coverage-card" tabIndex="0" data-animate="zoom-in" data-delay="500">
                 <span className="coverage-icon coverage-icon-green"><Shield size={18} /></span>
                 <h3>Other</h3>
                 <p>Flexible emergency support for unexpected or complex disaster conditions.</p>
@@ -164,20 +164,20 @@ const HomePage = () => {
 
         <section className="how-section">
           <div className="how-content">
-            <h2>How Our System Works</h2>
-            <p>Our streamlined process ensures rapid response to emergency situations.</p>
+            <h2 data-animate="fade-up">How Our System Works</h2>
+            <p data-animate="fade-up" data-delay="100">Our streamlined process ensures rapid response to emergency situations.</p>
             <div className="how-grid">
-              <article className="how-card">
+              <article className="how-card" data-animate="fade-right" data-delay="0">
                 <span className="how-step">1</span>
                 <h3>Submit Emergency Request</h3>
                 <p>Report your emergency through our online form, phone hotline, or mobile app.</p>
               </article>
-              <article className="how-card">
+              <article className="how-card" data-animate="fade-up" data-delay="150">
                 <span className="how-step">2</span>
                 <h3>Rapid Assessment</h3>
                 <p>Our team evaluates the situation and assigns priority based on urgency and severity.</p>
               </article>
-              <article className="how-card">
+              <article className="how-card" data-animate="fade-left" data-delay="300">
                 <span className="how-step">3</span>
                 <h3>Deploy Resources</h3>
                 <p>Resources and response teams are dispatched immediately to provide assistance.</p>
@@ -187,7 +187,7 @@ const HomePage = () => {
         </section>
 
         <section className="emergency-cta">
-          <div className="emergency-cta-content">
+          <div className="emergency-cta-content" data-animate="fade-up">
             <h2>Need Emergency Assistance?</h2>
             <p>Our team is standing by 24/7 to respond to disaster emergencies. Don&apos;t hesitate to reach out.</p>
             <div className="emergency-cta-actions">

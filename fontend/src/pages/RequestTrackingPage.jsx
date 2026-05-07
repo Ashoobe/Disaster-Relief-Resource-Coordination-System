@@ -118,7 +118,7 @@ const RequestTrackingPage = () => {
 
       <main className="tracking-main">
         <section className="tracking-hero">
-          <div className="tracking-hero-content">
+          <div className="tracking-hero-content" data-animate="fade-up">
             <div className="tracking-hero-icon">
               <Search size={32} />
             </div>

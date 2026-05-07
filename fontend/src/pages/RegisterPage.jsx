@@ -19,7 +19,7 @@ const RegisterPage = () => {
     <div className="auth-page register-page">
       <div className="auth-page-content">
         <AuthPageToolbar />
-        <div className="auth-container">
+        <div className="auth-container" data-animate="fade-up">
           <RegisterForm onSuccess={handleRegisterSuccess} onNavigateToLogin={handleNavigateToLogin} />
         </div>
       </div>

@@ -1,6 +1,6 @@
 # Frontend runtime config (safe to expose to browser)
 # Local backend URL during development
-VITE_API_BASE_URL=http://localhost:8080/api
+VITE_API_BASE_URL=http://127.0.0.1:8080/api
 
 # Use backend APIs by default
 VITE_ENABLE_DEMO_MODE=false
