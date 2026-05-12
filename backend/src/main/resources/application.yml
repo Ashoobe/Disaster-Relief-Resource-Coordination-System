@@ -1,0 +1,92 @@
+spring:
+  application:
+    name: disaster-relief-platform
+
+  data:
+    mongodb:
+      host: localhost
+      database: disaster_relief
+      username: admin
+      password: admin123
+      authentication-database: admin
+
+    redis:
+      host: localhost
+      port: 6379
+      password: redis123
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+    cache:
+      type: redis
+      redis:
+        time-to-live: 600000  # 10 minutes
+        cache-null-values: false
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: disaster-relief-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_APP_PASSWORD:${MAIL_PASSWORD:}}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  mail:
+    from: ${MAIL_FROM:${MAIL_USERNAME:}}
+    request-alert-to: ${MAIL_REQUEST_ALERT_TO:}
+
+server:
+  port: 8080
+
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+
+
+#rate limiter configuration
+rate-limit:
+  enabled: true
+  # Public emergency creation: 5 requests per minute per IP
+  emergency-creation:
+    capacity: 5
+    refill-tokens: 5
+    refill-duration-minutes: 1
+  # Emergency tracking: 20 requests per minute per IP
+  emergency-tracking:
+    capacity: 20
+    refill-tokens: 20
+    refill-duration-minutes: 1
+  # Authenticated API: 100 requests per minute per user
+  authenticated:
+    capacity: 100
+    refill-tokens: 100
+    refill-duration-minutes: 1
+
+
+
+logging:
+  level:
+    com.relief: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    org.springframework.kafka: INFO
