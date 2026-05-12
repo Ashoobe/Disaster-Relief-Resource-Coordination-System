@@ -1,0 +1,44 @@
+/**
+ * Main Layout Component Styles
+ */
+
+.main-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-layout-container {
+  display: flex;
+  flex: 1;
+  --dashboard-sidebar-width: 260px;
+  min-width: 0;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  width: calc(100% - var(--dashboard-sidebar-width));
+  min-width: 0;
+  margin-left: var(--dashboard-sidebar-width);
+  padding: clamp(16px, 2vw, 24px);
+  background-color: var(--color-background, #f9f9f9);
+  min-height: calc(100vh - 64px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding: 16px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 12px;
+  }
+}
