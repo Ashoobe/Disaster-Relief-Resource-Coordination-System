@@ -85,7 +85,7 @@ export const submitRequest = async (requestData) => {
   // Flatten selected resource groups into the backend list format.
   const resolveRequiredResources = (resourceNeeds = {}) => {
     const resources = [];
-    if (resourceNeeds.food?.needed) resources.push('FOOD');
+    if (resourceNeeds.food?.needed) resources.push('FOOD', 'WATER');
     if (resourceNeeds.medical?.needed) resources.push('MEDICAL');
     if (resourceNeeds.shelter?.needed) resources.push('SHELTER');
     if (resourceNeeds.water?.needed) resources.push('WATER');
@@ -96,8 +96,13 @@ export const submitRequest = async (requestData) => {
   };
 
   try {
-    const parsedLatitude = parseFloat(requestData.location?.latitude);
-    const parsedLongitude = parseFloat(requestData.location?.longitude);
+    const parseOptionalCoordinate = (value) => {
+      if (value === '' || value === null || value === undefined) return undefined;
+      const parsed = parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : undefined;
+    };
+    const parsedLatitude = parseOptionalCoordinate(requestData.location?.latitude);
+    const parsedLongitude = parseOptionalCoordinate(requestData.location?.longitude);
 
     // Build the request body expected by the emergency submission endpoint.
     const backendPayload = {
@@ -107,16 +112,15 @@ export const submitRequest = async (requestData) => {
       disasterType: requestData.disasterType,
       priority: resolvePriority(requestData.priority),
       location: {
-        // Backend requires both latitude and longitude.
         latitude: parsedLatitude,
         longitude: parsedLongitude,
         address: requestData.location?.address?.trim(),
         city: requestData.location?.city?.trim(),
         state: requestData.location?.state || undefined,
-        zipCode: requestData.location?.zipCode || undefined,
-        country: requestData.location?.country || undefined,
+        zipCode: requestData.location?.zipCode?.trim() || undefined,
+        country: requestData.location?.country?.trim() || 'USA',
       },
-      reportedBy: requestData.contact?.primaryName || requestData.authorizedBy || 'Unknown',
+      reportedBy: requestData.contact?.primaryName || 'Unknown',
       // Backend accepts contactPhone only when it is exactly 10 digits.
       contactPhone: (() => {
         const digits = (requestData.contact?.primaryPhone || '').replace(/\D/g, '');
@@ -217,7 +221,11 @@ export const trackRequest = async (query) => {
         priority: (d.priority || 'medium').toLowerCase(),
         disasterType: (d.disasterType || d.type || 'other').toLowerCase(),
         location: d.location?.address
-          ? [d.location.address, d.location.city].filter(Boolean).join(', ')
+          ? [
+            d.location.address,
+            [d.location.city, d.location.state].filter(Boolean).join(', '),
+            d.location.zipCode,
+          ].filter(Boolean).join(' ')
           : 'Not specified',
         contactName: d.reportedBy || 'N/A',
         assignedTo: d.assignedTo || null,

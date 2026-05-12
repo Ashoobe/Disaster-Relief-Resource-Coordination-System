@@ -172,7 +172,7 @@
 }
 
 .field-error::before {
-  content: "✕";
+  content: "x";
   font-weight: bold;
 }
 
@@ -561,6 +561,70 @@
   color: var(--text-tertiary);
 }
 
+/* Simplified emergency request form */
+.simple-request-form {
+  max-width: 760px;
+  padding: 28px;
+  border-radius: 8px;
+}
+
+.simple-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.simple-form-full {
+  grid-column: 1 / -1;
+}
+
+.simple-checkbox-group {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+}
+
+.simple-checkbox-group legend {
+  padding: 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.simple-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.simple-checkbox {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.simple-checkbox input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--primary-color);
+}
+
+.simple-form-actions {
+  margin-top: 28px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .request-form {
@@ -568,6 +632,11 @@
   }
 
   .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .simple-form-grid,
+  .simple-checkbox-grid {
     grid-template-columns: 1fr;
   }
 

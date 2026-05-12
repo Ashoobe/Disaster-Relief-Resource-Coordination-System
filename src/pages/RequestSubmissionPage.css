@@ -221,19 +221,17 @@
 }
 
 .page-content {
-  display: grid;
-  grid-template-columns: 1fr 350px;
-  gap: 32px;
-  max-width: 90%;
+  display: block;
+  max-width: 780px;
   margin: 0 auto;
 }
 
 .form-container {
-  background: var(--color-surface, white);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .help-panel {
@@ -357,8 +355,13 @@
   margin: 0;
 }
 
+.success-actions {
+  justify-content: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
 .success-close-btn {
-  margin-top: 16px;
   border: 1px solid var(--border-color);
   background: var(--bg-primary);
   color: var(--text-primary);

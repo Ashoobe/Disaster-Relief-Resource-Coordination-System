@@ -12,8 +12,8 @@ export const validateTitle = (title) => {
   if (!title || title.trim().length === 0) {
     return { isValid: false, error: 'Title is required' };
   }
-  if (title.trim().length < 3) {
-    return { isValid: false, error: 'Title must be at least 3 characters' };
+  if (title.trim().length < 5) {
+    return { isValid: false, error: 'Title must be at least 5 characters' };
   }
   if (title.length > 100) {
     return { isValid: false, error: 'Title must not exceed 100 characters' };
@@ -101,26 +101,44 @@ export const validateCity = (city) => {
 };
 
 /**
+ * Validate US ZIP code
+ * @param {string} zipCode - The ZIP code
+ * @returns {object} - { isValid: boolean, error: string }
+ */
+export const validateZipCode = (zipCode) => {
+  if (!zipCode || zipCode.trim().length === 0) {
+    return { isValid: false, error: 'ZIP code is required' };
+  }
+  if (!/^\d{5}(-\d{4})?$/.test(zipCode.trim())) {
+    return { isValid: false, error: 'ZIP code must be 5 digits or ZIP+4' };
+  }
+  return { isValid: true, error: '' };
+};
+
+/**
  * Validate latitude/longitude coordinates
  * @param {number} latitude - The latitude coordinate
  * @param {number} longitude - The longitude coordinate
  * @returns {object} - { isValid: boolean, error: string }
  */
 export const validateCoordinates = (latitude, longitude) => {
-  if (latitude === '' || latitude === null || latitude === undefined) {
-    return { isValid: false, error: 'Latitude is required' };
+  const hasLatitude = latitude !== '' && latitude !== null && latitude !== undefined;
+  const hasLongitude = longitude !== '' && longitude !== null && longitude !== undefined;
+
+  if (hasLatitude) {
+    const lat = parseFloat(latitude);
+    if (isNaN(lat) || lat < -90 || lat > 90) {
+      return { isValid: false, error: 'Latitude must be between -90 and 90' };
+    }
   }
-  const lat = parseFloat(latitude);
-  if (isNaN(lat) || lat < -90 || lat > 90) {
-    return { isValid: false, error: 'Latitude must be between -90 and 90' };
+
+  if (hasLongitude) {
+    const lng = parseFloat(longitude);
+    if (isNaN(lng) || lng < -180 || lng > 180) {
+      return { isValid: false, error: 'Longitude must be between -180 and 180' };
+    }
   }
-  if (longitude === '' || longitude === null || longitude === undefined) {
-    return { isValid: false, error: 'Longitude is required' };
-  }
-  const lng = parseFloat(longitude);
-  if (isNaN(lng) || lng < -180 || lng > 180) {
-    return { isValid: false, error: 'Longitude must be between -180 and 180' };
-  }
+
   return { isValid: true, error: '' };
 };
 
@@ -195,6 +213,22 @@ export const validateEmail = (email) => {
 };
 
 /**
+ * Validate optional email address
+ * @param {string} email - The email address
+ * @returns {object} - { isValid: boolean, error: string }
+ */
+export const validateEmailOptional = (email) => {
+  if (!email || email.trim().length === 0) {
+    return { isValid: true, error: '' };
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { isValid: false, error: 'Please enter a valid email address' };
+  }
+  return { isValid: true, error: '' };
+};
+
+/**
  * Validate contact name
  * @param {string} name - The contact name
  * @returns {object} - { isValid: boolean, error: string }
@@ -247,44 +281,6 @@ export const validateUrgencyReason = (urgencyReason, priority) => {
 };
 
 /**
- * Validate authorization date
- * @param {string} authorizationDate - The authorization date
- * @returns {object} - { isValid: boolean, error: string }
- */
-export const validateAuthorizationDate = (authorizationDate) => {
-  if (!authorizationDate || authorizationDate.trim().length === 0) {
-    return { isValid: false, error: 'Authorization date is required' };
-  }
-  const date = new Date(authorizationDate);
-  if (isNaN(date.getTime())) {
-    return { isValid: false, error: 'Please select a valid date' };
-  }
-  // Check if date is not in the future
-  if (date > new Date()) {
-    return { isValid: false, error: 'Authorization date cannot be in the future' };
-  }
-  return { isValid: true, error: '' };
-};
-
-/**
- * Validate authorized by name
- * @param {string} authorizedBy - The name of who authorized the request
- * @returns {object} - { isValid: boolean, error: string }
- */
-export const validateAuthorizedBy = (authorizedBy) => {
-  if (!authorizedBy || authorizedBy.trim().length === 0) {
-    return { isValid: false, error: 'Authorized by name is required' };
-  }
-  if (authorizedBy.trim().length < 2) {
-    return { isValid: false, error: 'Name must be at least 2 characters' };
-  }
-  if (authorizedBy.length > 100) {
-    return { isValid: false, error: 'Name must not exceed 100 characters' };
-  }
-  return { isValid: true, error: '' };
-};
-
-/**
  * Validate entire request form
  * @param {object} formData - The complete form data
  * @returns {object} - { isValid: boolean, errors: object }
@@ -306,11 +302,11 @@ export const validateRequestForm = (formData) => {
   const addressError = validateAddress(formData.location.address);
   if (!addressError.isValid) errors['location.address'] = addressError.error;
 
-  const stateError = validateState(formData.location.state);
-  if (!stateError.isValid) errors['location.state'] = stateError.error;
-
   const cityError = validateCity(formData.location.city);
   if (!cityError.isValid) errors['location.city'] = cityError.error;
+
+  const zipCodeError = validateZipCode(formData.location.zipCode);
+  if (!zipCodeError.isValid) errors['location.zipCode'] = zipCodeError.error;
 
   const coordError = validateCoordinates(formData.location.latitude, formData.location.longitude);
   if (!coordError.isValid) {
@@ -324,28 +320,21 @@ export const validateRequestForm = (formData) => {
   const primaryNameError = validateContactName(formData.contact.primaryName);
   if (!primaryNameError.isValid) errors['contact.primaryName'] = primaryNameError.error;
 
-  const primaryPhoneError = validatePhone(formData.contact.primaryPhone);
+  const hasPrimaryPhone = formData.contact.primaryPhone && formData.contact.primaryPhone.trim().length > 0;
+  const hasPrimaryEmail = formData.contact.primaryEmail && formData.contact.primaryEmail.trim().length > 0;
+  if (!hasPrimaryPhone && !hasPrimaryEmail) {
+    errors['contact.primaryPhone'] = 'Phone or email is required';
+  }
+
+  const primaryPhoneError = validatePhoneOptional(formData.contact.primaryPhone);
   if (!primaryPhoneError.isValid) errors['contact.primaryPhone'] = primaryPhoneError.error;
 
-  const primaryEmailError = validateEmail(formData.contact.primaryEmail);
+  const primaryEmailError = validateEmailOptional(formData.contact.primaryEmail);
   if (!primaryEmailError.isValid) errors['contact.primaryEmail'] = primaryEmailError.error;
-
-  const backupPhoneError = validatePhoneOptional(formData.contact.backupPhone);
-  if (!backupPhoneError.isValid) errors['contact.backupPhone'] = backupPhoneError.error;
 
   // Priority and urgency
   const priorityError = validatePriority(formData.priority);
   if (!priorityError.isValid) errors.priority = priorityError.error;
-
-  const urgencyError = validateUrgencyReason(formData.urgencyReason, formData.priority);
-  if (!urgencyError.isValid) errors.urgencyReason = urgencyError.error;
-
-  // Organization
-  const authorizedByError = validateAuthorizedBy(formData.authorizedBy);
-  if (!authorizedByError.isValid) errors.authorizedBy = authorizedByError.error;
-
-  const authDateError = validateAuthorizationDate(formData.authorizationDate);
-  if (!authDateError.isValid) errors.authorizationDate = authDateError.error;
 
   return {
     isValid: Object.keys(errors).length === 0,

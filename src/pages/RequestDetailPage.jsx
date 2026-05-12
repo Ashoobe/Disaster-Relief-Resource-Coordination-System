@@ -14,6 +14,15 @@ import './RequestDetailPage.css';
 
 const REQUEST_FORM_PAYLOADS_KEY = 'drrcs_request_form_payloads';
 
+const formatLocation = (location = {}) => {
+  return [
+    location.address,
+    [location.city, location.state].filter(Boolean).join(', '),
+    location.zipCode,
+    location.country,
+  ].filter(Boolean).join(' ') || 'N/A';
+};
+
 const readStoredFormPayload = (requestId) => {
   try {
     const raw = localStorage.getItem(REQUEST_FORM_PAYLOADS_KEY);
@@ -23,6 +32,23 @@ const readStoredFormPayload = (requestId) => {
   } catch {
     return null;
   }
+};
+
+const formatHelpNeeded = (resourceNeeds = {}) => {
+  const labels = {
+    food: 'Food or water',
+    medical: 'Medical help',
+    shelter: 'Shelter',
+    searchRescue: 'Rescue',
+    transportation: 'Transportation',
+    clothing: 'Supplies',
+  };
+
+  const selected = Object.entries(labels)
+    .filter(([key]) => resourceNeeds[key]?.needed)
+    .map(([, label]) => label);
+
+  return selected.length ? selected.join(', ') : 'Not specified';
 };
 
 const RequestDetailPage = () => {
@@ -320,7 +346,8 @@ const RequestDetailPage = () => {
             <div><dt>Category</dt><dd>{request.category}</dd></div>
             <div><dt>Submitted</dt><dd>{new Date(request.timestamp).toLocaleString()}</dd></div>
             <div><dt>Completed At</dt><dd>{request.completedAt ? new Date(request.completedAt).toLocaleString() : 'Not completed yet'}</dd></div>
-            <div><dt>Location</dt><dd>{request.location?.address || 'N/A'}</dd></div>
+            <div><dt>Location</dt><dd>{formatLocation(request.location)}</dd></div>
+            <div><dt>ZIP Code</dt><dd>{request.location?.zipCode || 'N/A'}</dd></div>
             <div><dt>Contact Name</dt><dd>{request.contactName || 'N/A'}</dd></div>
             <div><dt>Contact Phone</dt><dd>{request.contactPhone || 'N/A'}</dd></div>
           </dl>
@@ -437,35 +464,27 @@ const RequestDetailPage = () => {
             <h2>Full Submitted Form Data</h2>
             <div className="request-detail-sections">
               <div>
-                <h3>Basic Information</h3>
+                <h3>Request</h3>
                 <p><strong>Title:</strong> {formPayload.title || 'N/A'}</p>
                 <p><strong>Description:</strong> {formPayload.description || 'N/A'}</p>
                 <p><strong>Disaster Type:</strong> {formPayload.disasterType || 'N/A'}</p>
+                <p><strong>Urgency:</strong> {formPayload.priority || 'N/A'}</p>
+                <p><strong>Help Needed:</strong> {formatHelpNeeded(formPayload.resourceNeeds)}</p>
               </div>
 
               <div>
                 <h3>Location</h3>
-                <p><strong>State:</strong> {formPayload.location?.state || 'N/A'}</p>
+                <p><strong>Address:</strong> {formPayload.location?.address || 'N/A'}</p>
                 <p><strong>City:</strong> {formPayload.location?.city || 'N/A'}</p>
-                <p><strong>Latitude:</strong> {formPayload.location?.latitude || 'N/A'}</p>
-                <p><strong>Longitude:</strong> {formPayload.location?.longitude || 'N/A'}</p>
-                <p><strong>Affected Area:</strong> {formPayload.location?.affectedAreaSize || 'N/A'}</p>
+                <p><strong>ZIP Code:</strong> {formPayload.location?.zipCode || 'N/A'}</p>
+                {formPayload.location?.state && <p><strong>State:</strong> {formPayload.location.state}</p>}
               </div>
 
               <div>
                 <h3>Contact</h3>
-                <p><strong>Primary Name:</strong> {formPayload.contact?.primaryName || 'N/A'}</p>
-                <p><strong>Primary Phone:</strong> {formPayload.contact?.primaryPhone || 'N/A'}</p>
-                <p><strong>Primary Email:</strong> {formPayload.contact?.primaryEmail || 'N/A'}</p>
-                <p><strong>Backup Name:</strong> {formPayload.contact?.backupName || 'N/A'}</p>
-                <p><strong>Backup Phone:</strong> {formPayload.contact?.backupPhone || 'N/A'}</p>
-              </div>
-
-              <div>
-                <h3>Authorization</h3>
-                <p><strong>Authorized By:</strong> {formPayload.authorizedBy || 'N/A'}</p>
-                <p><strong>Authorization Date:</strong> {formPayload.authorizationDate || 'N/A'}</p>
-                <p><strong>Urgency Reason:</strong> {formPayload.urgencyReason || 'N/A'}</p>
+                <p><strong>Name:</strong> {formPayload.contact?.primaryName || 'N/A'}</p>
+                <p><strong>Phone:</strong> {formPayload.contact?.primaryPhone || 'N/A'}</p>
+                <p><strong>Email:</strong> {formPayload.contact?.primaryEmail || 'N/A'}</p>
               </div>
             </div>
           </section>
