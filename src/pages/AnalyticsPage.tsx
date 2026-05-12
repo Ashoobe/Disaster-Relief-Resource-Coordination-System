@@ -76,14 +76,17 @@ export function AnalyticsPage() {
     { name: 'Low', value: requests.filter(r => r.priority === 'low').length, color: '#22c55e' },
   ];
 
-  const disasterTypeData = [
-    { name: 'Flood', value: requests.filter(r => r.disasterType === 'flood').length },
-    { name: 'Earthquake', value: requests.filter(r => r.disasterType === 'earthquake').length },
-    { name: 'Hurricane', value: requests.filter(r => r.disasterType === 'hurricane').length },
-    { name: 'Wildfire', value: requests.filter(r => r.disasterType === 'wildfire').length },
-    { name: 'Tornado', value: requests.filter(r => r.disasterType === 'tornado').length },
-    { name: 'Other', value: requests.filter(r => r.disasterType === 'other').length },
-  ];
+  const formatTypeLabel = (value: string) => value
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+  const disasterTypeData = Object.entries(
+    requests.reduce<Record<string, number>>((acc, request) => {
+      const key = request.disasterType || 'other';
+      acc[key] = (acc[key] ?? 0) + 1;
+      return acc;
+    }, {})
+  ).map(([name, value]) => ({ name: formatTypeLabel(name), value }));
 
   const categoryData = [
     { name: 'Rescue', value: requests.filter(r => r.category === 'rescue').length },

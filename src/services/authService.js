@@ -3,7 +3,7 @@
  * Backend-only mode: all auth state is sourced from server responses.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8080/api';
 
 // Normalize backend role formats such as ROLE_ADMIN or ADMIN for frontend routing.
 const _normalizeRole = (role = '') => {
@@ -14,12 +14,21 @@ const _normalizeRole = (role = '') => {
   return String(role || '').toLowerCase();
 };
 
+const _backendUnavailableMessage = () => (
+  `Cannot reach the backend API at ${API_BASE_URL}. Restart the local stack with npm run dev so the backend starts before the frontend, then try logging in again.`
+);
+
 // Shared fetch helper for auth endpoints.
 const _apiFetch = async (path, options = {}) => {
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers: { 'Content-Type': 'application/json', ...(options.headers ?? {}) },
-  });
+  let res;
+  try {
+    res = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...(options.headers ?? {}) },
+    });
+  } catch (err) {
+    throw new Error(_backendUnavailableMessage());
+  }
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json.message || `Request failed (${res.status})`);
   return json;

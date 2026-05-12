@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { EmergencyRequest, DashboardStats } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8080/api';
 const REQUEST_OVERRIDES_KEY = 'drrcs_request_overrides';
 
 const TOKEN_KEY = 'drrcs_token';
@@ -14,6 +14,10 @@ const authHeaders = (): Record<string, string> => {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 };
+
+const backendUnavailableMessage = (): string => (
+  `Cannot reach the backend API at ${API_BASE_URL}. Restart the local stack with npm run dev so the backend starts before the frontend, then refresh the dashboard.`
+);
 
 const readRequestOverrides = (): Record<string, Partial<EmergencyRequest>> => {
   try {
@@ -61,13 +65,18 @@ const applyRequestOverride = (request: EmergencyRequest): EmergencyRequest => {
 };
 
 const apiFetch = async (path: string, options: RequestInit = {}): Promise<any> => {
-  const res = await fetch(`${API_BASE_URL}/v1${path}`, {
-    ...options,
-    headers: {
-      ...authHeaders(),
-      ...(options.headers ?? {}),
-    },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE_URL}/v1${path}`, {
+      ...options,
+      headers: {
+        ...authHeaders(),
+        ...(options.headers ?? {}),
+      },
+    });
+  } catch {
+    throw new Error(backendUnavailableMessage());
+  }
 
   const payload = await res.json().catch(() => ({}));
   if (!res.ok) {
@@ -107,14 +116,44 @@ const toBackendStatus = (status: string): string => {
   return normalized.toUpperCase().replace(/-/g, '_');
 };
 
-const mapEmergencyRecord = (e: any): EmergencyRequest => {
-  const normalizedStatus = String(e.status ?? 'pending').toLowerCase().replace(/_/g, '-');
-  const normalizedDisasterType = String(e.disasterType ?? e.type ?? e.emergencyType ?? '').toLowerCase().replace(/_/g, '-');
-  const normalizedCategory = String(e.category ?? e.type ?? e.emergencyType ?? e.requiredResources?.[0] ?? 'other')
+const toSlug = (value: unknown): string => {
+  return String(value ?? '')
+    .trim()
     .toLowerCase()
-    .replace(/_/g, '-');
+    .replace(/_/g, '-')
+    .replace(/\s+/g, '-');
+};
+
+const requestTypes: EmergencyRequest['disasterType'][] = [
+  'food',
+  'shelter',
+  'medical',
+  'water',
+  'rescue',
+  'evacuation',
+  'clothing',
+  'transportation',
+  'flood',
+  'earthquake',
+  'hurricane',
+  'wildfire',
+  'tornado',
+  'other',
+];
+
+const toRequestType = (record: any): EmergencyRequest['disasterType'] => {
+  const candidate = toSlug(record.disasterType ?? record.type ?? record.emergencyType ?? record.category);
+  return requestTypes.includes(candidate as EmergencyRequest['disasterType'])
+    ? candidate as EmergencyRequest['disasterType']
+    : 'other';
+};
+
+const mapEmergencyRecord = (e: any): EmergencyRequest => {
+  const normalizedStatus = toSlug(e.status ?? 'pending');
+  const normalizedDisasterType = toRequestType(e);
+  const normalizedCategory = toSlug(e.category ?? e.type ?? e.emergencyType ?? e.requiredResources?.[0] ?? 'other');
   const location = e.location ?? {};
-  const latitude = location.latitude ?? location.coordinates?.lat;
+  const latitude = location.latitude ?? location.lalitude ?? location.coordinates?.lat;
   const longitude = location.longitude ?? location.coordinates?.lng;
 
   return {
@@ -123,9 +162,7 @@ const mapEmergencyRecord = (e: any): EmergencyRequest => {
     backendStatus: normalizedStatus,
     title: e.title,
     timestamp: e.timestamp ?? e.createdAt,
-    disasterType: ['flood', 'earthquake', 'hurricane', 'wildfire', 'tornado'].includes(normalizedDisasterType)
-      ? normalizedDisasterType as EmergencyRequest['disasterType']
-      : 'other',
+    disasterType: normalizedDisasterType,
     category: (
       normalizedCategory === 'water'
       || normalizedCategory === 'clothing'

@@ -1,4 +1,18 @@
-export type DisasterType = 'flood' | 'earthquake' | 'hurricane' | 'wildfire' | 'tornado' | 'other';
+export type DisasterType =
+  | 'food'
+  | 'shelter'
+  | 'medical'
+  | 'water'
+  | 'rescue'
+  | 'evacuation'
+  | 'clothing'
+  | 'transportation'
+  | 'flood'
+  | 'earthquake'
+  | 'hurricane'
+  | 'wildfire'
+  | 'tornado'
+  | 'other';
 export type Priority = 'critical' | 'high' | 'medium' | 'low';
 export type RequestStatus = 'pending' | 'assigned' | 'in-progress' | 'completed' | 'cancelled';
 export type RequestCategory = 'medical' | 'shelter' | 'food' | 'rescue' | 'evacuation' | 'supplies' | 'other';

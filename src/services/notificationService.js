@@ -1,6 +1,6 @@
 const NOTIFICATIONS_STORAGE_KEY = 'drrcs_notifications';
 const NOTIFICATIONS_UPDATED_EVENT = 'drrcs:notifications-updated';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8080/api';
 const TOKEN_KEY = 'drrcs_token';
 
 const getToken = () => localStorage.getItem(TOKEN_KEY);

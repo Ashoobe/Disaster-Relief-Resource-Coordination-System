@@ -196,7 +196,7 @@ export const trackRequest = async (query) => {
 
   try {
     const API_BASE =
-      (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api') + '/v1';
+      (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8080/api') + '/v1';
     const res = await fetch(
       `${API_BASE}/emergencies/public/track/${encodeURIComponent(trimmed)}`
     );
@@ -219,7 +219,7 @@ export const trackRequest = async (query) => {
           : (d.status || 'pending').toLowerCase().replace(/_/g, '-')),
         title: d.title || '',
         priority: (d.priority || 'medium').toLowerCase(),
-        disasterType: (d.disasterType || d.type || 'other').toLowerCase(),
+        disasterType: (d.disasterType || d.type || 'other').toLowerCase().replace(/_/g, '-'),
         location: d.location?.address
           ? [
             d.location.address,

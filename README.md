@@ -2,12 +2,12 @@
 
 React + Vite frontend for the Disaster Relief Resource Coordination System.
 
-This README is for the runnable frontend app in `fontend/`. The separate README at `docs/frontend/README.md` is only a documentation index for notes, planning, reference, and final delivery files.
+This README is for the runnable frontend app in `frontend/`. The separate README at `docs/frontend/README.md` is only a documentation index for notes, planning, reference, and final delivery files.
 
 ## Folder Layout
 
 ```text
-fontend/
+frontend/
 |-- src/
 |   |-- components/
 |   |-- context/
@@ -27,7 +27,7 @@ fontend/
 `-- README.md
 ```
 
-Runtime app files stay in `fontend/`. Frontend documentation lives in `docs/frontend/`.
+Runtime app files stay in `frontend/`. Frontend documentation lives in `docs/frontend/`.
 
 ## Frontend Docs
 
@@ -40,12 +40,14 @@ Runtime app files stay in `fontend/`. Frontend documentation lives in `docs/fron
 ## Getting Started
 
 ```powershell
-cd fontend
+cd frontend
 npm install
 npm run dev
 ```
 
-Vite prints the local URL in the terminal. It is usually `http://localhost:5173`, but it may use another port if that one is busy.
+`npm run dev` starts any missing Docker dependencies, starts the Spring Boot backend on `http://127.0.0.1:8080/api`, waits for the API to respond, and then starts Vite.
+
+Vite prints the local URL in the terminal. It is usually `http://127.0.0.1:5173`, but it may use another port if that one is busy.
 
 ## Environment
 
@@ -68,11 +70,14 @@ Use `127.0.0.1` for local backend calls to avoid Windows resolving `localhost` t
 
 ```powershell
 npm run dev
+npm run dev:frontend
 npm run build
 npm run preview
 npm run lint
 npm run format
 ```
+
+Use `npm run dev` for normal local development. `npm run dev:frontend` starts only Vite and assumes the backend is already running.
 
 ## Notes
 

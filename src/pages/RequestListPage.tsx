@@ -6,11 +6,76 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Filter, Droplets, Flame, Wind, AlertCircle } from 'lucide-react';
+import {
+  Search,
+  Filter,
+  Droplets,
+  Flame,
+  Wind,
+  AlertCircle,
+  HeartPulse,
+  Home,
+  Utensils,
+  LifeBuoy,
+  Bus,
+  Package,
+  Shirt,
+} from 'lucide-react';
 import { api } from '@/lib/api';
 import { EmergencyRequest } from '@/types';
 import { format } from 'date-fns';
 import './request-list-fixes.css';
+
+const formatLocation = (location: EmergencyRequest['location']): string => {
+  return [
+    location.address,
+    [location.city, location.state].filter(Boolean).join(', '),
+    location.zipCode,
+  ].filter(Boolean).join(' ');
+};
+
+const REQUEST_TYPE_LABELS: Record<string, string> = {
+  food: 'Food',
+  shelter: 'Shelter',
+  medical: 'Medical',
+  water: 'Water',
+  rescue: 'Rescue',
+  evacuation: 'Evacuation',
+  clothing: 'Clothing',
+  transportation: 'Transportation',
+  flood: 'Flood',
+  earthquake: 'Earthquake',
+  hurricane: 'Hurricane',
+  wildfire: 'Wildfire',
+  tornado: 'Tornado',
+  other: 'Other',
+};
+
+const REQUEST_TYPE_ORDER = [
+  'rescue',
+  'food',
+  'shelter',
+  'medical',
+  'water',
+  'evacuation',
+  'clothing',
+  'transportation',
+  'flood',
+  'earthquake',
+  'hurricane',
+  'wildfire',
+  'tornado',
+  'other',
+];
+
+const normalizeFilterValue = (value: string | undefined): string => (
+  String(value ?? '').trim().toLowerCase().replace(/_/g, '-').replace(/\s+/g, '-')
+);
+
+const formatRequestType = (value: string | undefined): string => {
+  const normalized = normalizeFilterValue(value);
+  return REQUEST_TYPE_LABELS[normalized] ?? normalized.replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+};
 
 export function RequestListPage() {
   const [requests, setRequests] = useState<EmergencyRequest[]>([]);
@@ -18,6 +83,7 @@ export function RequestListPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [zipFilter, setZipFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [disasterFilter, setDisasterFilter] = useState<string>('all');
@@ -33,27 +99,42 @@ export function RequestListPage() {
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
-        (req) =>
-          req.id.toLowerCase().includes(query) ||
-          (req.trackingCode || '').toLowerCase().includes(query) ||
-          req.description.toLowerCase().includes(query) ||
-          req.location.address.toLowerCase().includes(query) ||
-          req.location.city?.toLowerCase().includes(query) ||
-          req.location.zipCode?.toLowerCase().includes(query) ||
-          req.contactName.toLowerCase().includes(query)
+        (req) => [
+          req.id,
+          req.trackingCode,
+          req.title,
+          req.description,
+          req.disasterType,
+          req.category,
+          req.status,
+          req.priority,
+          req.location.address,
+          req.location.city,
+          req.location.state,
+          req.location.zipCode,
+          req.contactName,
+          req.contactPhone,
+        ].some((value) => String(value ?? '').toLowerCase().includes(query))
+      );
+    }
+
+    if (zipFilter.trim()) {
+      const normalizedZip = zipFilter.replace(/\D/g, '');
+      filtered = filtered.filter((req) =>
+        (req.location.zipCode || '').replace(/\D/g, '').startsWith(normalizedZip)
       );
     }
 
     if (statusFilter !== 'all') {
-      filtered = filtered.filter((req) => req.status === statusFilter);
+      filtered = filtered.filter((req) => normalizeFilterValue(req.status) === statusFilter);
     }
 
     if (priorityFilter !== 'all') {
-      filtered = filtered.filter((req) => req.priority === priorityFilter);
+      filtered = filtered.filter((req) => normalizeFilterValue(req.priority) === priorityFilter);
     }
 
     if (disasterFilter !== 'all') {
-      filtered = filtered.filter((req) => req.disasterType === disasterFilter);
+      filtered = filtered.filter((req) => normalizeFilterValue(req.disasterType) === disasterFilter);
     }
 
     filtered.sort((a, b) => {
@@ -75,7 +156,18 @@ export function RequestListPage() {
     });
 
     setFilteredRequests(filtered);
-  }, [requests, searchQuery, statusFilter, priorityFilter, disasterFilter, sortOption]);
+  }, [requests, searchQuery, zipFilter, statusFilter, priorityFilter, disasterFilter, sortOption]);
+
+  const disasterFilterOptions = Array.from(
+    new Set(requests.map((request) => normalizeFilterValue(request.disasterType)).filter(Boolean))
+  ).sort((a, b) => {
+    const aIndex = REQUEST_TYPE_ORDER.indexOf(a);
+    const bIndex = REQUEST_TYPE_ORDER.indexOf(b);
+    if (aIndex !== -1 || bIndex !== -1) {
+      return (aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex) - (bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex);
+    }
+    return formatRequestType(a).localeCompare(formatRequestType(b));
+  });
 
   const loadRequests = async () => {
     try {
@@ -112,8 +204,17 @@ export function RequestListPage() {
   };
 
   const getDisasterIcon = (type: string) => {
-    switch (type) {
+    switch (normalizeFilterValue(type)) {
+      case 'food': return <Utensils className="icon" />;
+      case 'shelter': return <Home className="icon" />;
+      case 'medical': return <HeartPulse className="icon" />;
+      case 'water':
       case 'flood': return <Droplets className="icon" />;
+      case 'rescue': return <LifeBuoy className="icon" />;
+      case 'evacuation':
+      case 'transportation': return <Bus className="icon" />;
+      case 'clothing': return <Shirt className="icon" />;
+      case 'supplies': return <Package className="icon" />;
       case 'wildfire': return <Flame className="icon" />;
       case 'hurricane':
       case 'tornado': return <Wind className="icon" />;
@@ -153,6 +254,11 @@ export function RequestListPage() {
               <Input placeholder="Search requests..." value={searchQuery} onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)} className="pl-10 filter-search-input" />
             </div>
 
+            <div className="relative">
+              <Search className="icon absolute-icon" />
+              <Input placeholder="Filter by ZIP code" value={zipFilter} onChange={(e: ChangeEvent<HTMLInputElement>) => setZipFilter(e.target.value)} className="pl-10 filter-search-input" inputMode="numeric" maxLength={10} />
+            </div>
+
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="filter-select-trigger">
                 <SelectValue placeholder="All Status" />
@@ -186,12 +292,11 @@ export function RequestListPage() {
               </SelectTrigger>
               <SelectContent className="request-filter-select-content">
                 <SelectItem className="request-filter-select-item" value="all">All Disasters</SelectItem>
-                <SelectItem className="request-filter-select-item" value="flood">Flood</SelectItem>
-                <SelectItem className="request-filter-select-item" value="earthquake">Earthquake</SelectItem>
-                <SelectItem className="request-filter-select-item" value="hurricane">Hurricane</SelectItem>
-                <SelectItem className="request-filter-select-item" value="wildfire">Wildfire</SelectItem>
-                <SelectItem className="request-filter-select-item" value="tornado">Tornado</SelectItem>
-                <SelectItem className="request-filter-select-item" value="other">Other</SelectItem>
+                {disasterFilterOptions.map((type) => (
+                  <SelectItem className="request-filter-select-item" key={type} value={type}>
+                    {formatRequestType(type)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
@@ -213,8 +318,8 @@ export function RequestListPage() {
           <div className="filters-actions">
             <div className="filters-summary">Showing <strong>{filteredRequests.length}</strong> of <strong>{requests.length}</strong> requests</div>
             <div>
-              {(searchQuery || statusFilter !== 'all' || priorityFilter !== 'all' || disasterFilter !== 'all' || sortOption !== 'time-desc') && (
-                <Button className="clear-filters-button" variant="outline" size="sm" onClick={() => { setSearchQuery(''); setStatusFilter('all'); setPriorityFilter('all'); setDisasterFilter('all'); setSortOption('time-desc'); }}>
+              {(searchQuery || zipFilter || statusFilter !== 'all' || priorityFilter !== 'all' || disasterFilter !== 'all' || sortOption !== 'time-desc') && (
+                <Button className="clear-filters-button" variant="outline" size="sm" onClick={() => { setSearchQuery(''); setZipFilter(''); setStatusFilter('all'); setPriorityFilter('all'); setDisasterFilter('all'); setSortOption('time-desc'); }}>
                   Clear Filters
                 </Button>
               )}
@@ -256,7 +361,7 @@ export function RequestListPage() {
                       <TableCell>
                         <div className="disaster-cell">
                           {getDisasterIcon(request.disasterType)}
-                          <span>{request.disasterType}</span>
+                          <span>{formatRequestType(request.disasterType)}</span>
                         </div>
                       </TableCell>
                       <TableCell style={{ textTransform: 'capitalize', color: '#334155', fontWeight: 500 }}>{request.category}</TableCell>
@@ -266,7 +371,7 @@ export function RequestListPage() {
                       <TableCell>
                         <Badge className={getStatusColor(request.status)}>{request.status}</Badge>
                       </TableCell>
-                      <TableCell className="truncate">{request.location.address}</TableCell>
+                      <TableCell className="truncate" title={formatLocation(request.location)}>{formatLocation(request.location)}</TableCell>
                       <TableCell>
                         <div className="contact-name">{request.contactName}</div>
                         <div className="contact-phone">{request.contactPhone}</div>

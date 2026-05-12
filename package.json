@@ -6,7 +6,8 @@
     "description": "Disaster Relief Resource Coordination System - React Frontend",
     "author": "DRRCS Frontend Team",
     "scripts": {
-        "dev": "vite",
+        "dev": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/dev.ps1",
+        "dev:frontend": "vite",
         "build": "vite build",
         "preview": "vite preview",
         "lint": "eslint src --ext .js,.jsx,.ts,.tsx",

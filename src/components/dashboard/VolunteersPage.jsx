@@ -4,7 +4,7 @@ import Badge from '../common/Badge';
 import { useAuth } from '../../hooks/useAuth';
 import './VolunteersPage.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8080/api';
 
 const statusVariant = { active: 'success', inactive: 'default' };
 

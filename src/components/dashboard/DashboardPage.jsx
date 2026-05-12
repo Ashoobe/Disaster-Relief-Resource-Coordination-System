@@ -20,6 +20,17 @@ import {
 } from 'recharts';
 import './DashboardPage.css';
 
+const formatLocation = (location = {}) => [
+  location.address,
+  [location.city, location.state].filter(Boolean).join(', '),
+  location.zipCode,
+].filter(Boolean).join(' ') || 'Address not specified';
+
+const formatRequestLabel = (value = '') => String(value || 'other')
+  .replace(/_/g, '-')
+  .replace(/-/g, ' ')
+  .replace(/\b\w/g, (char) => char.toUpperCase());
+
 export const DashboardPage = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
@@ -348,12 +359,12 @@ export const DashboardPage = () => {
                 </div>
                 <div className="request-item-type">
                   <span className="disaster-icon">{getDisasterIcon(request.disasterType)}</span>
-                  <span className="disaster-type">{request.disasterType}</span>
+                  <span className="disaster-type">{formatRequestLabel(request.disasterType)}</span>
                   <span className="separator">•</span>
-                  <span className="category">{request.category}</span>
+                  <span className="category">{formatRequestLabel(request.category)}</span>
                 </div>
                 <p className="request-description">{request.title || request.description?.slice(0, 100) || 'No description available.'}</p>
-                <p className="request-location">{request.location?.address}</p>
+                <p className="request-location">{formatLocation(request.location)}</p>
                 <div className="request-item-footer">
                   <span className="request-contact">{request.contactName}</span>
                   <Link className="btn-outline-sm" to={`/requests/${request.id}`}>View Details</Link>

@@ -51,6 +51,11 @@ const formatHelpNeeded = (resourceNeeds = {}) => {
   return selected.length ? selected.join(', ') : 'Not specified';
 };
 
+const formatRequestLabel = (value = '') => String(value || 'N/A')
+  .replace(/_/g, '-')
+  .replace(/-/g, ' ')
+  .replace(/\b\w/g, (char) => char.toUpperCase());
+
 const RequestDetailPage = () => {
   const { id } = useParams();
   const { user, token } = useAuth();
@@ -342,8 +347,8 @@ const RequestDetailPage = () => {
             <div><dt>Status</dt><dd>{request.status}</dd></div>
             <div><dt>Assigned To</dt><dd>{request.assigneeName || 'Unassigned'}</dd></div>
             <div><dt>Priority</dt><dd>{request.priority}</dd></div>
-            <div><dt>Disaster Type</dt><dd>{request.disasterType}</dd></div>
-            <div><dt>Category</dt><dd>{request.category}</dd></div>
+            <div><dt>Disaster Type</dt><dd>{formatRequestLabel(request.disasterType)}</dd></div>
+            <div><dt>Category</dt><dd>{formatRequestLabel(request.category)}</dd></div>
             <div><dt>Submitted</dt><dd>{new Date(request.timestamp).toLocaleString()}</dd></div>
             <div><dt>Completed At</dt><dd>{request.completedAt ? new Date(request.completedAt).toLocaleString() : 'Not completed yet'}</dd></div>
             <div><dt>Location</dt><dd>{formatLocation(request.location)}</dd></div>

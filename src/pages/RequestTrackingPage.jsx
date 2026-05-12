@@ -57,6 +57,11 @@ const formatDate = (dateStr) => {
   }
 };
 
+const formatRequestLabel = (value = '') => String(value || 'N/A')
+  .replace(/_/g, '-')
+  .replace(/-/g, ' ')
+  .replace(/\b\w/g, (char) => char.toUpperCase());
+
 const RequestTrackingPage = () => {
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState('');
@@ -207,7 +212,7 @@ const RequestTrackingPage = () => {
                     </div>
                     <div className="tracking-detail-row">
                       <span className="detail-label">Disaster Type</span>
-                      <span className="detail-value" style={{ textTransform: 'capitalize' }}>{result.disasterType}</span>
+                      <span className="detail-value">{formatRequestLabel(result.disasterType)}</span>
                     </div>
                     <div className="tracking-detail-row">
                       <span className="detail-label">Location</span>
